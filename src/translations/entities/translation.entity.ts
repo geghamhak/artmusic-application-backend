@@ -1,10 +1,13 @@
-import {Entity, Column, ManyToOne} from 'typeorm';
+import {Entity, Column, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {Language} from "./language.entity";
 import {TextContent} from "./textContent.entity";
 
 @Entity()
 export class Translation {
-  @Column()
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ type: 'varchar', length: '255' })
   translation: string;
 
   @ManyToOne(() => Language, (language) => language.translations)

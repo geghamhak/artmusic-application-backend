@@ -1,15 +1,15 @@
-import {Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany} from 'typeorm';
+import {Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {TextContent} from "../../translations/entities/textContent.entity";
 import {Application} from "../../applications/entities/application.entity";
 
 @Entity()
-export class Country {
+export class ParticipantType {
   @PrimaryGeneratedColumn()
   id: number;
 
   @OneToOne(() => TextContent)
   @JoinColumn()
-  name: TextContent
+  type: TextContent
 
   @OneToMany(() => Application, (application) => application.festival)
   applications: Application[]
