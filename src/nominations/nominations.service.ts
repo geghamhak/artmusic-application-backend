@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreateNominationDto } from './dto/create-nomination.dto';
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Nomination } from "./entities/nomination.entity";
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Nomination } from './entities/nomination.entity';
 
 @Injectable()
 export class NominationsService {

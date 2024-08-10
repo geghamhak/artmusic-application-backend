@@ -1,3 +1,3 @@
 export class CreateParticipantRecordingDto {
- file: File;
+  file: File;
 }

@@ -1,6 +1,12 @@
-import {Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne} from 'typeorm';
-import {Translation} from "./translation.entity";
-import {Language} from "./language.entity";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
+import { Translation } from './translation.entity';
+import { Language } from './language.entity';
 
 @Entity()
 export class TextContent {
@@ -11,8 +17,20 @@ export class TextContent {
   originalText: string;
 
   @ManyToOne(() => Language, (language) => language.textContents)
-  originalLanguage: Language
+  originalLanguage: Language;
 
-  @OneToMany(type => Translation, (translation) => translation.textContent)
+  @OneToMany(() => Translation, (translation) => translation.textContent)
   translations: Translation[];
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: string;
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: string;
 }

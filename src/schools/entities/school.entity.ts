@@ -1,7 +1,15 @@
-import {Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
-import {TextContent} from "../../translations/entities/textContent.entity";
-import {Region} from "../../regions/entities/region.entity";
-import {Application} from "../../applications/entities/application.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { TextContent } from '../../translations/entities/textContent.entity';
+import { Region } from '../../regions/entities/region.entity';
+import { Application } from '../../applications/entities/application.entity';
 
 @Entity()
 export class School {
@@ -10,11 +18,22 @@ export class School {
 
   @OneToOne(() => TextContent)
   @JoinColumn()
-  name: TextContent
+  name: TextContent;
 
   @ManyToOne(() => Region, (region) => region.schools)
-  region: Region
+  region: Region;
 
   @OneToMany(() => Application, (application) => application.festival)
-  applications: Application[]
+  applications: Application[];
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: string;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: string;
 }

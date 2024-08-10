@@ -1,6 +1,13 @@
-import {Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm";
-import {Nomination} from "../../nominations/entities/nomination.entity";
-import {TextContent} from "../../translations/entities/textContent.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Nomination } from '../../nominations/entities/nomination.entity';
+import { TextContent } from '../../translations/entities/textContent.entity';
 
 @Entity()
 export class SubNomination {
@@ -9,8 +16,19 @@ export class SubNomination {
 
   @OneToOne(() => TextContent)
   @JoinColumn()
-  name: TextContent
+  name: TextContent;
 
   @ManyToOne(() => Nomination, (nomination) => nomination.subNominations)
-  nomination: Nomination
+  nomination: Nomination;
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: string;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: string;
 }

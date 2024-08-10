@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { ParticipantVideoLink } from "./entities/participant-video-link.entity";
-import { CreateParticipantVideoLinkDto } from "./dto/create-participant-video-link.dto";
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ParticipantVideoLink } from './entities/participant-video-link.entity';
+import { CreateParticipantVideoLinkDto } from './dto/create-participant-video-link.dto';
 
 @Injectable()
 export class ParticipantVideoLinksService {
@@ -14,13 +14,14 @@ export class ParticipantVideoLinksService {
     try {
       const videoLinks = [];
       createParticipantVideoLinkDtos.map((createParticipantVideoLinkDto) => {
-        const videoLink =  this.participantVideoLinkRepository.create();
+        const videoLink = this.participantVideoLinkRepository.create();
         // add to AWS S3
+        console.log(createParticipantVideoLinkDto);
         videoLinks.push(videoLink);
       });
 
       return videoLinks;
-    }  catch (e) {
+    } catch (e) {
       throw new Error('Unable to create participant video link');
     }
   }

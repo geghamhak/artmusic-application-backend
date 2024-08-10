@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ParticipantRecordingsService } from './participant-recordings.service';
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { ParticipantRecording } from "./entities/participant-recording.entity";
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ParticipantRecording } from './entities/participant-recording.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ParticipantRecording])],

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { NominationsService } from './nominations.service';
 import { CreateNominationDto } from './dto/create-nomination.dto';
 

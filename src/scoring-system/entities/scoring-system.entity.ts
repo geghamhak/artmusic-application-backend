@@ -1,20 +1,31 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {FestivalType} from "../../festival-types/entities/festival-type.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { FestivalType } from '../../festival-types/entities/festival-type.entity';
 
 @Entity()
 export class ScoringSystem {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'tinyint'})
+  @Column({ type: 'tinyint' })
   minAmount: number;
 
-  @Column({ type: 'tinyint'})
+  @Column({ type: 'tinyint' })
   maxAmount: number;
 
-  @Column({ type: 'tinyint'})
+  @Column({ type: 'tinyint' })
   place: number;
 
   @ManyToOne(() => FestivalType, (festivalType) => festivalType.nominations)
-  festivalType: FestivalType
+  festivalType: FestivalType;
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: string;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: string;
 }

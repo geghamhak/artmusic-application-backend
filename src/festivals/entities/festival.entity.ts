@@ -1,7 +1,14 @@
-import {Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
-import {TextContent} from "../../translations/entities/textContent.entity";
-import {FestivalType} from "../../festival-types/entities/festival-type.entity";
-import {Application} from "../../applications/entities/application.entity";
+import {
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { TextContent } from '../../translations/entities/textContent.entity';
+import { FestivalType } from '../../festival-types/entities/festival-type.entity';
+import { Application } from '../../applications/entities/application.entity';
 
 @Entity()
 export class Festival {
@@ -10,15 +17,26 @@ export class Festival {
 
   @OneToOne(() => TextContent)
   @JoinColumn()
-  name: TextContent
+  name: TextContent;
 
   @OneToOne(() => TextContent)
   @JoinColumn()
-  description: TextContent
+  description: TextContent;
 
   @ManyToOne(() => FestivalType, (festivalType) => festivalType.nominations)
-  festivalType: FestivalType
+  festivalType: FestivalType;
 
   @OneToMany(() => Application, (application) => application.festival)
-  applications: Application[]
+  applications: Application[];
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: string;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: string;
 }

@@ -1,6 +1,13 @@
-import {Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
-import {TextContent} from "../../translations/entities/textContent.entity";
-import {Application} from "../../applications/entities/application.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { TextContent } from '../../translations/entities/textContent.entity';
+import { Application } from '../../applications/entities/application.entity';
 
 @Entity()
 export class ParticipantType {
@@ -9,8 +16,19 @@ export class ParticipantType {
 
   @OneToOne(() => TextContent)
   @JoinColumn()
-  type: TextContent
+  type: TextContent;
 
   @OneToMany(() => Application, (application) => application.festival)
-  applications: Application[]
+  applications: Application[];
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: string;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: string;
 }

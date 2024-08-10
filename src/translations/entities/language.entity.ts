@@ -1,18 +1,32 @@
-import {Entity, Column, PrimaryGeneratedColumn, OneToMany} from 'typeorm';
-import {Translation} from "./translation.entity";
-import {TextContent} from "./textContent.entity";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Translation } from './translation.entity';
+import { TextContent } from './textContent.entity';
 
 @Entity()
 export class Language {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: '50', })
+  @Column({ type: 'varchar', length: '50' })
   name: string;
 
-  @OneToMany(type => Translation, (translation) => translation.language)
+  @Column({ type: 'varchar', length: '50' })
+  code: string;
+
+  @OneToMany(() => Translation, (translation) => translation.language)
   translations: Translation[];
 
-  @OneToMany(type => TextContent, (textContent) => textContent.originalLanguage)
+  @OneToMany(() => TextContent, (textContent) => textContent.originalLanguage)
   textContents: TextContent[];
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: string;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: string;
 }

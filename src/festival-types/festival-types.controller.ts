@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { FestivalTypesService } from './festival-types.service';
 import { CreateFestivalTypeDto } from './dto/create-festival-type.dto';
 

@@ -1,15 +1,21 @@
-import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import { Festival } from "../../festivals/entities/festival.entity";
-import { Country } from "../../countries/entities/country.entity";
-import { Nomination } from "../../nominations/entities/nomination.entity";
-import { Participant } from "../../participants/entities/participant.entity";
-import { ParticipantType } from "../../participant-types/entities/participant-type.entity";
-import { ParticipantRecording } from "../../participant-recordings/entities/participant-recording.entity";
-import { ParticipantVideoLink } from "../../participant-video-links/entities/participant-video-link.entity";
-import { ParticipantDocument } from "../../participant-documents/entities/participant-document.entity";
-import { Optional } from "@nestjs/common";
-import { School } from "../../schools/entities/school.entity";
-import { Region } from "../../regions/entities/region.entity";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Festival } from '../../festivals/entities/festival.entity';
+import { Country } from '../../countries/entities/country.entity';
+import { Nomination } from '../../nominations/entities/nomination.entity';
+import { Participant } from '../../participants/entities/participant.entity';
+import { ParticipantType } from '../../participant-types/entities/participant-type.entity';
+import { ParticipantRecording } from '../../participant-recordings/entities/participant-recording.entity';
+import { ParticipantVideoLink } from '../../participant-video-links/entities/participant-video-link.entity';
+import { ParticipantDocument } from '../../participant-documents/entities/participant-document.entity';
+import { Optional } from '@nestjs/common';
+import { School } from '../../schools/entities/school.entity';
+import { Region } from '../../regions/entities/region.entity';
 
 @Entity()
 export class Application {
@@ -17,28 +23,28 @@ export class Application {
   id: number;
 
   @Column({ type: 'tinyint' })
-  isFree: boolean
+  isFree: boolean;
 
   @Column({ type: 'tinyint' })
-  isOnline: boolean
+  isOnline: boolean;
 
   @Column({ type: 'varchar', length: '255' })
-  firstComposition: string
+  firstComposition: string;
 
   @Column({ type: 'varchar', length: '255' })
-  secondComposition: string
+  secondComposition: string;
 
   @Column({ type: 'varchar', length: '255' })
-  totalDuration: string
+  totalDuration: string;
 
   @Column({ type: 'varchar', length: '255' })
-  email: string
+  email: string;
 
   @Column({ type: 'varchar', length: '255' })
-  phoneNumber: string
+  phoneNumber: string;
 
   @Column({ type: 'int' })
-  quantity: number
+  quantity: number;
 
   @Column({ type: 'varchar', length: '255' })
   leaderFirstName: string;
@@ -51,7 +57,7 @@ export class Application {
 
   @ManyToOne(() => School, (school) => school.applications)
   @Optional()
-  school: School
+  school: School;
 
   @Column({ type: 'varchar', length: '255', nullable: true })
   regionName: string;
@@ -64,29 +70,52 @@ export class Application {
 
   @ManyToOne(() => Region, (region) => region.applications)
   @Optional()
-  region: Region
+  region: Region;
 
   @ManyToOne(() => Festival, (festival) => festival.applications)
-  festival: Festival
+  festival: Festival;
 
   @ManyToOne(() => Country, (country) => country.applications)
-  country: Country
+  country: Country;
 
   @ManyToOne(() => Nomination, (nomination) => nomination.applications)
-  nomination: Nomination
+  nomination: Nomination;
 
-  @ManyToOne(() => ParticipantType, (participantType) => participantType.applications)
-  participantType: ParticipantType
+  @ManyToOne(
+    () => ParticipantType,
+    (participantType) => participantType.applications,
+  )
+  participantType: ParticipantType;
 
   @OneToMany(() => Participant, (participant) => participant.application)
-  participants: Participant[]
+  participants: Participant[];
 
-  @OneToMany(() => ParticipantRecording, (participantRecording) => participantRecording.application)
-  participantRecordings: ParticipantRecording[]
+  @OneToMany(
+    () => ParticipantRecording,
+    (participantRecording) => participantRecording.application,
+  )
+  participantRecordings: ParticipantRecording[];
 
-  @OneToMany(() => ParticipantVideoLink, (participantVideoLink) => participantVideoLink.application)
-  participantVideoLinks: ParticipantVideoLink[]
+  @OneToMany(
+    () => ParticipantVideoLink,
+    (participantVideoLink) => participantVideoLink.application,
+  )
+  participantVideoLinks: ParticipantVideoLink[];
 
-  @OneToMany(() => ParticipantDocument, (participantDocument) => participantDocument.application)
-  participantDocuments: ParticipantDocument[]
+  @OneToMany(
+    () => ParticipantDocument,
+    (participantDocument) => participantDocument.application,
+  )
+  participantDocuments: ParticipantDocument[];
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: string;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: string;
 }

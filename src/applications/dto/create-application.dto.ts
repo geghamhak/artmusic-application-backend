@@ -1,7 +1,7 @@
-import { CreateParticipantDto } from "../../participants/dto/create-participant.dto";
-import { CreateParticipantRecordingDto } from "../../participant-recordings/dto/create-participant-recording.dto";
-import { CreateParticipantDocumentDto } from "../../participant-documents/dto/create-participant-document.dto";
-import { CreateParticipantVideoLinkDto } from "../../participant-video-links/dto/create-participant-video-link.dto";
+import { CreateParticipantDto } from '../../participants/dto/create-participant.dto';
+import { CreateParticipantRecordingDto } from '../../participant-recordings/dto/create-participant-recording.dto';
+import { CreateParticipantDocumentDto } from '../../participant-documents/dto/create-participant-document.dto';
+import { CreateParticipantVideoLinkDto } from '../../participant-video-links/dto/create-participant-video-link.dto';
 
 export class CreateApplicationDto {
   countryId: number;

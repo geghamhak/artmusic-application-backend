@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { SubNominationsService } from './sub-nominations.service';
 import { CreateSubNominationDto } from './dto/create-sub-nomination.dto';
 

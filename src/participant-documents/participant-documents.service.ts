@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import {InjectRepository} from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { ParticipantDocument } from "./entities/participant-document.entity";
-import { CreateParticipantDocumentDto } from "./dto/create-participant-document.dto";
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ParticipantDocument } from './entities/participant-document.entity';
+import { CreateParticipantDocumentDto } from './dto/create-participant-document.dto';
 
 @Injectable()
 export class ParticipantDocumentsService {
@@ -14,8 +14,9 @@ export class ParticipantDocumentsService {
     try {
       const files = [];
       createParticipantDocumentDtos.map((createParticipantDocumentDto) => {
-        const file =  this.participantDocumentRepository.create();
+        const file = this.participantDocumentRepository.create();
         // add to AWS S3
+        console.log(createParticipantDocumentDto);
         files.push(file);
       });
 

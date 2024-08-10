@@ -1,5 +1,5 @@
-import {Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {Application} from "../../applications/entities/application.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Application } from '../../applications/entities/application.entity';
 
 @Entity()
 export class ParticipantDocument {
@@ -8,4 +8,15 @@ export class ParticipantDocument {
 
   @ManyToOne(() => Application, (application) => application.participants)
   application: Application;
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: string;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: string;
 }

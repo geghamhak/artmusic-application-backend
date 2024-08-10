@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreateParticipantTypeDto } from './dto/create-participant-type.dto';
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { ParticipantType } from "./entities/participant-type.entity";
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ParticipantType } from './entities/participant-type.entity';
 
 @Injectable()
 export class ParticipantTypesService {

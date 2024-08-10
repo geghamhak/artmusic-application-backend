@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreateFestivalDto } from './dto/create-festival.dto';
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Festival } from "./entities/festival.entity";
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Festival } from './entities/festival.entity';
 
 @Injectable()
 export class FestivalsService {

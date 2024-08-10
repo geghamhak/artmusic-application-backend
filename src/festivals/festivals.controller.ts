@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { FestivalsService } from './festivals.service';
 import { CreateFestivalDto } from './dto/create-festival.dto';
 
@@ -20,7 +20,6 @@ export class FestivalsController {
   findOne(@Param('id') id: string) {
     return this.festivalsService.findOne(+id);
   }
-
 
   @Delete(':id')
   remove(@Param('id') id: string) {
