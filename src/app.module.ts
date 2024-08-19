@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TranslationsModule } from './translations/translations.module';
 import { CountriesModule } from './countries/countries.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
@@ -41,8 +39,7 @@ import { Translation } from './translations/entities/translation.entity';
 import { Language } from './translations/entities/language.entity';
 import { TextContent } from './translations/entities/textContent.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import LanguageSeeder from './db/seeds/Language.seeder';
-import NominationSeeder from './db/seeds/Nomination.seeder';
+import { TranslationsService } from './translations/translations.service';
 
 @Module({
   imports: [
@@ -57,7 +54,7 @@ import NominationSeeder from './db/seeds/Nomination.seeder';
           port: configService.get('DATABASE_PORT'),
           username: configService.get('DATABASE_USERNAME'),
           password: configService.get('DATABASE_PASSWORD'),
-          database: configService.get('DATABASE_DATABASE'),
+          database: configService.get('DATABASE_NAME'),
           entities: [
             Application,
             Country,
@@ -77,8 +74,7 @@ import NominationSeeder from './db/seeds/Nomination.seeder';
             Language,
             TextContent,
           ],
-          seeds: [LanguageSeeder, NominationSeeder],
-          synchronize: true,
+          synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
     }),
     TranslationsModule,
@@ -97,15 +93,14 @@ import NominationSeeder from './db/seeds/Nomination.seeder';
     ParticipantTypesModule,
     ScoringSystemModule,
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
     CountriesService,
     ParticipantVideoLinksService,
     ParticipantsService,
     ParticipantRecordingsService,
     ParticipantDocumentsService,
     ScoringSystemService,
+    TranslationsService,
   ],
 })
 export class AppModule {}

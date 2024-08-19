@@ -22,14 +22,19 @@ export default class LanguageSeeder implements Seeder {
     dataSource: DataSource,
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
-    await dataSource.query('TRUNCATE "language" RESTART IDENTITY;');
+    await dataSource.query('DELETE FROM language');
+    await dataSource.query('ALTER TABLE language AUTO_INCREMENT = 1');
+    const languageRepository = dataSource.getRepository(Language);
 
-    const repository = dataSource.getRepository(Language);
-    Languages.map(async (language) => {
-      await repository.insert({
-        name: language.name,
-        code: language.code,
-      });
-    });
+    for (const language of Languages) {
+      try {
+        const newLanguage = new Language();
+        newLanguage.name = language.name;
+        newLanguage.code = language.code;
+        await languageRepository.save(newLanguage);
+      } catch (e) {
+        throw new Error(e);
+      }
+    }
   }
 }

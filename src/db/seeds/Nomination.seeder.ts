@@ -1436,89 +1436,80 @@ export default class NominationSeeder implements Seeder {
     dataSource: DataSource,
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
-    await dataSource.query('TRUNCATE "nomination" RESTART IDENTITY;');
+    await dataSource.query('DELETE FROM nomination');
+    await dataSource.query('ALTER TABLE nomination AUTO_INCREMENT = 1');
+
+    await dataSource.query('DELETE FROM sub_nomination');
+    await dataSource.query('ALTER TABLE sub_nomination AUTO_INCREMENT = 1');
+
+    await dataSource.query('DELETE FROM text_content');
+    await dataSource.query('ALTER TABLE text_content AUTO_INCREMENT = 1');
+
+    await dataSource.query('DELETE FROM translation');
+    await dataSource.query('ALTER TABLE translation AUTO_INCREMENT = 1');
 
     const nominationRepository = dataSource.getRepository(Nomination);
     const subNominationRepository = dataSource.getRepository(SubNomination);
     const textContentRepository = dataSource.getRepository(TextContent);
     const translationRepository = dataSource.getRepository(Translation);
-    const armenianId = await dataSource
-      .createQueryBuilder()
-      .select('id')
-      .from(Language, 'language')
-      .where('language.code = :code', { code: 'am' })
-      .getOne();
-
-    const englishId = await dataSource
-      .createQueryBuilder()
-      .select('id')
-      .from(Language, 'language')
-      .where('language.code = :code', { code: 'en' })
-      .getOne();
-
-    const russianId = await dataSource
-      .createQueryBuilder()
-      .select('id')
-      .from(Language, 'language')
-      .where('language.code = :code', { code: 'ru' })
-      .getOne();
 
     const languageIds = [
-      { code: 'am', id: armenianId },
-      { code: 'en', id: englishId },
-      { code: 'ru', id: russianId },
+      { code: 'am', id: 2 },
+      { code: 'en', id: 1 },
+      { code: 'ru', id: 3 },
     ];
 
-    Nominations.map(async (nomination) => {
-      // creating subNominations with TextContent and Translations
-
-      const subNominationsArray: SubNomination[] = [];
-      nomination.subNominations.map(async (subNomination) => {
-        const newSubNominationTextContent = await textContentRepository.save({
-          originalText: subNomination.name,
-          originalLanguage: languageIds.find(
-            (language) => language.code === nomination.originalLanguage,
-          ).id,
+    for (const nomination of Nominations) {
+      try {
+        // creating Nomination, Nomination.textContent and Nomination.translations
+        const newNominationTextContent = await textContentRepository.save({
+          originalText: nomination.name,
+          originalLanguage: { id: 2 } as Language,
         });
 
-        subNomination.translations.map(async (translation) => {
+        const newNomination = new Nomination();
+        newNomination.name = { id: newNominationTextContent.id } as TextContent;
+        await nominationRepository.save(newNomination);
+
+        nomination.translations.map(async (translation) => {
           await translationRepository.save({
             translation: translation.name,
-            originalLanguage: languageIds.find(
-              (language) => language.code === translation.languageCode,
-            ).id,
-            textContent: newSubNominationTextContent.id as TextContent,
+            language: {
+              id: languageIds.find(
+                (languageId) => languageId.code === translation.languageCode,
+              ).id,
+            } as Language,
+            textContent: { id: newNominationTextContent.id } as TextContent,
           });
         });
-        const newSubNomination = new SubNomination();
-        newSubNomination.name = newSubNominationTextContent;
-        await subNominationRepository.save(newSubNomination);
-        subNominationsArray.push(newSubNomination);
-      });
+        // creating SubNomination, SubNomination.textContent and SubNomination.translations
+        nomination.subNominations.map(async (subNomination) => {
+          const newSubNominationTextContent = await textContentRepository.save({
+            originalText: subNomination.name,
+            originalLanguage: { id: 2 } as Language,
+          });
 
-      // creating nomination TextContent and Translations
-
-      const newNominationTextContent = await textContentRepository.save({
-        originalText: nomination.name,
-        originalLanguage: languageIds.find(
-          (language) => language.code === nomination.originalLanguage,
-        ).id,
-      });
-
-      nomination.translations.map(async (translation) => {
-        await translationRepository.save({
-          translation: translation.name,
-          originalLanguage: languageIds.find(
-            (language) => language.code === translation.languageCode,
-          ).id,
-          textContent: newNominationTextContent.id as TextContent,
+          subNomination.translations.map(async (translation) => {
+            await translationRepository.save({
+              translation: translation.name,
+              language: {
+                id: languageIds.find(
+                  (languageId) => languageId.code === translation.languageCode,
+                ).id,
+              } as Language,
+              textContent: newSubNominationTextContent,
+            });
+          });
+          const newSubNomination = new SubNomination();
+          newSubNomination.name = {
+            id: newSubNominationTextContent.id,
+          } as TextContent;
+          newSubNomination.nomination = { id: newNomination.id } as Nomination;
+          await subNominationRepository.save(newSubNomination);
         });
-      });
-
-      const newNomination = new Nomination();
-      newNomination.subNominations = subNominationsArray;
-      newNomination.name = newNominationTextContent;
-      await nominationRepository.save(newNomination);
-    });
+      } catch (e) {
+        throw new Error(e);
+      }
+    }
   }
 }

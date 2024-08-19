@@ -3,16 +3,33 @@ import { CreateNominationDto } from './dto/create-nomination.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Nomination } from './entities/nomination.entity';
+import { TranslationsService } from '../translations/translations.service';
 
 @Injectable()
 export class NominationsService {
   constructor(
     @InjectRepository(Nomination)
     private nominationRepository: Repository<Nomination>,
+    private translationService: TranslationsService,
   ) {}
 
-  findAll() {
-    return this.nominationRepository.find();
+  async findAll() {
+    const nominations = await this.nominationRepository
+      .createQueryBuilder('nomination')
+      .leftJoinAndSelect('nomination.name', 'textContent')
+      .leftJoinAndSelect('textContent.originalLanguage', 'language')
+      .leftJoinAndSelect('textContent.translations', 'translations')
+      .leftJoinAndSelect('translations.language', 'translationLanguage')
+      .select([
+        'nomination.id',
+        'textContent.originalText',
+        'language.code',
+        'translations.translation',
+        'translationLanguage.code',
+      ])
+      .getMany();
+
+    return this.translationService.mapTranslations(nominations);
   }
 
   findOne(id: number) {
