@@ -14,6 +14,8 @@ export class CreateApplicationDto {
   leaderFirstName: string;
   leaderLastName: string;
   participants: CreateParticipantDto[];
+  subNominationId: number;
+  subNomination: number;
   nominationId: number;
   phoneNumber: string;
   quantity: number;

@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { NominationsService } from './nominations.service';
 import { CreateNominationDto } from './dto/create-nomination.dto';
+import { INominationResponse } from './interfaces/INominationResponse';
 
 @Controller('nominations')
 export class NominationsController {
@@ -12,7 +13,7 @@ export class NominationsController {
   }
 
   @Get()
-  findAll() {
+  findAll(): Promise<INominationResponse[]> {
     return this.nominationsService.findAll();
   }
 

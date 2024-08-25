@@ -5,7 +5,7 @@ import { Participant } from './entities/participant.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Participant])],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, ParticipantsService],
   providers: [ParticipantsService],
 })
 export class ParticipantsModule {}

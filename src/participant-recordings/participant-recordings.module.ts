@@ -5,7 +5,7 @@ import { ParticipantRecording } from './entities/participant-recording.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ParticipantRecording])],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, ParticipantRecordingsService],
   providers: [ParticipantRecordingsService],
 })
 export class ParticipantRecordingsModule {}

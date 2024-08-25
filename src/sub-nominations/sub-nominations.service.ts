@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SubNomination } from './entities/sub-nomination.entity';
 import { TranslationsService } from '../translations/translations.service';
+import { ISubNominationResponse } from './interfaces/ISubNominationResponse';
 
 @Injectable()
 export class SubNominationsService {
@@ -13,7 +14,7 @@ export class SubNominationsService {
     private translationService: TranslationsService,
   ) {}
 
-  async findAll() {
+  async findAll(): Promise<ISubNominationResponse[]> {
     const subNominations = await this.subNominationRepository
       .createQueryBuilder('sub_nomination')
       .leftJoinAndSelect('sub_nomination.name', 'textContent')
@@ -31,12 +32,15 @@ export class SubNominationsService {
       ])
       .getMany();
 
-    const mappedSubNominations =  this.translationService.mapTranslations(subNominations);
+    const mappedSubNominations: ISubNominationResponse[] =
+      this.translationService.mapTranslations(subNominations);
     mappedSubNominations.forEach((mappedSubNomination) => {
-      mappedSubNomination.nominationId = subNominations.find((subNomination) => subNomination.id === mappedSubNomination.id).nomination.id;
+      mappedSubNomination.nominationId = subNominations.find(
+        (subNomination) => subNomination.id === mappedSubNomination.id,
+      ).nomination.id;
     });
 
-    return mappedSubNominations;
+    return mappedSubNominations as ISubNominationResponse[];
   }
 
   findOne(id: number) {

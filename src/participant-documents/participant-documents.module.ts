@@ -5,7 +5,7 @@ import { ParticipantDocument } from './entities/participant-document.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ParticipantDocument])],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, ParticipantDocumentsService],
   providers: [ParticipantDocumentsService],
 })
 export class ParticipantDocumentsModule {}

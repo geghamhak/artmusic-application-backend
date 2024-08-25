@@ -3,11 +3,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Nomination } from '../../nominations/entities/nomination.entity';
 import { TextContent } from '../../translations/entities/textContent.entity';
+import { Application } from '../../applications/entities/application.entity';
 
 @Entity()
 export class SubNomination {
@@ -20,6 +22,9 @@ export class SubNomination {
 
   @ManyToOne(() => Nomination, (nomination) => nomination.subNominations)
   nomination: Nomination;
+
+  @OneToMany(() => Application, (application) => application.subNomination)
+  applications: Application[];
 
   @Column({
     type: 'timestamp',

@@ -6,7 +6,7 @@ import { ParticipantRecordingsService } from '../participant-recordings/particip
 import { ParticipantDocumentsService } from '../participant-documents/participant-documents.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Country } from '../countries/entities/country.entity';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { Nomination } from '../nominations/entities/nomination.entity';
 import { ParticipantType } from '../participant-types/entities/participant-type.entity';
@@ -14,6 +14,9 @@ import { School } from '../schools/entities/school.entity';
 import { Region } from '../regions/entities/region.entity';
 import { ScoringSystemService } from '../scoring-system/scoring-system.service';
 import { UpdateApplicationDto } from './dto/update-application.dto';
+import { SubNomination } from '../sub-nominations/entities/sub-nomination.entity';
+import { ScoringSystem } from '../scoring-system/entities/scoring-system.entity';
+import { ApplicationScoreService } from '../application-score/application-score.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -25,6 +28,7 @@ export class ApplicationsService {
     private participantRecordingsService: ParticipantRecordingsService,
     private participantDocumentsService: ParticipantDocumentsService,
     private scoringSystemService: ScoringSystemService,
+    private applicationScoreService: ApplicationScoreService,
   ) {}
   async create(createApplicationDto: CreateApplicationDto) {
     try {
@@ -39,6 +43,8 @@ export class ApplicationsService {
         countryId,
         leaderLastName,
         nominationId,
+        subNominationId,
+        subNomination,
         isOnline,
         phoneNumber,
         quantity,
@@ -69,7 +75,9 @@ export class ApplicationsService {
         this.participantRecordingsService.create(uploadedAudio);
       application.participantDocuments =
         this.participantDocumentsService.create(uploadedImages);
-      application.nomination = { id: nominationId } as Nomination;
+      if (subNominationId) {
+        application.subNomination = { id: subNominationId } as SubNomination;
+      }
       application.participantType = {
         id: participantTypeId,
       } as ParticipantType;
@@ -101,15 +109,23 @@ export class ApplicationsService {
     return this.applicationRepository.findOneBy({ id });
   }
 
-  async update(id: number, updateApplicationDto: UpdateApplicationDto) {
+  async update(id: number, updateApplicationDto: UpdateApplicationDto) {}
+
+  async addApplicationScore(createApplicationScoreDto): Promise<UpdateResult> {
+    await this.applicationScoreService.create(createApplicationScoreDto);
+    const { scores, applicationId: id } = createApplicationScoreDto;
     const application = await this.findOne(id);
-    const { score } = updateApplicationDto;
+    const overallScore = scores.reduce((total, current) => {
+      return total + current;
+    }, 0);
+
+    const averageScore = Math.round((overallScore / scores.length) * 100) / 100;
     const scoringSystem = await this.scoringSystemService.determinePlaceByScore(
-      score,
+      averageScore,
       application.festival.festivalType.id,
     );
-    application.place = scoringSystem.place;
-    application.score = score;
+    application.place = { id: scoringSystem.id } as ScoringSystem;
+    application.totalScore = overallScore;
     return this.applicationRepository.update({ id }, application);
   }
 }

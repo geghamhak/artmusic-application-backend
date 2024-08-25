@@ -21,6 +21,7 @@ import { School } from '../schools/entities/school.entity';
 import { ScoringSystem } from '../scoring-system/entities/scoring-system.entity';
 import { SubNomination } from '../sub-nominations/entities/sub-nomination.entity';
 import NominationSeeder from './seeds/Nomination.seeder';
+import { ApplicationScore } from '../application-score/entities/application-score.entity';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql' as const,
@@ -47,6 +48,7 @@ const options: DataSourceOptions & SeederOptions = {
     Translation,
     Language,
     TextContent,
+    ApplicationScore,
   ],
   seeds: [LanguageSeeder, NominationSeeder],
 };

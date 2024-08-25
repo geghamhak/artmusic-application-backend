@@ -4,6 +4,7 @@ import { Festival } from '../festivals/entities/festival.entity';
 import { Repository } from 'typeorm';
 import { Language } from './entities/language.entity';
 import { TranslationToMap } from './translations.interface';
+import { INominationResponse } from '../nominations/interfaces/INominationResponse';
 
 @Injectable()
 export class TranslationsService {

@@ -5,7 +5,7 @@ import { ScoringSystem } from './entities/scoring-system.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ScoringSystem])],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, ScoringSystemService],
   providers: [ScoringSystemService],
 })
 export class ScoringSystemModule {}

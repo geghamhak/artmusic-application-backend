@@ -40,6 +40,8 @@ import { Language } from './translations/entities/language.entity';
 import { TextContent } from './translations/entities/textContent.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TranslationsService } from './translations/translations.service';
+import { ApplicationScoreModule } from './application-score/application-score.module';
+import { ApplicationScore } from './application-score/entities/application-score.entity';
 
 @Module({
   imports: [
@@ -73,6 +75,7 @@ import { TranslationsService } from './translations/translations.service';
             Translation,
             Language,
             TextContent,
+            ApplicationScore,
           ],
           synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
@@ -92,6 +95,7 @@ import { TranslationsService } from './translations/translations.service';
     ApplicationsModule,
     ParticipantTypesModule,
     ScoringSystemModule,
+    ApplicationScoreModule,
   ],
   providers: [
     CountriesService,

@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Nomination } from './entities/nomination.entity';
 import { TranslationsService } from '../translations/translations.service';
+import { INominationResponse } from './interfaces/INominationResponse';
 
 @Injectable()
 export class NominationsService {
@@ -13,7 +14,7 @@ export class NominationsService {
     private translationService: TranslationsService,
   ) {}
 
-  async findAll() {
+  async findAll(): Promise<INominationResponse[]> {
     const nominations = await this.nominationRepository
       .createQueryBuilder('nomination')
       .leftJoinAndSelect('nomination.name', 'textContent')

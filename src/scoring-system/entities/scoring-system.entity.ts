@@ -1,5 +1,15 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { FestivalType } from '../../festival-types/entities/festival-type.entity';
+import { Application } from '../../applications/entities/application.entity';
+import { TextContent } from '../../translations/entities/textContent.entity';
 
 @Entity()
 export class ScoringSystem {
@@ -12,8 +22,12 @@ export class ScoringSystem {
   @Column({ type: 'tinyint' })
   maxAmount: number;
 
-  @Column({ type: 'tinyint' })
-  place: number;
+  @OneToOne(() => TextContent)
+  @JoinColumn()
+  name: TextContent;
+
+  @OneToMany(() => Application, (application) => application.place)
+  applications: Application[];
 
   @ManyToOne(() => FestivalType, (festivalType) => festivalType.nominations)
   festivalType: FestivalType;
