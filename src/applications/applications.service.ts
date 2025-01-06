@@ -8,7 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Country } from '../countries/entities/country.entity';
 import { Repository, UpdateResult } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { Nomination } from '../nominations/entities/nomination.entity';
 import { ParticipantType } from '../participant-types/entities/participant-type.entity';
 import { School } from '../schools/entities/school.entity';
 import { Region } from '../regions/entities/region.entity';
@@ -42,9 +41,8 @@ export class ApplicationsService {
         participantTypeId,
         countryId,
         leaderLastName,
-        nominationId,
+        nomination,
         subNominationId,
-        subNomination,
         isOnline,
         phoneNumber,
         quantity,
@@ -77,6 +75,8 @@ export class ApplicationsService {
         this.participantDocumentsService.create(uploadedImages);
       if (subNominationId) {
         application.subNomination = { id: subNominationId } as SubNomination;
+      } else {
+        application.nomination = nomination;
       }
       application.participantType = {
         id: participantTypeId,

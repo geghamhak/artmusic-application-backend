@@ -1,7 +1,7 @@
 export interface INominationResponse {
   id: number;
-  translations: {
+  translations: [{
     name: string;
     code: string;
-  };
+  }];
 }

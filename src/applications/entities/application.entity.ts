@@ -92,6 +92,9 @@ export class Application {
   @ManyToOne(() => SubNomination, (subNomination) => subNomination.applications)
   subNomination: SubNomination;
 
+  @Column({ type: 'varchar', length: '50', nullable: true })
+  nomination: string;
+
   @OneToMany(
     () => ApplicationScore,
     (applicationScore) => applicationScore.application,
