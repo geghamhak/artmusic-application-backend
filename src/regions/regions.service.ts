@@ -9,8 +9,18 @@ export class RegionsService {
     @InjectRepository(Region)
     private regionRepository: Repository<Region>,
   ) {}
-  findAll() {
-    return this.regionRepository.find();
+  async findAll() {
+    const regions = await this.regionRepository
+        .createQueryBuilder('region')
+        .leftJoinAndSelect('region.name', 'textContent')
+        .select([
+          'region.id',
+          'textContent.originalText',
+        ])
+        .getMany();
+    return regions.map(region => {
+        return { id: region.id, name: region.name.originalText };
+    });
   }
 
   findOne(id: number) {

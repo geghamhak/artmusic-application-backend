@@ -1434,7 +1434,6 @@ const Nominations = [
 export default class NominationSeeder implements Seeder {
   public async run(
     dataSource: DataSource,
-    factoryManager: SeederFactoryManager,
   ): Promise<void> {
     await dataSource.query('DELETE FROM nomination');
     await dataSource.query('ALTER TABLE nomination AUTO_INCREMENT = 1');

@@ -1,4 +1,4 @@
-import { Seeder, SeederFactoryManager } from 'typeorm-extension';
+import { Seeder } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 import { Language } from '../../translations/entities/language.entity';
 
@@ -20,7 +20,6 @@ const Languages = [
 export default class LanguageSeeder implements Seeder {
   public async run(
     dataSource: DataSource,
-    factoryManager: SeederFactoryManager,
   ): Promise<void> {
     await dataSource.query('DELETE FROM language');
     await dataSource.query('ALTER TABLE language AUTO_INCREMENT = 1');

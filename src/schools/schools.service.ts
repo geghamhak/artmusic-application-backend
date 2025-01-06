@@ -9,8 +9,21 @@ export class SchoolsService {
     @InjectRepository(School)
     private schoolRepository: Repository<School>,
   ) {}
-  findAll() {
-    return this.schoolRepository.find();
+  async findAll() {
+    const schools = await this.schoolRepository
+        .createQueryBuilder('school')
+        .leftJoinAndSelect('school.name', 'textContent')
+        .leftJoinAndSelect('school.region', 'region')
+        .select([
+          'school.id',
+          'region.id',
+          'textContent.originalText',
+        ])
+        .getMany();
+
+    return schools.map(school => {
+      return { id: school.id, name: school.name.originalText, regionId: school.region.id };
+    });
   }
 
   findOne(id: number) {
