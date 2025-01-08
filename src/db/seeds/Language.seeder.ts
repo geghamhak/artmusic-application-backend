@@ -18,9 +18,7 @@ const Languages = [
 ];
 
 export default class LanguageSeeder implements Seeder {
-  public async run(
-    dataSource: DataSource,
-  ): Promise<void> {
+  public async run(dataSource: DataSource): Promise<void> {
     await dataSource.query('DELETE FROM language');
     await dataSource.query('ALTER TABLE language AUTO_INCREMENT = 1');
     const languageRepository = dataSource.getRepository(Language);

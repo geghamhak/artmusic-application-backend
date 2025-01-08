@@ -42,6 +42,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TranslationsService } from './translations/translations.service';
 import { ApplicationScoreModule } from './application-score/application-score.module';
 import { ApplicationScore } from './application-score/entities/application-score.entity';
+import { DmsModule } from './dms/dms.module';
 
 @Module({
   imports: [
@@ -96,6 +97,7 @@ import { ApplicationScore } from './application-score/entities/application-score
     ParticipantTypesModule,
     ScoringSystemModule,
     ApplicationScoreModule,
+    DmsModule,
   ],
   providers: [
     CountriesService,

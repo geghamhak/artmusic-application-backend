@@ -1,9 +1,9 @@
 import { Seeder } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
-import {TextContent} from "../../translations/entities/textContent.entity";
-import {Language} from "../../translations/entities/language.entity";
-import {School} from "../../schools/entities/school.entity";
-import {Region} from "../../regions/entities/region.entity";
+import { TextContent } from '../../translations/entities/textContent.entity';
+import { Language } from '../../translations/entities/language.entity';
+import { School } from '../../schools/entities/school.entity';
+import { Region } from '../../regions/entities/region.entity';
 
 const Schools = [
   {
@@ -101,9 +101,7 @@ const Schools = [
 ];
 
 export default class SchoolSeeder implements Seeder {
-  public async run(
-    dataSource: DataSource,
-  ): Promise<void> {
+  public async run(dataSource: DataSource): Promise<void> {
     await dataSource.query('DELETE FROM school');
     await dataSource.query('ALTER TABLE school AUTO_INCREMENT = 1');
     const regionRepository = dataSource.getRepository(School);
