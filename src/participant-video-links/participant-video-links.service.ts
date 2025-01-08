@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ParticipantVideoLink } from './entities/participant-video-link.entity';
-import { CreateParticipantVideoLinkDto } from './dto/create-participant-video-link.dto';
 
 @Injectable()
 export class ParticipantVideoLinksService {
@@ -10,14 +9,16 @@ export class ParticipantVideoLinksService {
     @InjectRepository(ParticipantVideoLink)
     private participantVideoLinkRepository: Repository<ParticipantVideoLink>,
   ) {}
-  create(createParticipantVideoLinkDtos: CreateParticipantVideoLinkDto[]) {
+  async create(participantLinks: string[]) {
     try {
       const videoLinks = [];
-      createParticipantVideoLinkDtos.map((createParticipantVideoLinkDto) => {
+      participantLinks.map(async (participantLink) => {
         const videoLink = this.participantVideoLinkRepository.create();
-        // add to AWS S3
-        console.log(createParticipantVideoLinkDto);
+        videoLink.link = participantLink;
+        await this.participantVideoLinkRepository.save(videoLink);
         videoLinks.push(videoLink);
+
+        // add to AWS S3
       });
 
       return videoLinks;

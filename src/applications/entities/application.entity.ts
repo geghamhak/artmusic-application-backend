@@ -32,10 +32,10 @@ export class Application {
   @Column({ type: 'varchar', length: '255' })
   firstComposition: string;
 
-  @Column({ type: 'varchar', length: '255' })
+  @Column({ type: 'varchar', length: '255', nullable: true })
   secondComposition: string;
 
-  @Column({ type: 'varchar', length: '255' })
+  @Column({ type: 'varchar', length: '255', nullable: true })
   totalDuration: string;
 
   @Column({ type: 'varchar', length: '255' })
@@ -69,7 +69,7 @@ export class Application {
   averageScore: number;
 
   @ManyToOne(() => ScoringSystem, (scoringSystem) => scoringSystem.applications)
-  place: ScoringSystem;
+  place?: ScoringSystem;
 
   @Column({ type: 'date', nullable: true })
   performanceDate: string;
@@ -105,7 +105,7 @@ export class Application {
     () => ParticipantType,
     (participantType) => participantType.applications,
   )
-  participantType: ParticipantType;
+  participantType?: ParticipantType;
 
   @OneToMany(() => Participant, (participant) => participant.application)
   participants: Participant[];
@@ -114,13 +114,13 @@ export class Application {
     () => ParticipantRecording,
     (participantRecording) => participantRecording.application,
   )
-  participantRecordings: ParticipantRecording[];
+  participantRecordings?: ParticipantRecording[];
 
   @OneToMany(
     () => ParticipantVideoLink,
     (participantVideoLink) => participantVideoLink.application,
   )
-  participantVideoLinks: ParticipantVideoLink[];
+  participantVideoLinks?: ParticipantVideoLink[];
 
   @OneToMany(
     () => ParticipantDocument,

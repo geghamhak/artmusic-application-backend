@@ -9,6 +9,12 @@ export class ParticipantRecording {
   @ManyToOne(() => Application, (application) => application.participants)
   application: Application;
 
+  @Column({ type: 'varchar', length: '255' })
+  originalName: string;
+
+  @Column({ type: 'varchar', length: '50' })
+  originalMimeType: string;
+
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',

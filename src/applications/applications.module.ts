@@ -9,6 +9,8 @@ import { ParticipantDocumentsModule } from '../participant-documents/participant
 import { ScoringSystemModule } from '../scoring-system/scoring-system.module';
 import { ParticipantVideoLinksModule } from '../participant-video-links/participant-video-links.module';
 import { ApplicationScoreModule } from '../application-score/application-score.module';
+import { NestjsFormDataModule } from 'nestjs-form-data';
+import { FestivalsModule } from '../festivals/festivals.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { ApplicationScoreModule } from '../application-score/application-score.m
     ParticipantDocumentsModule,
     ScoringSystemModule,
     ApplicationScoreModule,
+    NestjsFormDataModule,
+    FestivalsModule,
   ],
   exports: [TypeOrmModule, ApplicationsService],
   controllers: [ApplicationsController],

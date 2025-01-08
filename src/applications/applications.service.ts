@@ -16,6 +16,7 @@ import { UpdateApplicationDto } from './dto/update-application.dto';
 import { SubNomination } from '../sub-nominations/entities/sub-nomination.entity';
 import { ScoringSystem } from '../scoring-system/entities/scoring-system.entity';
 import { ApplicationScoreService } from '../application-score/application-score.service';
+import { FestivalsService } from '../festivals/festivals.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -28,6 +29,7 @@ export class ApplicationsService {
     private participantDocumentsService: ParticipantDocumentsService,
     private scoringSystemService: ScoringSystemService,
     private applicationScoreService: ApplicationScoreService,
+    private festivalService: FestivalsService,
   ) {}
   async create(createApplicationDto: CreateApplicationDto) {
     try {
@@ -55,24 +57,36 @@ export class ApplicationsService {
         email,
         regionId,
         schoolId,
+        festivalName,
       } = createApplicationDto;
-      application.isFree = isFree;
+      application.isFree = !!isFree;
       application.firstComposition = firstComposition;
-      application.secondComposition = secondComposition;
+      if (secondComposition) {
+        application.secondComposition = secondComposition;
+      }
       application.leaderFirstName = leaderFirstName;
       application.leaderLastName = leaderLastName;
-      application.isOnline = isOnline;
+      application.isOnline = !!isOnline;
       application.email = email;
       application.phoneNumber = phoneNumber;
       application.quantity = quantity;
-      application.totalDuration = totalDuration;
-      application.participantVideoLinks =
-        this.participantVideoLinksService.create(videoLinks);
-      application.participants = this.participantsService.create(participants);
-      application.participantRecordings =
-        this.participantRecordingsService.create(uploadedAudio);
       application.participantDocuments =
-        this.participantDocumentsService.create(uploadedImages);
+        await this.participantDocumentsService.create(uploadedImages);
+      if (totalDuration) {
+        application.totalDuration = totalDuration;
+      }
+      if (videoLinks) {
+        application.participantVideoLinks =
+          await this.participantVideoLinksService.create(videoLinks);
+      }
+      if (participants && participants.length > 0) {
+        application.participants =
+          await this.participantsService.create(participants);
+      }
+      if (uploadedAudio && uploadedAudio.length > 0) {
+        application.participantRecordings =
+          await this.participantRecordingsService.create(uploadedAudio);
+      }
       if (subNominationId) {
         application.subNomination = { id: subNominationId } as SubNomination;
       } else {
@@ -94,6 +108,9 @@ export class ApplicationsService {
       } else {
         application.regionName = regionName;
       }
+
+      application.festival =
+        await this.festivalService.findActiveByName(festivalName);
 
       await this.applicationRepository.save(application);
     } catch (e) {
@@ -122,7 +139,7 @@ export class ApplicationsService {
     const averageScore = Math.round((overallScore / scores.length) * 100) / 100;
     const scoringSystem = await this.scoringSystemService.determinePlaceByScore(
       averageScore,
-      application.festival.festivalType.id,
+      application.festival.type.id,
     );
     application.place = { id: scoringSystem.id } as ScoringSystem;
     application.totalScore = overallScore;

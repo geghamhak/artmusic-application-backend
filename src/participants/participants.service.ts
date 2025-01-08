@@ -10,13 +10,22 @@ export class ParticipantsService {
     @InjectRepository(Participant)
     private participantRepository: Repository<Participant>,
   ) {}
-  create(createParticipantDtos: CreateParticipantDto[]) {
+  async create(
+    createParticipantDtos: CreateParticipantDto[],
+  ): Promise<Participant[]> {
     try {
-      const participants = [];
-      createParticipantDtos.map((createParticipantDocumentDto) => {
-        const participant = this.participantRepository.create(
-          createParticipantDocumentDto,
-        );
+      const participants: Participant[] = [];
+      createParticipantDtos.map(async (createParticipantDocumentDto) => {
+        console.log(createParticipantDocumentDto.firstName);
+        console.log(createParticipantDocumentDto.lastName);
+        const participant = new Participant();
+        participant.firstName = createParticipantDocumentDto.firstName;
+        participant.lastName = createParticipantDocumentDto.lastName;
+        participant.birthYear = createParticipantDocumentDto.birthYear;
+        if (createParticipantDocumentDto.fatherName) {
+          participant.fatherName = createParticipantDocumentDto.fatherName;
+        }
+        await this.participantRepository.save(participant);
         participants.push(participant);
       });
 

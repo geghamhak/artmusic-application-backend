@@ -26,7 +26,7 @@ export class FestivalType {
   @OneToMany(() => ScoringSystem, (scoringSystem) => scoringSystem.festivalType)
   scoringSystem: ScoringSystem[];
 
-  @OneToMany(() => Festival, (festival) => festival.festivalType)
+  @OneToMany(() => Festival, (festival) => festival.type)
   festivals: Festival[];
 
   @Column({

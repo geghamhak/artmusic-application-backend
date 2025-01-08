@@ -6,6 +6,12 @@ export class ParticipantDocument {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: 'varchar', length: '255' })
+  originalName: string;
+
+  @Column({ type: 'varchar', length: '50' })
+  originalMimeType: string;
+
   @ManyToOne(() => Application, (application) => application.participants)
   application: Application;
 

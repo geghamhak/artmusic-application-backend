@@ -1,6 +1,6 @@
 export class CreateParticipantDto {
   lastName: string;
-  firstname: string;
+  firstName: string;
   fatherName?: string;
   birthYear: number;
 }

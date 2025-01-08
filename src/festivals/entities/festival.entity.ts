@@ -25,10 +25,13 @@ export class Festival {
   description: TextContent;
 
   @ManyToOne(() => FestivalType, (festivalType) => festivalType.nominations)
-  festivalType: FestivalType;
+  type: FestivalType;
 
   @OneToMany(() => Application, (application) => application.festival)
   applications: Application[];
+
+  @Column({ type: 'boolean' })
+  isActive: boolean;
 
   @Column({
     type: 'timestamp',

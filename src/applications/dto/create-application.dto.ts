@@ -1,13 +1,15 @@
 import { CreateParticipantDto } from '../../participants/dto/create-participant.dto';
-import { CreateParticipantRecordingDto } from '../../participant-recordings/dto/create-participant-recording.dto';
-import { CreateParticipantDocumentDto } from '../../participant-documents/dto/create-participant-document.dto';
-import { CreateParticipantVideoLinkDto } from '../../participant-video-links/dto/create-participant-video-link.dto';
+import { HasMimeType, IsFiles } from 'nestjs-form-data';
+import { IsOptional } from 'class-validator';
+import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
+import { FestivalsEnum } from '../../festivals/festivals.service';
 
 export class CreateApplicationDto {
   countryId: number;
+  festivalName: FestivalsEnum;
   firstComposition: string;
-  secondComposition: string;
-  totalDuration: string;
+  secondComposition?: string;
+  totalDuration?: string;
   email: string;
   isFree: boolean;
   isOnline: boolean;
@@ -18,12 +20,17 @@ export class CreateApplicationDto {
   nomination?: string;
   phoneNumber: string;
   quantity: number;
-  participantTypeId: number;
+  participantTypeId?: number;
   schoolId?: number;
   schoolName?: string;
   regionId?: number;
   regionName?: string;
-  uploadedImages: CreateParticipantDocumentDto[];
-  uploadedAudio: CreateParticipantRecordingDto[];
-  videoLinks: CreateParticipantVideoLinkDto[];
+  @IsFiles()
+  @HasMimeType(['image/jpeg', 'image/png'], { each: true })
+  uploadedImages: FileSystemStoredFile[];
+  @IsFiles()
+  @IsOptional()
+  @HasMimeType(['audio/mpeg', 'audio/mp3'], { each: true })
+  uploadedAudio?: FileSystemStoredFile[];
+  videoLinks?: string[];
 }

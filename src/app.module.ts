@@ -43,6 +43,7 @@ import { TranslationsService } from './translations/translations.service';
 import { ApplicationScoreModule } from './application-score/application-score.module';
 import { ApplicationScore } from './application-score/entities/application-score.entity';
 import { DmsModule } from './dms/dms.module';
+import { NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
   imports: [
@@ -98,6 +99,7 @@ import { DmsModule } from './dms/dms.module';
     ScoringSystemModule,
     ApplicationScoreModule,
     DmsModule,
+    NestjsFormDataModule,
   ],
   providers: [
     CountriesService,

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ParticipantDocument } from './entities/participant-document.entity';
-import { CreateParticipantDocumentDto } from './dto/create-participant-document.dto';
+import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
 
 @Injectable()
 export class ParticipantDocumentsService {
@@ -10,14 +10,19 @@ export class ParticipantDocumentsService {
     @InjectRepository(ParticipantDocument)
     private participantDocumentRepository: Repository<ParticipantDocument>,
   ) {}
-  create(createParticipantDocumentDtos: CreateParticipantDocumentDto[]) {
+  async create(
+    uploadedDocuments: FileSystemStoredFile[],
+  ): Promise<ParticipantDocument[]> {
     try {
-      const files = [];
-      createParticipantDocumentDtos.map((createParticipantDocumentDto) => {
+      const files: ParticipantDocument[] = [];
+      uploadedDocuments.map(async (uploadedDocument) => {
         const file = this.participantDocumentRepository.create();
-        // add to AWS S3
-        console.log(createParticipantDocumentDto);
+        file.originalName = uploadedDocument.originalName;
+        file.originalMimeType = uploadedDocument.mimetype;
+        await this.participantDocumentRepository.save(file);
         files.push(file);
+
+        // add to AWS S3
       });
 
       return files;

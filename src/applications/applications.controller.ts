@@ -2,13 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
+import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
 
 @Controller('applications')
 export class ApplicationsController {
   constructor(private readonly applicationsService: ApplicationsService) {}
 
   @Post()
+  @FormDataRequest({ storage: FileSystemStoredFile })
   create(@Body() createApplicationDto: CreateApplicationDto) {
+    console.log(createApplicationDto);
     return this.applicationsService.create(createApplicationDto);
   }
 
