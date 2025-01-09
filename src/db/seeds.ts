@@ -24,6 +24,7 @@ import NominationSeeder from './seeds/Nomination.seeder';
 import { ApplicationScore } from '../application-score/entities/application-score.entity';
 import RegionSeeder from './seeds/Region.seeder';
 import SchoolSeeder from './seeds/School.seeder';
+import FestivalTypeSeeder from "./seeds/FestivalType.seeder";
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql' as const,
@@ -52,7 +53,7 @@ const options: DataSourceOptions & SeederOptions = {
     TextContent,
     ApplicationScore,
   ],
-  seeds: [LanguageSeeder, NominationSeeder, RegionSeeder, SchoolSeeder],
+  seeds: [LanguageSeeder, NominationSeeder, RegionSeeder, SchoolSeeder, FestivalTypeSeeder],
 };
 
 const dataSource = new DataSource(options);

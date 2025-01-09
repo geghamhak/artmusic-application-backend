@@ -23,7 +23,7 @@ export class FestivalTypesService {
       .leftJoinAndSelect('festivalType.name', 'textContent')
       .leftJoinAndSelect('textContent.translations', 'translations')
       .where('translations.translation= :name', { name: festivalName })
-      .select(['festivalType.id'])
+      .select(['festivalType.id', 'textContent.id', 'translations.translation'])
       .getOne();
   }
 
@@ -42,7 +42,7 @@ export class FestivalTypesService {
       );
       const newFestivalType = new Festival();
       const languages = await this.languageService.getAllLanguages();
-      newFestivalType.name = await this.textContentService.addTranslations(
+      newFestivalType.title = await this.textContentService.addTranslations(
         name.translations,
         languages,
       );
@@ -53,7 +53,8 @@ export class FestivalTypesService {
   }
 
   private async checkIfFestivalExists(name: FestivalsEnum) {
-    if (await this.getByName(name as FestivalsEnum)) {
+    const existingFestival = await this.getByName(name as FestivalsEnum);
+    if (existingFestival) {
       return new BadRequestException(
         `The festival with name '${name}' already exists`,
       );

@@ -18,11 +18,15 @@ export class Festival {
 
   @OneToOne(() => TextContent)
   @JoinColumn()
-  name: TextContent;
+  title: TextContent;
 
   @OneToOne(() => TextContent)
   @JoinColumn()
   description: TextContent;
+
+  @OneToOne(() => TextContent)
+  @JoinColumn()
+  bannerDescription: TextContent;
 
   @ManyToOne(() => FestivalType, (festivalType) => festivalType.nominations)
   type: FestivalType;
@@ -32,6 +36,12 @@ export class Festival {
 
   @Column({ type: 'boolean' })
   isActive: boolean;
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  applicationEndDate: string;
 
   @Column({
     type: 'timestamp',

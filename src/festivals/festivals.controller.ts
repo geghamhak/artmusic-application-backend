@@ -1,12 +1,14 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { FestivalsService } from './festivals.service';
 import { CreateFestivalDto } from './dto/create-festival.dto';
+import {FileSystemStoredFile, FormDataRequest} from "nestjs-form-data";
 
 @Controller('festivals')
 export class FestivalsController {
   constructor(private readonly festivalsService: FestivalsService) {}
 
   @Post()
+  @FormDataRequest({ storage: FileSystemStoredFile })
   create(@Body() createFestivalDto: CreateFestivalDto) {
     return this.festivalsService.create(createFestivalDto);
   }

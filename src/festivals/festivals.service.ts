@@ -51,16 +51,20 @@ export class FestivalsService {
         createFestivalDto.festivalType,
       );
       const languages = await this.languageService.getAllLanguages();
-      const { name, description } = createFestivalDto;
+      const { title, description, bannerDescription } = createFestivalDto;
 
       newFestival.isActive = createFestivalDto.isActive;
-      newFestival.name = await this.textContentService.addTranslations(
-        name.translations,
+      newFestival.title = await this.textContentService.addTranslations(
+        title.translations,
         languages,
       );
       newFestival.description = await this.textContentService.addTranslations(
         description.translations,
         languages,
+      );
+      newFestival.bannerDescription = await this.textContentService.addTranslations(
+          bannerDescription.translations,
+          languages,
       );
       await this.festivalRepository.save(newFestival);
     } catch (error) {
