@@ -3,9 +3,6 @@ import { CreateFestivalDto } from './dto/create-festival.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Festival } from './entities/festival.entity';
-import { Language } from '../translations/entities/language.entity';
-import { TextContent } from '../translations/entities/textContent.entity';
-import { TranslationsService } from '../translations/translations.service';
 import { TextContentService } from '../translations/text-content.service';
 import { LanguageService } from '../translations/language.service';
 import { FestivalTypesService } from '../festival-types/festival-types.service';
@@ -51,23 +48,23 @@ export class FestivalsService {
     try {
       const newFestival = new Festival();
       newFestival.type = await this.festivalTypeService.getByName(
-          createFestivalDto.festivalType,
+        createFestivalDto.festivalType,
       );
       const languages = await this.languageService.getAllLanguages();
       const { name, description } = createFestivalDto;
 
       newFestival.isActive = createFestivalDto.isActive;
       newFestival.name = await this.textContentService.addTranslations(
-          name.translations,
-          languages,
+        name.translations,
+        languages,
       );
       newFestival.description = await this.textContentService.addTranslations(
-          description.translations,
-          languages,
+        description.translations,
+        languages,
       );
       await this.festivalRepository.save(newFestival);
     } catch (error) {
-      throw new Error(error)
+      throw new Error(error);
     }
   }
 
