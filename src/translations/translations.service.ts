@@ -1,32 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Festival } from '../festivals/entities/festival.entity';
 import { Repository } from 'typeorm';
 import { Language } from './entities/language.entity';
 import { TranslationToMap } from './translations.interface';
-import { INominationResponse } from '../nominations/interfaces/INominationResponse';
+import { TextContent } from './entities/textContent.entity';
+import { Translation } from './entities/translation.entity';
+
+export interface ITranslation {
+  translation: string;
+  language: Language;
+  textContent: TextContent;
+}
 
 @Injectable()
 export class TranslationsService {
   constructor(
-    @InjectRepository(Language)
-    private languageRepository: Repository<Language>,
+    @InjectRepository(Translation)
+    private translationRepository: Repository<Translation>,
   ) {}
-
-  findAllLanguages() {
-    return this.languageRepository.find();
-  }
 
   mapTranslations(translationsToMap: TranslationToMap[]) {
     const mappedTranslations = [];
     translationsToMap.forEach((translationToMap: TranslationToMap) => {
-      const translations = [
-        {
-          name: translationToMap.name.originalText,
-          code: translationToMap.name.originalLanguage.code,
-        },
-      ];
-
+      const translations = [];
       translationToMap.name.translations.map((value) => {
         translations.push({
           name: value.translation,
@@ -40,5 +36,9 @@ export class TranslationsService {
     });
 
     return mappedTranslations;
+  }
+
+  async save(translation: ITranslation) {
+    return await this.translationRepository.save(translation);
   }
 }

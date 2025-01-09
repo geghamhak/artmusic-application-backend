@@ -1,1 +1,3 @@
-export class CreateFestivalTypeDto {}
+export class CreateFestivalTypeDto {
+
+}

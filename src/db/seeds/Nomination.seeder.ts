@@ -1459,14 +1459,17 @@ export default class NominationSeeder implements Seeder {
     for (const nomination of Nominations) {
       try {
         // creating Nomination, Nomination.textContent and Nomination.translations
-        const newNominationTextContent = await textContentRepository.save({
-          originalText: nomination.name,
-          originalLanguage: { id: 2 } as Language,
+        const newNominationTextContent = await textContentRepository.save(
+          new TextContent(),
+        );
+        const newNomination = await nominationRepository.save({
+          name: { id: newNominationTextContent.id } as TextContent,
         });
-
-        const newNomination = new Nomination();
-        newNomination.name = { id: newNominationTextContent.id } as TextContent;
-        await nominationRepository.save(newNomination);
+        await translationRepository.save({
+          translation: nomination.name,
+          language: { id: 2 } as Language,
+          textContent: { id: newNominationTextContent.id } as TextContent,
+        });
 
         nomination.translations.map(async (translation) => {
           await translationRepository.save({
@@ -1481,9 +1484,14 @@ export default class NominationSeeder implements Seeder {
         });
         // creating SubNomination, SubNomination.textContent and SubNomination.translations
         nomination.subNominations.map(async (subNomination) => {
-          const newSubNominationTextContent = await textContentRepository.save({
-            originalText: subNomination.name,
-            originalLanguage: { id: 2 } as Language,
+          const newSubNominationTextContent = await textContentRepository.save(
+            new TextContent(),
+          );
+
+          await translationRepository.save({
+            translation: subNomination.name,
+            language: { id: 2 } as Language,
+            textContent: { id: newSubNominationTextContent.id } as TextContent,
           });
 
           subNomination.translations.map(async (translation) => {
@@ -1497,12 +1505,12 @@ export default class NominationSeeder implements Seeder {
               textContent: newSubNominationTextContent,
             });
           });
-          const newSubNomination = new SubNomination();
-          newSubNomination.name = {
-            id: newSubNominationTextContent.id,
-          } as TextContent;
-          newSubNomination.nomination = { id: newNomination.id } as Nomination;
-          await subNominationRepository.save(newSubNomination);
+          await subNominationRepository.save({
+            name: {
+              id: newSubNominationTextContent.id,
+            } as TextContent,
+            nomination: { id: newNomination.id } as Nomination,
+          });
         });
       } catch (e) {
         throw new Error(e);

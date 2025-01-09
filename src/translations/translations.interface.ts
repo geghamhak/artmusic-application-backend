@@ -8,10 +8,6 @@ interface TranslationsItem {
 export interface TranslationToMap {
   id: number;
   name: {
-    originalText: string;
-    originalLanguage: {
-      code: string;
-    };
     translations: TranslationsItem[];
   };
 }

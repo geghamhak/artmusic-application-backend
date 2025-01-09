@@ -13,12 +13,6 @@ export class TextContent {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: '255' })
-  originalText: string;
-
-  @ManyToOne(() => Language, (language) => language.textContents)
-  originalLanguage: Language;
-
   @OneToMany(() => Translation, (translation) => translation.textContent)
   translations: Translation[];
 

@@ -5,11 +5,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Nomination } from './entities/nomination.entity';
 import { TranslationsService } from '../translations/translations.service';
 import { Language } from '../translations/entities/language.entity';
+import { TranslationsModule } from '../translations/translations.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Nomination, Language])],
+  imports: [
+    TypeOrmModule.forFeature([Nomination, Language]),
+    TranslationsModule,
+  ],
   exports: [TypeOrmModule],
   controllers: [NominationsController],
-  providers: [NominationsService, TranslationsService],
+  providers: [NominationsService],
 })
 export class NominationsModule {}

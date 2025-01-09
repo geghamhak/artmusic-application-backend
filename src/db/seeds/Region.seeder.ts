@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { Region } from '../../regions/entities/region.entity';
 import { TextContent } from '../../translations/entities/textContent.entity';
 import { Language } from '../../translations/entities/language.entity';
+import { Translation } from '../../translations/entities/translation.entity';
 
 const Regions = [
   {
@@ -46,16 +47,21 @@ export default class RegionSeeder implements Seeder {
     await dataSource.query('ALTER TABLE region AUTO_INCREMENT = 1');
     const regionRepository = dataSource.getRepository(Region);
     const textContentRepository = dataSource.getRepository(TextContent);
+    const translationRepository = dataSource.getRepository(Translation);
 
     for (const region of Regions) {
       try {
-        const newRegionTextContent = await textContentRepository.save({
-          originalText: region.name,
-          originalLanguage: { id: 2 } as Language,
+        const newRegionTextContent = await textContentRepository.save(
+          new TextContent(),
+        );
+        await regionRepository.save({
+          name: { id: newRegionTextContent.id } as TextContent,
         });
-        const newRegion = new Region();
-        newRegion.name = newRegionTextContent;
-        await regionRepository.save(newRegion);
+        await translationRepository.save({
+          translation: region.name,
+          language: { id: 2 } as Language,
+          textContent: { id: newRegionTextContent.id } as TextContent,
+        });
       } catch (e) {
         throw new Error(e);
       }

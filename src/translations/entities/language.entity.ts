@@ -16,9 +16,6 @@ export class Language {
   @OneToMany(() => Translation, (translation) => translation.language)
   translations: Translation[];
 
-  @OneToMany(() => TextContent, (textContent) => textContent.originalLanguage)
-  textContents: TextContent[];
-
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',

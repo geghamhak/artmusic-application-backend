@@ -13,10 +13,11 @@ export class RegionsService {
     const regions = await this.regionRepository
       .createQueryBuilder('region')
       .leftJoinAndSelect('region.name', 'textContent')
-      .select(['region.id', 'textContent.originalText'])
+      .leftJoinAndSelect('textContent.translations', 'translations')
+      .select(['region.id', 'textContent.id', 'translations.translation'])
       .getMany();
     return regions.map((region) => {
-      return { id: region.id, name: region.name.originalText };
+      return { id: region.id, name: region.name.translations[0].translation };
     });
   }
 

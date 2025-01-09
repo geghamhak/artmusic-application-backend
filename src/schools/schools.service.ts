@@ -13,14 +13,20 @@ export class SchoolsService {
     const schools = await this.schoolRepository
       .createQueryBuilder('school')
       .leftJoinAndSelect('school.name', 'textContent')
+      .leftJoinAndSelect('textContent.translations', 'translations')
       .leftJoinAndSelect('school.region', 'region')
-      .select(['school.id', 'region.id', 'textContent.originalText'])
+      .select([
+        'school.id',
+        'region.id',
+        'textContent.id',
+        'translations.translation',
+      ])
       .getMany();
 
     return schools.map((school) => {
       return {
         id: school.id,
-        name: school.name.originalText,
+        name: school.name.translations[0].translation,
         regionId: school.region.id,
       };
     });

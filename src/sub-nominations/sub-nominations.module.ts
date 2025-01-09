@@ -5,11 +5,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SubNomination } from './entities/sub-nomination.entity';
 import { TranslationsService } from '../translations/translations.service';
 import { Language } from '../translations/entities/language.entity';
+import { TranslationsModule } from '../translations/translations.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SubNomination, Language])],
+  imports: [
+    TypeOrmModule.forFeature([SubNomination, Language]),
+    TranslationsModule,
+  ],
   exports: [TypeOrmModule],
   controllers: [SubNominationsController],
-  providers: [SubNominationsService, TranslationsService],
+  providers: [SubNominationsService],
 })
 export class SubNominationsModule {}

@@ -19,14 +19,12 @@ export class SubNominationsService {
       .createQueryBuilder('sub_nomination')
       .leftJoinAndSelect('sub_nomination.name', 'textContent')
       .leftJoinAndSelect('sub_nomination.nomination', 'nomination')
-      .leftJoinAndSelect('textContent.originalLanguage', 'language')
       .leftJoinAndSelect('textContent.translations', 'translations')
       .leftJoinAndSelect('translations.language', 'translationLanguage')
       .select([
         'sub_nomination.id',
         'nomination.id',
-        'textContent.originalText',
-        'language.code',
+        'textContent.id',
         'translations.translation',
         'translationLanguage.code',
       ])

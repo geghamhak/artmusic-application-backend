@@ -18,13 +18,11 @@ export class NominationsService {
     const nominations = await this.nominationRepository
       .createQueryBuilder('nomination')
       .leftJoinAndSelect('nomination.name', 'textContent')
-      .leftJoinAndSelect('textContent.originalLanguage', 'language')
       .leftJoinAndSelect('textContent.translations', 'translations')
       .leftJoinAndSelect('translations.language', 'translationLanguage')
       .select([
         'nomination.id',
-        'textContent.originalText',
-        'language.code',
+        'textContent.id',
         'translations.translation',
         'translationLanguage.code',
       ])

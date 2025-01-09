@@ -4,6 +4,7 @@ import { TextContent } from '../../translations/entities/textContent.entity';
 import { Language } from '../../translations/entities/language.entity';
 import { School } from '../../schools/entities/school.entity';
 import { Region } from '../../regions/entities/region.entity';
+import { Translation } from '../../translations/entities/translation.entity';
 
 const Schools = [
   {
@@ -104,19 +105,24 @@ export default class SchoolSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<void> {
     await dataSource.query('DELETE FROM school');
     await dataSource.query('ALTER TABLE school AUTO_INCREMENT = 1');
-    const regionRepository = dataSource.getRepository(School);
+    const schoolRepository = dataSource.getRepository(School);
     const textContentRepository = dataSource.getRepository(TextContent);
+    const translationRepository = dataSource.getRepository(Translation);
 
     for (const school of Schools) {
       try {
-        const newSchoolTextContent = await textContentRepository.save({
-          originalText: school.name,
-          originalLanguage: { id: 2 } as Language,
+        const newSchoolTextContent = await textContentRepository.save(
+          new TextContent(),
+        );
+        await schoolRepository.save({
+          name: { id: newSchoolTextContent.id } as TextContent,
+          region: { id: school.regionId } as Region,
         });
-        const newSchool = new School();
-        newSchool.name = newSchoolTextContent;
-        newSchool.region = { id: school.regionId } as Region;
-        await regionRepository.save(newSchool);
+        await translationRepository.save({
+          translation: school.name,
+          language: { id: 2 } as Language,
+          textContent: { id: newSchoolTextContent.id } as TextContent,
+        });
       } catch (e) {
         throw new Error(e);
       }
