@@ -39,4 +39,22 @@ export class TextContentService {
 
     return textContent;
   }
+
+  async updateTranslations(
+    textContent: TextContent,
+    translations: TranslationDto[],
+  ): Promise<TextContent> {
+    const existingTranslations =
+      await this.translationsService.getByTextContentId(+textContent.id);
+    existingTranslations.map(async (existingTranslation) => {
+      const translationToUpdate = translations.find(
+        (translation) =>
+          translation.languageCode === existingTranslation.language.code,
+      );
+      existingTranslation.translation = translationToUpdate.translation;
+      await this.translationsService.update(existingTranslation);
+    });
+
+    return textContent;
+  }
 }

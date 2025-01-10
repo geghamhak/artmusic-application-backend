@@ -41,4 +41,23 @@ export class TranslationsService {
   async save(translation: ITranslation) {
     return await this.translationRepository.save(translation);
   }
+
+  async update(translation: Translation) {
+    return await this.translationRepository.update(translation.id, translation);
+  }
+
+  async getByTextContentId(textContentId: number): Promise<Translation[]> {
+    return await this.translationRepository
+      .createQueryBuilder('translations')
+      .leftJoinAndSelect('translation.textContent', 'textContent')
+      .leftJoinAndSelect('translation.language', 'language')
+      .where('translation.textContent = :textContentId', { textContentId })
+      .select([
+        'textContent.id',
+        'language.code',
+        'translations.translation',
+        'translations.translation',
+      ])
+      .getMany();
+  }
 }

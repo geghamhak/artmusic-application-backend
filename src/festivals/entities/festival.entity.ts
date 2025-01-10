@@ -34,8 +34,11 @@ export class Festival {
   @OneToMany(() => Application, (application) => application.festival)
   applications: Application[];
 
-  @Column({ type: 'boolean' })
-  isActive: boolean;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  applicationStartDate: string;
 
   @Column({
     type: 'timestamp',

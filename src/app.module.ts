@@ -44,8 +44,8 @@ import { ApplicationScoreModule } from './application-score/application-score.mo
 import { ApplicationScore } from './application-score/entities/application-score.entity';
 import { DmsModule } from './dms/dms.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
-import { LanguageService } from './translations/language.service';
-import { TextContentService } from './translations/text-content.service';
+import { StaffModule } from './staff/staff.module';
+import { HeaderModule } from './header/header.module';
 
 @Module({
   imports: [
@@ -101,7 +101,9 @@ import { TextContentService } from './translations/text-content.service';
     ScoringSystemModule,
     ApplicationScoreModule,
     DmsModule,
+    StaffModule,
     NestjsFormDataModule,
+    HeaderModule,
   ],
   providers: [
     CountriesService,

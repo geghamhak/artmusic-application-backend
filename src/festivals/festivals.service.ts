@@ -53,7 +53,6 @@ export class FestivalsService {
       const languages = await this.languageService.getAllLanguages();
       const { title, description, bannerDescription } = createFestivalDto;
 
-      newFestival.isActive = createFestivalDto.isActive;
       newFestival.title = await this.textContentService.addTranslations(
         title.translations,
         languages,
@@ -62,10 +61,11 @@ export class FestivalsService {
         description.translations,
         languages,
       );
-      newFestival.bannerDescription = await this.textContentService.addTranslations(
+      newFestival.bannerDescription =
+        await this.textContentService.addTranslations(
           bannerDescription.translations,
           languages,
-      );
+        );
       await this.festivalRepository.save(newFestival);
     } catch (error) {
       throw new Error(error);

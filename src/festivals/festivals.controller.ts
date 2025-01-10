@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { FestivalsService } from './festivals.service';
 import { CreateFestivalDto } from './dto/create-festival.dto';
-import {FileSystemStoredFile, FormDataRequest} from "nestjs-form-data";
+import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
 
 @Controller('festivals')
 export class FestivalsController {

@@ -5,12 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Festival } from './entities/festival.entity';
 import { TranslationsModule } from '../translations/translations.module';
 import { FestivalTypesModule } from '../festival-types/festival-types.module';
+import { NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Festival]),
     TranslationsModule,
     FestivalTypesModule,
+    NestjsFormDataModule,
   ],
   exports: [TypeOrmModule, FestivalsService],
   controllers: [FestivalsController],
