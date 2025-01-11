@@ -1,23 +1,19 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateHeaderDto } from './dto/create-header.dto';
 import { UpdateHeaderDto } from './dto/update-header.dto';
-import { Staff } from '../staff/entities/staff.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TextContentService } from '../translations/text-content.service';
 import { LanguageService } from '../translations/language.service';
-import { Head } from 'rxjs';
 import { Header } from './entities/header.entity';
-import { TranslationsService } from '../translations/translations.service';
 
 @Injectable()
 export class HeaderService {
   constructor(
     @InjectRepository(Header)
-    private headerRepository: Repository<Header>,
+    private headerRepository: Repository<Header>, 
     private textContentService: TextContentService,
     private languageService: LanguageService,
-    private translationService: TranslationsService,
   ) {}
   async create(createHeaderDto: CreateHeaderDto) {
     try {
@@ -32,6 +28,8 @@ export class HeaderService {
       );
 
       await this.headerRepository.save(newHeader);
+
+      // add images
     } catch (error) {
       throw new Error(error);
     }
@@ -52,10 +50,14 @@ export class HeaderService {
     try {
       const header = await this.headerRepository.findOne({});
       const { bannerTitle } = updateHeaderDto;
-      await this.textContentService.updateTranslations(
-        header.bannerTitle,
-        bannerTitle.translations,
-      );
+      if (bannerTitle) {
+        await this.textContentService.updateTranslations(
+          header.bannerTitle,
+          bannerTitle.translations,
+        );
+      }
+
+      // update images
     } catch (error) {
       throw new Error(error);
     }

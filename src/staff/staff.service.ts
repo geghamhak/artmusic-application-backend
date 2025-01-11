@@ -31,6 +31,8 @@ export class StaffService {
       );
 
       await this.staffRepository.save(newStaff);
+
+      // add images logic
     } catch (error) {
       throw new Error(error);
     }
@@ -48,14 +50,20 @@ export class StaffService {
     try {
       const staff = await this.staffRepository.findOneBy({ id });
       const { name, role } = updateStaffDto;
-      await this.textContentService.updateTranslations(
-        staff.name,
-        name.translations,
-      );
-      await this.textContentService.updateTranslations(
-        staff.role,
-        role.translations,
-      );
+      if (name) {
+        await this.textContentService.updateTranslations(
+          staff.name,
+          name.translations,
+        );
+      }
+      if (role) {
+        await this.textContentService.updateTranslations(
+          staff.role,
+          role.translations,
+        );
+      }
+
+      // update images
     } catch (error) {
       throw new Error(error);
     }

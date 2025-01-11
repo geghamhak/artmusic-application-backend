@@ -46,6 +46,7 @@ import { DmsModule } from './dms/dms.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { StaffModule } from './staff/staff.module';
 import { HeaderModule } from './header/header.module';
+import { HomePageModule } from './home-page/home-page.module';
 
 @Module({
   imports: [
@@ -104,6 +105,7 @@ import { HeaderModule } from './header/header.module';
     StaffModule,
     NestjsFormDataModule,
     HeaderModule,
+    HomePageModule,
   ],
   providers: [
     CountriesService,
