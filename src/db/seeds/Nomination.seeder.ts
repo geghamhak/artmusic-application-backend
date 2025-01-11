@@ -1218,6 +1218,7 @@ const Nominations = [
   {
     name: 'Գեղարվեստ',
     originalLanguage: 'am',
+    key: 'PAINTING',
     translations: [
       {
         name: 'Fine art',
@@ -1402,6 +1403,7 @@ const Nominations = [
   {
     name: 'Դեկորատիվ-կիրառական արվեստ',
     originalLanguage: 'am',
+    key: 'CRAFT',
     translations: [
       {
         name: 'Decorative art',
@@ -1464,6 +1466,7 @@ export default class NominationSeeder implements Seeder {
         );
         const newNomination = await nominationRepository.save({
           name: { id: newNominationTextContent.id } as TextContent,
+          key: nomination.key ?? 'KEY',
         });
         await translationRepository.save({
           translation: nomination.name,
@@ -1482,6 +1485,7 @@ export default class NominationSeeder implements Seeder {
             textContent: { id: newNominationTextContent.id } as TextContent,
           });
         });
+
         // creating SubNomination, SubNomination.textContent and SubNomination.translations
         nomination.subNominations.map(async (subNomination) => {
           const newSubNominationTextContent = await textContentRepository.save(

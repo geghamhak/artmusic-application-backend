@@ -30,6 +30,9 @@ export class Nomination {
   @OneToMany(() => Application, (application) => application.festival)
   applications: Application[];
 
+  @Column({ type: 'varchar', length: '255', nullable: true })
+  key?: string;
+
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',

@@ -23,6 +23,7 @@ export class SubNominationsService {
       .leftJoinAndSelect('translations.language', 'translationLanguage')
       .select([
         'sub_nomination.id',
+        'nomination.key',
         'nomination.id',
         'textContent.id',
         'translations.translation',
@@ -36,6 +37,9 @@ export class SubNominationsService {
       mappedSubNomination.nominationId = subNominations.find(
         (subNomination) => subNomination.id === mappedSubNomination.id,
       ).nomination.id;
+      mappedSubNomination.nominationKey = subNominations.find(
+        (subNomination) => subNomination.id === mappedSubNomination.id,
+      ).nomination.key;
     });
 
     return mappedSubNominations as ISubNominationResponse[];

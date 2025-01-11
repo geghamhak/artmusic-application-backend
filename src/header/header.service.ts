@@ -11,7 +11,7 @@ import { Header } from './entities/header.entity';
 export class HeaderService {
   constructor(
     @InjectRepository(Header)
-    private headerRepository: Repository<Header>, 
+    private headerRepository: Repository<Header>,
     private textContentService: TextContentService,
     private languageService: LanguageService,
   ) {}
