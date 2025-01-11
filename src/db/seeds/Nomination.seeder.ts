@@ -1404,25 +1404,25 @@ const Nominations = [
     originalLanguage: 'am',
     translations: [
       {
-        name: 'Decorative-applied art',
+        name: 'Decorative art',
         languageCode: 'en',
       },
       {
-        name: 'Դեկորատիվ-կիրառական արվեստ',
+        name: 'Декоративное исскуство',
         languageCode: 'ru',
       },
     ],
     subNominations: [
       {
-        name: 'Ապլիկացիա',
+        name: 'Դեկորատիվ-կիրառական արվեստ',
         originalLanguage: 'am',
         translations: [
           {
-            name: 'Cut-out',
+            name: 'Decorative art',
             languageCode: 'en',
           },
           {
-            name: 'Аппликация',
+            name: 'Декоративное исскуство',
             languageCode: 'ru',
           },
         ],

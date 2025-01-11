@@ -6,9 +6,6 @@ import { Repository } from 'typeorm';
 import { TextContentService } from '../translations/text-content.service';
 import { LanguageService } from '../translations/language.service';
 import { HomePage } from './entities/home-page.entity';
-import { CreateHeaderDto } from '../header/dto/create-header.dto';
-import { Header } from '../header/entities/header.entity';
-import { UpdateHeaderDto } from '../header/dto/update-header.dto';
 
 @Injectable()
 export class HomePageService {
