@@ -17,6 +17,7 @@ import { SubNomination } from '../sub-nominations/entities/sub-nomination.entity
 import { ScoringSystem } from '../scoring-system/entities/scoring-system.entity';
 import { ApplicationScoreService } from '../application-score/application-score.service';
 import { FestivalsService } from '../festivals/festivals.service';
+import {CreateApplicationScoreDto} from "../application-score/dto/create-application-score.dto";
 
 @Injectable()
 export class ApplicationsService {
@@ -128,18 +129,21 @@ export class ApplicationsService {
 
   async update(id: number, updateApplicationDto: UpdateApplicationDto) {}
 
-  async addApplicationScore(createApplicationScoreDto): Promise<UpdateResult> {
+  async addApplicationScore(createApplicationScoreDto: CreateApplicationScoreDto): Promise<UpdateResult> {
     await this.applicationScoreService.create(createApplicationScoreDto);
     const { scores, applicationId: id } = createApplicationScoreDto;
     const application = await this.findOne(id);
-    const overallScore = scores.reduce((total, current) => {
-      return total + current;
-    }, 0);
+    const overallScore: number = scores.reduce(
+      (total: number, current: number) => {
+        return total + current;
+      },
+      0,
+    );
 
     const averageScore = Math.round((overallScore / scores.length) * 100) / 100;
     const scoringSystem = await this.scoringSystemService.determinePlaceByScore(
       averageScore,
-      application.festival.type.id,
+      application.festival.type,
     );
     application.place = { id: scoringSystem.id } as ScoringSystem;
     application.totalScore = overallScore;

@@ -20,12 +20,4 @@ export class ApplicationScoreService {
       await this.applicationScoreRepository.save(applicationScore);
     }
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} applicationScore`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} applicationScore`;
-  }
 }

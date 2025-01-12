@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { ApplicationScoreService } from './application-score.service';
 import { CreateApplicationScoreDto } from './dto/create-application-score.dto';
 
@@ -11,15 +11,5 @@ export class ApplicationScoreController {
   @Post()
   create(@Body() createApplicationScoreDto: CreateApplicationScoreDto) {
     return this.applicationScoreService.create(createApplicationScoreDto);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.applicationScoreService.findOne(+id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.applicationScoreService.remove(+id);
   }
 }

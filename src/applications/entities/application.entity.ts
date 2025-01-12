@@ -23,6 +23,9 @@ export class Application {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: 'int', nullable: true })
+  code: number;
+
   @Column({ type: 'tinyint' })
   isFree: boolean;
 
@@ -33,10 +36,10 @@ export class Application {
   firstComposition: string;
 
   @Column({ type: 'varchar', length: '255', nullable: true })
-  secondComposition: string;
+  secondComposition?: string;
 
   @Column({ type: 'varchar', length: '255', nullable: true })
-  totalDuration: string;
+  totalDuration?: string;
 
   @Column({ type: 'varchar', length: '255' })
   email: string;
@@ -62,10 +65,13 @@ export class Application {
   @Column({ type: 'varchar', length: '255', nullable: true })
   regionName: string;
 
+  @ManyToOne(() => Region, (region) => region.applications)
+  region?: Region;
+
   @Column({ type: 'int', nullable: true })
   totalScore: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'float', nullable: true })
   averageScore: number;
 
   @ManyToOne(() => ScoringSystem, (scoringSystem) => scoringSystem.applications)
@@ -76,12 +82,6 @@ export class Application {
 
   @Column({ type: 'varchar', length: '50', nullable: true })
   performanceTime: string;
-
-  @Column({ type: 'int', nullable: true })
-  code: number;
-
-  @ManyToOne(() => Region, (region) => region.applications)
-  region?: Region;
 
   @ManyToOne(() => Festival, (festival) => festival.applications)
   festival: Festival;
