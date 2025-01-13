@@ -17,7 +17,8 @@ import { SubNomination } from '../sub-nominations/entities/sub-nomination.entity
 import { ScoringSystem } from '../scoring-system/entities/scoring-system.entity';
 import { ApplicationScoreService } from '../application-score/application-score.service';
 import { FestivalsService } from '../festivals/festivals.service';
-import {CreateApplicationScoreDto} from "../application-score/dto/create-application-score.dto";
+import { CreateApplicationScoreDto } from '../application-score/dto/create-application-score.dto';
+import { ApplicationCompositionService } from '../application-composition/application-composition.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -31,14 +32,13 @@ export class ApplicationsService {
     private scoringSystemService: ScoringSystemService,
     private applicationScoreService: ApplicationScoreService,
     private festivalService: FestivalsService,
+    private applicationCompositionService: ApplicationCompositionService,
   ) {}
   async create(createApplicationDto: CreateApplicationDto) {
     try {
       const application = new Application();
       const {
         isFree,
-        firstComposition,
-        secondComposition,
         leaderFirstName,
         participants,
         participantTypeId,
@@ -59,12 +59,9 @@ export class ApplicationsService {
         regionId,
         schoolId,
         festivalName,
+        applicationCompositions,
       } = createApplicationDto;
       application.isFree = !!isFree;
-      application.firstComposition = firstComposition;
-      if (secondComposition) {
-        application.secondComposition = secondComposition;
-      }
       application.leaderFirstName = leaderFirstName;
       application.leaderLastName = leaderLastName;
       application.isOnline = !!isOnline;
@@ -110,6 +107,10 @@ export class ApplicationsService {
         application.regionName = regionName;
       }
 
+      application.compositions = this.applicationCompositionService.save(
+        applicationCompositions,
+      );
+
       application.festival =
         await this.festivalService.findActiveByName(festivalName);
 
@@ -129,7 +130,9 @@ export class ApplicationsService {
 
   async update(id: number, updateApplicationDto: UpdateApplicationDto) {}
 
-  async addApplicationScore(createApplicationScoreDto: CreateApplicationScoreDto): Promise<UpdateResult> {
+  async addApplicationScore(
+    createApplicationScoreDto: CreateApplicationScoreDto,
+  ): Promise<UpdateResult> {
     await this.applicationScoreService.create(createApplicationScoreDto);
     const { scores, applicationId: id } = createApplicationScoreDto;
     const application = await this.findOne(id);

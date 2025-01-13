@@ -11,6 +11,7 @@ import { ParticipantVideoLinksModule } from '../participant-video-links/particip
 import { ApplicationScoreModule } from '../application-score/application-score.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { FestivalsModule } from '../festivals/festivals.module';
+import { ApplicationCompositionModule } from '../application-composition/application-composition.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { FestivalsModule } from '../festivals/festivals.module';
     ApplicationScoreModule,
     NestjsFormDataModule,
     FestivalsModule,
+    ApplicationCompositionModule,
   ],
   exports: [TypeOrmModule, ApplicationsService],
   controllers: [ApplicationsController],

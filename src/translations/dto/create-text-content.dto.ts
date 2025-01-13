@@ -1,8 +1,4 @@
-export interface TranslationDto {
+export interface CreateTextContentDto {
   languageCode: string;
   translation: string;
-}
-
-export class CreateTextContentDto {
-  translations: TranslationDto[];
 }

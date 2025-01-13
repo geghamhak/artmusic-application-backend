@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Translation } from './translation.entity';
 import { TextContent } from './textContent.entity';
 
@@ -16,14 +23,9 @@ export class Language {
   @OneToMany(() => Translation, (translation) => translation.language)
   translations: Translation[];
 
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @CreateDateColumn()
   createdAt: string;
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+
+  @UpdateDateColumn()
   updatedAt: string;
 }

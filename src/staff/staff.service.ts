@@ -22,11 +22,11 @@ export class StaffService {
       const { name, role } = createStaffDto;
 
       newStaff.name = await this.textContentService.addTranslations(
-        name.translations,
+        name,
         languages,
       );
       newStaff.role = await this.textContentService.addTranslations(
-        role.translations,
+        role,
         languages,
       );
 
@@ -51,16 +51,10 @@ export class StaffService {
       const staff = await this.staffRepository.findOneBy({ id });
       const { name, role } = updateStaffDto;
       if (name) {
-        await this.textContentService.updateTranslations(
-          staff.name,
-          name.translations,
-        );
+        await this.textContentService.updateTranslations(staff.name, name);
       }
       if (role) {
-        await this.textContentService.updateTranslations(
-          staff.role,
-          role.translations,
-        );
+        await this.textContentService.updateTranslations(staff.role, role);
       }
 
       // update images

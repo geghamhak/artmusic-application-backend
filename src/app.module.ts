@@ -47,6 +47,9 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
 import { StaffModule } from './staff/staff.module';
 import { HeaderModule } from './header/header.module';
 import { HomePageModule } from './home-page/home-page.module';
+import { ApplicationCompositionModule } from './application-composition/application-composition.module';
+import { ApplicationCompositionService } from './application-composition/application-composition.service';
+import { ApplicationComposition } from './application-composition/entities/application-composition.entity';
 
 @Module({
   imports: [
@@ -81,6 +84,7 @@ import { HomePageModule } from './home-page/home-page.module';
             Language,
             TextContent,
             ApplicationScore,
+            ApplicationComposition,
           ],
           synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
@@ -106,6 +110,7 @@ import { HomePageModule } from './home-page/home-page.module';
     NestjsFormDataModule,
     HeaderModule,
     HomePageModule,
+    ApplicationCompositionModule,
   ],
   providers: [
     CountriesService,

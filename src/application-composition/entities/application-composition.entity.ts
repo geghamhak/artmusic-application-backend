@@ -2,26 +2,25 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToMany,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { TextContent } from '../../translations/entities/textContent.entity';
 import { Application } from '../../applications/entities/application.entity';
 
 @Entity()
-export class ParticipantType {
+export class ApplicationComposition {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => TextContent)
-  @JoinColumn()
-  type: TextContent;
+  @Column({ type: 'varchar', length: '255' })
+  title: string;
 
-  @OneToMany(() => Application, (application) => application.festival)
-  applications: Application[];
+  @Column({ type: 'varchar', length: '255', nullable: true })
+  craftSubNomination: string;
+
+  @ManyToOne(() => Application, (application) => application.compositions)
+  application: Application;
 
   @CreateDateColumn()
   createdAt: string;

@@ -24,11 +24,11 @@ export class HomePageService {
       const { title, information, videoLink } = createHomePageDto;
 
       newHomePage.title = await this.textContentService.addTranslations(
-        title.translations,
+        title,
         languages,
       );
       newHomePage.information = await this.textContentService.addTranslations(
-        information.translations,
+        information,
         languages,
       );
 
@@ -58,17 +58,14 @@ export class HomePageService {
       const homePage = await this.homePageRepository.findOne({});
       const { title, information, videoLink } = updateHomePageDto;
 
-      if (title.translations.length > 0) {
-        await this.textContentService.updateTranslations(
-          homePage.title,
-          title.translations,
-        );
+      if (title.length > 0) {
+        await this.textContentService.updateTranslations(homePage.title, title);
       }
 
-      if (information.translations.length > 0) {
+      if (information.length > 0) {
         await this.textContentService.updateTranslations(
           homePage.information,
-          information.translations,
+          information,
         );
       }
 

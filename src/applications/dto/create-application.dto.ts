@@ -3,12 +3,12 @@ import { HasMimeType, IsFiles } from 'nestjs-form-data';
 import { IsOptional } from 'class-validator';
 import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
 import { FestivalsEnum } from '../../festivals/festivals.service';
+import { ApplicationComposition } from '../../application-composition/entities/application-composition.entity';
 
 export class CreateApplicationDto {
   countryId: number;
   festivalName: FestivalsEnum;
-  firstComposition: string;
-  secondComposition?: string;
+  applicationCompositions: ApplicationComposition[];
   totalDuration?: string;
   email: string;
   isFree: boolean;

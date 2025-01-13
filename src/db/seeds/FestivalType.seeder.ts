@@ -4,9 +4,11 @@ import { TextContent } from '../../translations/entities/textContent.entity';
 import { Language } from '../../translations/entities/language.entity';
 import { Translation } from '../../translations/entities/translation.entity';
 import { FestivalType } from '../../festival-types/entities/festival-type.entity';
+import { FestivalsEnum } from '../../festivals/festivals.service';
 
 const FestivalTypes = [
   {
+    key: FestivalsEnum.ARTMUSIC,
     translations: [
       {
         languageCode: 'en',
@@ -23,6 +25,7 @@ const FestivalTypes = [
     ],
   },
   {
+    key: FestivalsEnum.NEW_HANDS,
     translations: [
       {
         languageCode: 'en',
@@ -39,6 +42,7 @@ const FestivalTypes = [
     ],
   },
   {
+    key: FestivalsEnum.MELODY,
     translations: [
       {
         languageCode: 'en',
@@ -55,6 +59,7 @@ const FestivalTypes = [
     ],
   },
   {
+    key: FestivalsEnum.LYRICS,
     translations: [
       {
         languageCode: 'en',
@@ -71,6 +76,7 @@ const FestivalTypes = [
     ],
   },
   {
+    key: FestivalsEnum.KHACHATUR_AVETISYAN,
     translations: [
       {
         languageCode: 'en',
@@ -87,6 +93,7 @@ const FestivalTypes = [
     ],
   },
   {
+    key: FestivalsEnum.ART_PIANO,
     translations: [
       {
         languageCode: 'en',
@@ -103,6 +110,7 @@ const FestivalTypes = [
     ],
   },
   {
+    key: FestivalsEnum.FOREIGN,
     translations: [
       {
         languageCode: 'en',
@@ -140,6 +148,7 @@ export default class FestivalTypeSeeder implements Seeder {
         );
         await festivalTypeRepository.save({
           name: { id: newFestivalTypeTextContent.id } as TextContent,
+          key: festivalType.key,
         });
         festivalType.translations.map(async (translation) => {
           await translationRepository.save({

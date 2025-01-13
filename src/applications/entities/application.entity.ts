@@ -1,9 +1,11 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Festival } from '../../festivals/entities/festival.entity';
 import { Country } from '../../countries/entities/country.entity';
@@ -17,6 +19,7 @@ import { Region } from '../../regions/entities/region.entity';
 import { SubNomination } from '../../sub-nominations/entities/sub-nomination.entity';
 import { ApplicationScore } from '../../application-score/entities/application-score.entity';
 import { ScoringSystem } from '../../scoring-system/entities/scoring-system.entity';
+import { ApplicationComposition } from '../../application-composition/entities/application-composition.entity';
 
 @Entity()
 export class Application {
@@ -31,12 +34,6 @@ export class Application {
 
   @Column({ type: 'tinyint' })
   isOnline: boolean;
-
-  @Column({ type: 'varchar', length: '255' })
-  firstComposition: string;
-
-  @Column({ type: 'varchar', length: '255', nullable: true })
-  secondComposition?: string;
 
   @Column({ type: 'varchar', length: '255', nullable: true })
   totalDuration?: string;
@@ -101,6 +98,12 @@ export class Application {
   )
   scores?: ApplicationScore[];
 
+  @OneToMany(
+    () => ApplicationComposition,
+    (applicationComposition) => applicationComposition.application,
+  )
+  compositions?: ApplicationComposition[];
+
   @ManyToOne(
     () => ParticipantType,
     (participantType) => participantType.applications,
@@ -128,14 +131,9 @@ export class Application {
   )
   participantDocuments: ParticipantDocument[];
 
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @CreateDateColumn()
   createdAt: string;
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+
+  @UpdateDateColumn()
   updatedAt: string;
 }

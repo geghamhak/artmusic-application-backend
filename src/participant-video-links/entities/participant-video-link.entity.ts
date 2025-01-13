@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Application } from '../../applications/entities/application.entity';
 
 @Entity()
@@ -12,14 +19,9 @@ export class ParticipantVideoLink {
   @ManyToOne(() => Application, (application) => application.participants)
   application: Application;
 
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @CreateDateColumn()
   createdAt: string;
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+
+  @UpdateDateColumn()
   updatedAt: string;
 }

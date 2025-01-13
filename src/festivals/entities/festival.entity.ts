@@ -1,11 +1,13 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { TextContent } from '../../translations/entities/textContent.entity';
 import { FestivalType } from '../../festival-types/entities/festival-type.entity';
@@ -34,26 +36,15 @@ export class Festival {
   @OneToMany(() => Application, (application) => application.festival)
   applications: Application[];
 
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  applicationStartDate: string;
+  @Column({ type: 'date' })
+  applicationStartDate: Date;
 
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  applicationEndDate: string;
+  @Column({ type: 'date' })
+  applicationEndDate: Date;
 
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @CreateDateColumn()
   createdAt: string;
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+
+  @UpdateDateColumn()
   updatedAt: string;
 }

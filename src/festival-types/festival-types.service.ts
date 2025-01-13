@@ -17,33 +17,22 @@ export class FestivalTypesService {
     private textContentService: TextContentService,
   ) {}
 
-  async getByName(festivalName: FestivalsEnum): Promise<FestivalType> {
+  async getByKey(festivalName: FestivalsEnum): Promise<FestivalType> {
     return await this.festivalTypeRepository
       .createQueryBuilder('festivalType')
-      .leftJoinAndSelect('festivalType.name', 'textContent')
-      .leftJoinAndSelect('textContent.translations', 'translations')
-      .where('translations.translation= :name', { name: festivalName })
-      .select(['festivalType.id', 'textContent.id', 'translations.translation'])
+      .where('festivalType.key= :festivalName', { festivalName })
+      .select(['festivalType.id'])
       .getOne();
   }
 
-  findAll() {
-    return this.festivalTypeRepository.find();
-  }
-
-  findOne(id: number) {
-    return this.festivalTypeRepository.findOneBy({ id });
-  }
   async create(createFestivalTypeDto: CreateFestivalTypeDto) {
     try {
       const { name } = createFestivalTypeDto;
-      await this.checkIfFestivalExists(
-        name.translations[0].translation as FestivalsEnum,
-      );
+      await this.checkIfFestivalExists(name[0].translation as FestivalsEnum);
       const newFestivalType = new Festival();
       const languages = await this.languageService.getAllLanguages();
       newFestivalType.title = await this.textContentService.addTranslations(
-        name.translations,
+        name,
         languages,
       );
       return this.festivalTypeRepository.save(newFestivalType);
@@ -53,7 +42,7 @@ export class FestivalTypesService {
   }
 
   private async checkIfFestivalExists(name: FestivalsEnum) {
-    const existingFestival = await this.getByName(name as FestivalsEnum);
+    const existingFestival = await this.getByKey(name as FestivalsEnum);
     if (existingFestival) {
       return new BadRequestException(
         `The festival with name '${name}' already exists`,

@@ -14,7 +14,7 @@ export class FestivalTypesController {
 
   @Get(':name')
   getByName(@Param('name') name: string) {
-    return this.festivalTypesService.getByName(name as FestivalsEnum);
+    return this.festivalTypesService.getByKey(name as FestivalsEnum);
   }
 
   @Delete(':id')

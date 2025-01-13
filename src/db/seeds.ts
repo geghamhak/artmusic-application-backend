@@ -25,6 +25,7 @@ import { ApplicationScore } from '../application-score/entities/application-scor
 import RegionSeeder from './seeds/Region.seeder';
 import SchoolSeeder from './seeds/School.seeder';
 import FestivalTypeSeeder from './seeds/FestivalType.seeder';
+import { ApplicationComposition } from '../application-composition/entities/application-composition.entity';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql' as const,
@@ -52,6 +53,7 @@ const options: DataSourceOptions & SeederOptions = {
     Language,
     TextContent,
     ApplicationScore,
+    ApplicationComposition,
   ],
   seeds: [
     LanguageSeeder,

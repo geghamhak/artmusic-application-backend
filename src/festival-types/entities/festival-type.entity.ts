@@ -1,10 +1,12 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { TextContent } from '../../translations/entities/textContent.entity';
 import { Nomination } from '../../nominations/entities/nomination.entity';
@@ -15,6 +17,9 @@ import { ScoringSystem } from '../../scoring-system/entities/scoring-system.enti
 export class FestivalType {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: 'varchar', length: '255' })
+  key: string;
 
   @OneToOne(() => TextContent)
   @JoinColumn()
@@ -29,14 +34,9 @@ export class FestivalType {
   @OneToMany(() => Festival, (festival) => festival.type)
   festivals: Festival[];
 
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @CreateDateColumn()
   createdAt: string;
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+
+  @UpdateDateColumn()
   updatedAt: string;
 }

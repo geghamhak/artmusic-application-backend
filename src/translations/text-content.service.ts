@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TextContent } from './entities/textContent.entity';
-import { ITranslation, TranslationsService } from './translations.service';
+import { TranslationsService } from './translations.service';
 import { Language } from './entities/language.entity';
-import { TranslationDto } from './dto/create-text-content.dto';
+import { CreateTextContentDto } from './dto/create-text-content.dto';
 
 @Injectable()
 export class TextContentService {
@@ -19,7 +19,7 @@ export class TextContentService {
   }
 
   async addTranslations(
-    translations: TranslationDto[],
+    translations: CreateTextContentDto[],
     languages: Language[],
   ): Promise<TextContent> {
     const textContent = await this.create();
@@ -42,7 +42,7 @@ export class TextContentService {
 
   async updateTranslations(
     textContent: TextContent,
-    translations: TranslationDto[],
+    translations: CreateTextContentDto[],
   ): Promise<TextContent> {
     const existingTranslations =
       await this.translationsService.getByTextContentId(+textContent.id);

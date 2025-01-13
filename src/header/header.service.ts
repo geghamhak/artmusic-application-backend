@@ -23,7 +23,7 @@ export class HeaderService {
       const { bannerTitle } = createHeaderDto;
 
       newHeader.bannerTitle = await this.textContentService.addTranslations(
-        bannerTitle.translations,
+        bannerTitle,
         languages,
       );
 
@@ -53,7 +53,7 @@ export class HeaderService {
       if (bannerTitle) {
         await this.textContentService.updateTranslations(
           header.bannerTitle,
-          bannerTitle.translations,
+          bannerTitle,
         );
       }
 

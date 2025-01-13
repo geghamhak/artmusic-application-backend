@@ -1,11 +1,13 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { FestivalType } from '../../festival-types/entities/festival-type.entity';
 import { Application } from '../../applications/entities/application.entity';
@@ -32,14 +34,9 @@ export class ScoringSystem {
   @ManyToOne(() => FestivalType, (festivalType) => festivalType.nominations)
   festivalType: FestivalType;
 
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @CreateDateColumn()
   createdAt: string;
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+
+  @UpdateDateColumn()
   updatedAt: string;
 }

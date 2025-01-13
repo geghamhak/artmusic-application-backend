@@ -5,6 +5,8 @@ import {
   JoinColumn,
   OneToMany,
   Column,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { TextContent } from '../../translations/entities/textContent.entity';
 import { Application } from '../../applications/entities/application.entity';
@@ -21,14 +23,9 @@ export class Country {
   @OneToMany(() => Application, (application) => application.festival)
   applications: Application[];
 
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @CreateDateColumn()
   createdAt: string;
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+
+  @UpdateDateColumn()
   updatedAt: string;
 }
