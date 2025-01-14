@@ -7,8 +7,6 @@ import { TextContentService } from '../translations/text-content.service';
 import { LanguageService } from '../translations/language.service';
 import { FestivalTypesService } from '../festival-types/festival-types.service';
 import { FestivalType } from '../festival-types/entities/festival-type.entity';
-import { Application } from '../applications/entities/application.entity';
-import { UpdateStaffDto } from '../staff/dto/update-staff.dto';
 
 export enum FestivalsEnum {
   ARTMUSIC = 'artmusic',
@@ -110,10 +108,6 @@ export class FestivalsService {
       })
       .getOne();
 
-    console.log(existingFestival);
-    console.log(applicationStartDate);
-    console.log(applicationEndDate);
-    console.log(festivalType);
     if (existingFestival) {
       throw new BadRequestException('Festival already exists');
     }

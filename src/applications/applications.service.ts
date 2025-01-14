@@ -7,7 +7,7 @@ import { ParticipantDocumentsService } from '../participant-documents/participan
 import { InjectRepository } from '@nestjs/typeorm';
 import { Country } from '../countries/entities/country.entity';
 import { Repository, UpdateResult } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ParticipantType } from '../participant-types/entities/participant-type.entity';
 import { School } from '../schools/entities/school.entity';
 import { Region } from '../regions/entities/region.entity';
@@ -19,6 +19,7 @@ import { ApplicationScoreService } from '../application-score/application-score.
 import { FestivalsService } from '../festivals/festivals.service';
 import { CreateApplicationScoreDto } from '../application-score/dto/create-application-score.dto';
 import { ApplicationCompositionService } from '../application-composition/application-composition.service';
+import { Festival } from '../festivals/entities/festival.entity';
 
 @Injectable()
 export class ApplicationsService {
@@ -44,7 +45,6 @@ export class ApplicationsService {
         participantTypeId,
         countryId,
         leaderLastName,
-        nomination,
         subNominationId,
         isOnline,
         phoneNumber,
@@ -58,9 +58,11 @@ export class ApplicationsService {
         email,
         regionId,
         schoolId,
-        festivalName,
+        festivalId,
         applicationCompositions,
       } = createApplicationDto;
+      const festival = await this.festivalService.findOne(festivalId);
+      this.checkIfFestivalIsExpired(festival);
       application.isFree = !!isFree;
       application.leaderFirstName = leaderFirstName;
       application.leaderLastName = leaderLastName;
@@ -69,27 +71,24 @@ export class ApplicationsService {
       application.phoneNumber = phoneNumber;
       application.quantity = quantity;
       application.participantDocuments =
-        await this.participantDocumentsService.create(uploadedImages);
+        await this.participantDocumentsService.saveMany(uploadedImages);
       if (totalDuration) {
         application.totalDuration = totalDuration;
       }
       if (videoLinks) {
         application.participantVideoLinks =
-          await this.participantVideoLinksService.create(videoLinks);
+          await this.participantVideoLinksService.saveMany(videoLinks);
       }
       if (participants && participants.length > 0) {
         application.participants =
-          await this.participantsService.create(participants);
+          await this.participantsService.saveMany(participants);
       }
       if (uploadedAudio && uploadedAudio.length > 0) {
         application.participantRecordings =
-          await this.participantRecordingsService.create(uploadedAudio);
+          await this.participantRecordingsService.saveMany(uploadedAudio);
       }
-      if (subNominationId) {
-        application.subNomination = { id: subNominationId } as SubNomination;
-      } else {
-        application.nomination = nomination;
-      }
+      application.subNomination = { id: subNominationId } as SubNomination;
+
       application.participantType = {
         id: participantTypeId,
       } as ParticipantType;
@@ -107,12 +106,12 @@ export class ApplicationsService {
         application.regionName = regionName;
       }
 
-      application.compositions = this.applicationCompositionService.save(
-        applicationCompositions,
-      );
+      application.compositions =
+        await this.applicationCompositionService.saveMany(
+          applicationCompositions,
+        );
 
-      application.festival =
-        await this.festivalService.findActiveByName(festivalName);
+      application.festival = { id: festival.id } as Festival;
 
       await this.applicationRepository.save(application);
     } catch (e) {
@@ -120,12 +119,35 @@ export class ApplicationsService {
     }
   }
 
+  checkIfFestivalIsExpired(festival: Festival) {
+    const currentDate = new Date();
+    currentDate.setSeconds(0, 0);
+    if (festival && festival.applicationEndDate <= currentDate) {
+      throw new BadRequestException('The festival is expired');
+    }
+  }
+
   findAll() {
     return this.applicationRepository.find();
   }
 
-  findOne(id: number) {
-    return this.applicationRepository.findOneBy({ id });
+  async findOne(id: number) {
+    const application = await this.applicationRepository
+      .createQueryBuilder('application')
+      .leftJoinAndSelect('application.compositions', 'compositions')
+      .leftJoinAndSelect('application.participants', 'participants')
+      .leftJoinAndSelect('application.school', 'school')
+      .leftJoinAndSelect('application.country', 'country')
+      .leftJoinAndSelect('application.festival', 'festival')
+      .leftJoinAndSelect('application.subNomination', 'subNomination')
+      .leftJoinAndSelect(
+        'application.participantDocuments',
+        'participantDocuments',
+      )
+      .where('application.id= :id', { id })
+      .select()
+      .getOne();
+    return application;
   }
 
   async update(id: number, updateApplicationDto: UpdateApplicationDto) {}

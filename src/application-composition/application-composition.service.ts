@@ -10,19 +10,29 @@ export class ApplicationCompositionService {
     @InjectRepository(ApplicationComposition)
     private applicationCompositionRepository: Repository<ApplicationComposition>,
   ) {}
-  create(
+  async create(
     createApplicationCompositionDto: CreateApplicationCompositionDto,
-  ): ApplicationComposition {
-    return this.applicationCompositionRepository.create(
-      createApplicationCompositionDto,
+  ): Promise<ApplicationComposition> {
+    const composition = new ApplicationComposition();
+    composition.title = createApplicationCompositionDto.title;
+    return this.applicationCompositionRepository.save(
+        composition
     );
   }
 
-  save(
+  async saveMany(
     createApplicationCompositions: CreateApplicationCompositionDto[],
-  ): ApplicationComposition[] {
-    return createApplicationCompositions.map((composition) => {
-      return this.create(composition);
-    });
+  ): Promise<ApplicationComposition[]> {
+    try {
+      const allCompositions = createApplicationCompositions.map(
+        (composition) => {
+          return this.create(composition);
+        },
+      );
+
+      return await Promise.all(allCompositions);
+    } catch (error) {
+      throw new Error('Unable to create compositions');
+    }
   }
 }

@@ -10,24 +10,28 @@ export class ParticipantDocumentsService {
     @InjectRepository(ParticipantDocument)
     private participantDocumentRepository: Repository<ParticipantDocument>,
   ) {}
-  async create(
+  async saveMany(
     uploadedDocuments: FileSystemStoredFile[],
   ): Promise<ParticipantDocument[]> {
     try {
-      const files: ParticipantDocument[] = [];
-      uploadedDocuments.map(async (uploadedDocument) => {
-        const file = this.participantDocumentRepository.create();
-        file.originalName = uploadedDocument.originalName;
-        file.originalMimeType = uploadedDocument.mimetype;
-        await this.participantDocumentRepository.save(file);
-        files.push(file);
+      const files: Promise<ParticipantDocument>[] = uploadedDocuments.map(
+        (uploadedDocument) => {
+          return this.create(uploadedDocument);
+        },
+      );
 
-        // add to AWS S3
-      });
-
-      return files;
+      return await Promise.all(files);
     } catch (e) {
       throw new Error('Unable to create participant document');
     }
+  }
+
+  async create(
+    uploadedDocument: FileSystemStoredFile,
+  ): Promise<ParticipantDocument> {
+    const file = new ParticipantDocument();
+    file.originalName = uploadedDocument.originalName;
+    file.originalMimeType = uploadedDocument.mimetype;
+    return await this.participantDocumentRepository.save(file);
   }
 }

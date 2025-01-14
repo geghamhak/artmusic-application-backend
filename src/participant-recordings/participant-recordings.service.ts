@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateParticipantRecordingDto } from './dto/create-participant-recording.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ParticipantRecording } from './entities/participant-recording.entity';
@@ -11,23 +10,24 @@ export class ParticipantRecordingsService {
     @InjectRepository(ParticipantRecording)
     private participantRecordingRepository: Repository<ParticipantRecording>,
   ) {}
-  async create(
+  async saveMany(
     uploadedAudioFiles: FileSystemStoredFile[],
   ): Promise<ParticipantRecording[]> {
     try {
-      const recordings: ParticipantRecording[] = [];
-      uploadedAudioFiles.map(async (uploadedAudioFile) => {
-        const recording = new ParticipantRecording();
-        recording.originalName = uploadedAudioFile.originalName;
-        recording.originalMimeType = uploadedAudioFile.mimetype;
-
-        await this.participantRecordingRepository.save(recording);
-        recordings.push(recording);
-        // add to AWS S3
+      const recordings = uploadedAudioFiles.map((uploadedAudioFile) => {
+          return this.create(uploadedAudioFile)
       });
-      return recordings;
+      return await Promise.all(recordings);
     } catch (error) {
       throw new Error('Unavailable participant recording');
     }
+  }
+
+  async create(uploadedAudioFile: FileSystemStoredFile): Promise<ParticipantRecording> {
+    const recording = new ParticipantRecording();
+    recording.originalName = uploadedAudioFile.originalName;
+    recording.originalMimeType = uploadedAudioFile.mimetype;
+
+    return this.participantRecordingRepository.save(recording);
   }
 }

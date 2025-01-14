@@ -2,12 +2,11 @@ import { CreateParticipantDto } from '../../participants/dto/create-participant.
 import { HasMimeType, IsFiles } from 'nestjs-form-data';
 import { IsOptional } from 'class-validator';
 import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
-import { FestivalsEnum } from '../../festivals/festivals.service';
 import { ApplicationComposition } from '../../application-composition/entities/application-composition.entity';
 
 export class CreateApplicationDto {
   countryId: number;
-  festivalName: FestivalsEnum;
+  festivalId: number;
   applicationCompositions: ApplicationComposition[];
   totalDuration?: string;
   email: string;
@@ -17,7 +16,6 @@ export class CreateApplicationDto {
   leaderLastName: string;
   participants: CreateParticipantDto[];
   subNominationId: number;
-  nomination?: string;
   phoneNumber: string;
   quantity: number;
   participantTypeId?: number;

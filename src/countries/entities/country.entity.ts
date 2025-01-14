@@ -20,6 +20,9 @@ export class Country {
   @JoinColumn()
   name: TextContent;
 
+  @Column({ type: 'varchar', length: '50' })
+  code: string;
+
   @OneToMany(() => Application, (application) => application.festival)
   applications: Application[];
 

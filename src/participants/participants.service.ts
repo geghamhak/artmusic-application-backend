@@ -10,28 +10,28 @@ export class ParticipantsService {
     @InjectRepository(Participant)
     private participantRepository: Repository<Participant>,
   ) {}
-  async create(
-    createParticipantDtos: CreateParticipantDto[],
+  async saveMany(
+    createParticipantDto: CreateParticipantDto[],
   ): Promise<Participant[]> {
     try {
-      const participants: Participant[] = [];
-      createParticipantDtos.map(async (createParticipantDocumentDto) => {
-        console.log(createParticipantDocumentDto.firstName);
-        console.log(createParticipantDocumentDto.lastName);
-        const participant = new Participant();
-        participant.firstName = createParticipantDocumentDto.firstName;
-        participant.lastName = createParticipantDocumentDto.lastName;
-        participant.birthYear = createParticipantDocumentDto.birthYear;
-        if (createParticipantDocumentDto.fatherName) {
-          participant.fatherName = createParticipantDocumentDto.fatherName;
-        }
-        await this.participantRepository.save(participant);
-        participants.push(participant);
+      const participants = createParticipantDto.map((createParticipant) => {
+        return this.create(createParticipant);
       });
 
-      return participants;
+      return await Promise.all(participants);
     } catch (e) {
       throw new Error('Unable to create participant');
     }
+  }
+
+  async create(createParticipant: CreateParticipantDto): Promise<Participant> {
+    const participant = new Participant();
+    participant.firstName = createParticipant.firstName;
+    participant.lastName = createParticipant.lastName;
+    participant.birthYear = createParticipant.birthYear;
+    if (createParticipant.fatherName) {
+      participant.fatherName = createParticipant.fatherName;
+    }
+    return await this.participantRepository.save(participant);
   }
 }

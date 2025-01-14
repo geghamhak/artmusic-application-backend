@@ -9,21 +9,22 @@ export class ParticipantVideoLinksService {
     @InjectRepository(ParticipantVideoLink)
     private participantVideoLinkRepository: Repository<ParticipantVideoLink>,
   ) {}
-  async create(participantLinks: string[]) {
+  async saveMany(participantLinks: string[]) {
     try {
-      const videoLinks = [];
-      participantLinks.map(async (participantLink) => {
-        const videoLink = this.participantVideoLinkRepository.create();
-        videoLink.link = participantLink;
-        await this.participantVideoLinkRepository.save(videoLink);
-        videoLinks.push(videoLink);
-
-        // add to AWS S3
+      const videoLinks = participantLinks.map(async (participantLink) => {
+        return this.create(participantLink);
       });
 
-      return videoLinks;
+      return await Promise.all(videoLinks);
+      // add to AWS S3
     } catch (e) {
       throw new Error('Unable to create participant video link');
     }
+  }
+
+  async create(participantLink: string) {
+    const videoLink = new ParticipantVideoLink();
+    videoLink.link = participantLink;
+    return await this.participantVideoLinkRepository.save(videoLink);
   }
 }
