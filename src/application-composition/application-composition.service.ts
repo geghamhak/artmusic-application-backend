@@ -15,9 +15,7 @@ export class ApplicationCompositionService {
   ): Promise<ApplicationComposition> {
     const composition = new ApplicationComposition();
     composition.title = createApplicationCompositionDto.title;
-    return this.applicationCompositionRepository.save(
-        composition
-    );
+    return this.applicationCompositionRepository.save(composition);
   }
 
   async saveMany(

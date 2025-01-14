@@ -15,7 +15,7 @@ export class ParticipantRecordingsService {
   ): Promise<ParticipantRecording[]> {
     try {
       const recordings = uploadedAudioFiles.map((uploadedAudioFile) => {
-          return this.create(uploadedAudioFile)
+        return this.create(uploadedAudioFile);
       });
       return await Promise.all(recordings);
     } catch (error) {
@@ -23,7 +23,9 @@ export class ParticipantRecordingsService {
     }
   }
 
-  async create(uploadedAudioFile: FileSystemStoredFile): Promise<ParticipantRecording> {
+  async create(
+    uploadedAudioFile: FileSystemStoredFile,
+  ): Promise<ParticipantRecording> {
     const recording = new ParticipantRecording();
     recording.originalName = uploadedAudioFile.originalName;
     recording.originalMimeType = uploadedAudioFile.mimetype;
