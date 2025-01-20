@@ -116,8 +116,8 @@ export class ApplicationsService {
       application.festival = { id: festival.id } as Festival;
 
       await this.applicationRepository.save(application);
-    } catch (e) {
-      throw new Error(e);
+    } catch (error) {
+      throw error;
     }
   }
 

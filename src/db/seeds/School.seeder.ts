@@ -123,8 +123,8 @@ export default class SchoolSeeder implements Seeder {
           language: { id: 2 } as Language,
           textContent: { id: newSchoolTextContent.id } as TextContent,
         });
-      } catch (e) {
-        throw new Error(e);
+      } catch (error) {
+        throw error;
       }
     }
   }

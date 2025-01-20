@@ -31,7 +31,7 @@ export class HeaderService {
 
       // add images
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   }
 
@@ -59,7 +59,7 @@ export class HeaderService {
 
       // update images
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   }
 

@@ -37,7 +37,7 @@ export class FestivalTypesService {
       );
       return this.festivalTypeRepository.save(newFestivalType);
     } catch (error) {
-      throw new Error(error);
+      throw new Error('Unable to create festival type');
     }
   }
 

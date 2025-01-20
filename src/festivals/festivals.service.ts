@@ -36,13 +36,15 @@ export class FestivalsService {
   }
 
   findActiveByName(festivalName: FestivalsEnum): Promise<Festival> {
+    const currentDate = new Date();
+    currentDate.toISOString();
     return this.festivalRepository
       .createQueryBuilder('festival')
       .leftJoinAndSelect('festival.type', 'festivalType')
-      .leftJoinAndSelect('festivalType.name', 'textContent')
-      .where('festival.isActive = :isActive', { isActive: true })
-      .andWhere('textContent = :name', { name: festivalName })
-      .select(['festival.id'])
+      .where('festival.applicationStartDate <= :currentDate', { currentDate })
+      .andWhere('festival.applicationEndDate >= :currentDate', { currentDate })
+      .andWhere('festivalType.key= :key', { key: festivalName })
+      .select()
       .getOne();
   }
   async create(createFestivalDto: CreateFestivalDto) {
@@ -79,7 +81,7 @@ export class FestivalsService {
         );
       await this.festivalRepository.save(newFestival);
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   }
 

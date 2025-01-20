@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
-import { FestivalsService } from './festivals.service';
+import { FestivalsEnum, FestivalsService } from './festivals.service';
 import { CreateFestivalDto } from './dto/create-festival.dto';
 import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
 
@@ -21,6 +21,11 @@ export class FestivalsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.festivalsService.findOne(+id);
+  }
+
+  @Get('/active/:name')
+  findActiveByName(@Param('name') name: FestivalsEnum) {
+    return this.festivalsService.findActiveByName(name);
   }
 
   @Delete(':id')

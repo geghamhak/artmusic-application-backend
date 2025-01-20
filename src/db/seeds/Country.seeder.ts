@@ -33,8 +33,8 @@ export default class CountrySeeder implements Seeder {
           language: { id: 1 } as Language,
           textContent: { id: newRegionTextContent.id } as TextContent,
         });
-      } catch (e) {
-        throw new Error(e);
+      } catch (error) {
+        throw error;
       }
     }
   }

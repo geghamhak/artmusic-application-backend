@@ -19,7 +19,7 @@ export class ParticipantRecordingsService {
       });
       return await Promise.all(recordings);
     } catch (error) {
-      throw new Error('Unavailable participant recording');
+      throw new Error('Unable to create participant recording');
     }
   }
 

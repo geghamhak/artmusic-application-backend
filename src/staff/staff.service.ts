@@ -34,7 +34,7 @@ export class StaffService {
 
       // add images logic
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   }
 
@@ -59,7 +59,7 @@ export class StaffService {
 
       // update images
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   }
 

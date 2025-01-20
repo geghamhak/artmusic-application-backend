@@ -38,7 +38,7 @@ export class HomePageService {
 
       await this.homePageRepository.save(newHomePage);
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   }
 
@@ -75,7 +75,7 @@ export class HomePageService {
 
       // update images
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   }
 }
