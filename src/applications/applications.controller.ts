@@ -11,7 +11,6 @@ export class ApplicationsController {
   @Post()
   @FormDataRequest({ storage: FileSystemStoredFile })
   create(@Body() createApplicationDto: CreateApplicationDto) {
-    console.log(createApplicationDto);
     return this.applicationsService.create(createApplicationDto);
   }
 

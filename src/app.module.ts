@@ -14,7 +14,6 @@ import { ParticipantVideoLinksModule } from './participant-video-links/participa
 import { ParticipantRecordingsModule } from './participant-recordings/participant-recordings.module';
 import { ParticipantsModule } from './participants/participants.module';
 import { ApplicationsModule } from './applications/applications.module';
-import { ParticipantTypesModule } from './participant-types/participant-types.module';
 import { ScoringSystemModule } from './scoring-system/scoring-system.module';
 import { ParticipantVideoLinksService } from './participant-video-links/participant-video-links.service';
 import { ParticipantsService } from './participants/participants.service';
@@ -28,7 +27,6 @@ import { Nomination } from './nominations/entities/nomination.entity';
 import { Festival } from './festivals/entities/festival.entity';
 import { ParticipantDocument } from './participant-documents/entities/participant-document.entity';
 import { ParticipantRecording } from './participant-recordings/entities/participant-recording.entity';
-import { ParticipantType } from './participant-types/entities/participant-type.entity';
 import { ParticipantVideoLink } from './participant-video-links/entities/participant-video-link.entity';
 import { Participant } from './participants/entities/participant.entity';
 import { Region } from './regions/entities/region.entity';
@@ -73,7 +71,6 @@ import { ApplicationComposition } from './application-composition/entities/appli
             Nomination,
             ParticipantDocument,
             ParticipantRecording,
-            ParticipantType,
             ParticipantVideoLink,
             Participant,
             Region,
@@ -102,7 +99,6 @@ import { ApplicationComposition } from './application-composition/entities/appli
     ParticipantDocumentsModule,
     ParticipantsModule,
     ApplicationsModule,
-    ParticipantTypesModule,
     ScoringSystemModule,
     ApplicationScoreModule,
     DmsModule,

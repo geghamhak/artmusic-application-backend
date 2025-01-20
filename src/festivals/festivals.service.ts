@@ -79,7 +79,6 @@ export class FestivalsService {
         );
       await this.festivalRepository.save(newFestival);
     } catch (error) {
-      console.trace(error);
       throw new Error(error);
     }
   }

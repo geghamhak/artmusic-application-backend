@@ -14,11 +14,12 @@ export class CreateApplicationDto {
   isOnline: boolean;
   leaderFirstName: string;
   leaderLastName: string;
+  participantType: string;
   participants: CreateParticipantDto[];
   subNominationId: number;
   phoneNumber: string;
   quantity: number;
-  participantTypeId?: number;
+  isOrchestra?: boolean;
   schoolId?: number;
   schoolName?: string;
   regionId?: number;

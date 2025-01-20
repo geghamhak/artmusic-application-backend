@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -10,7 +11,6 @@ import {
 import { Festival } from '../../festivals/entities/festival.entity';
 import { Country } from '../../countries/entities/country.entity';
 import { Participant } from '../../participants/entities/participant.entity';
-import { ParticipantType } from '../../participant-types/entities/participant-type.entity';
 import { ParticipantRecording } from '../../participant-recordings/entities/participant-recording.entity';
 import { ParticipantVideoLink } from '../../participant-video-links/entities/participant-video-link.entity';
 import { ParticipantDocument } from '../../participant-documents/entities/participant-document.entity';
@@ -101,13 +101,10 @@ export class Application {
   )
   compositions?: ApplicationComposition[];
 
-  @ManyToOne(
-    () => ParticipantType,
-    (participantType) => participantType.applications,
-  )
-  participantType?: ParticipantType;
+  @Column({ type: 'varchar', length: '255' })
+  participantType: string;
 
-  @OneToMany(() => Participant, (participant) => participant.application)
+  @ManyToMany(() => Participant, (participant) => participant.applications)
   participants: Participant[];
 
   @OneToMany(

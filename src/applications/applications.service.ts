@@ -1,14 +1,16 @@
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { Application } from './entities/application.entity';
 import { ParticipantVideoLinksService } from '../participant-video-links/participant-video-links.service';
-import { ParticipantsService } from '../participants/participants.service';
+import {
+  ParticipantsService,
+  ParticipantType,
+} from '../participants/participants.service';
 import { ParticipantRecordingsService } from '../participant-recordings/participant-recordings.service';
 import { ParticipantDocumentsService } from '../participant-documents/participant-documents.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Country } from '../countries/entities/country.entity';
-import { Repository, UpdateResult } from 'typeorm';
+import { Repository, SelectQueryBuilder, UpdateResult } from 'typeorm';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ParticipantType } from '../participant-types/entities/participant-type.entity';
 import { School } from '../schools/entities/school.entity';
 import { Region } from '../regions/entities/region.entity';
 import { ScoringSystemService } from '../scoring-system/scoring-system.service';
@@ -20,6 +22,8 @@ import { FestivalsService } from '../festivals/festivals.service';
 import { CreateApplicationScoreDto } from '../application-score/dto/create-application-score.dto';
 import { ApplicationCompositionService } from '../application-composition/application-composition.service';
 import { Festival } from '../festivals/entities/festival.entity';
+import { getOverallScore } from '../utils/getOverallScore';
+import { getAverageScore } from '../utils/getAverageScore';
 
 @Injectable()
 export class ApplicationsService {
@@ -42,9 +46,9 @@ export class ApplicationsService {
         isFree,
         leaderFirstName,
         participants,
-        participantTypeId,
         countryId,
         leaderLastName,
+        participantType,
         subNominationId,
         isOnline,
         phoneNumber,
@@ -63,9 +67,11 @@ export class ApplicationsService {
       } = createApplicationDto;
       const festival = await this.festivalService.findOne(festivalId);
       this.checkIfFestivalIsExpired(festival);
+      await this.checkIfApplicationExists(createApplicationDto, festivalId);
       application.isFree = !!isFree;
       application.leaderFirstName = leaderFirstName;
       application.leaderLastName = leaderLastName;
+      application.participantType = participantType;
       application.isOnline = !!isOnline;
       application.email = email;
       application.phoneNumber = phoneNumber;
@@ -88,10 +94,6 @@ export class ApplicationsService {
           await this.participantRecordingsService.saveMany(uploadedAudio);
       }
       application.subNomination = { id: subNominationId } as SubNomination;
-
-      application.participantType = {
-        id: participantTypeId,
-      } as ParticipantType;
       application.country = { id: countryId } as Country;
 
       if (schoolId) {
@@ -127,27 +129,159 @@ export class ApplicationsService {
     }
   }
 
-  findAll() {
-    return this.applicationRepository.find();
+  async checkIfApplicationExists(
+    createApplicationDto: CreateApplicationDto,
+    festivalId: number,
+  ) {
+    let shouldRejectApplication = false;
+    if (
+      [ParticipantType.ENSEMBLE, ParticipantType.ORCHESTRA].includes(
+        createApplicationDto.participantType as ParticipantType,
+      )
+    ) {
+      shouldRejectApplication =
+        await this.checkApplicationByLeader(createApplicationDto);
+    } else {
+      shouldRejectApplication = await this.checkApplicationByParticipants(
+        createApplicationDto,
+        festivalId,
+      );
+    }
+
+    if (shouldRejectApplication) {
+      throw new BadRequestException('Application already exists');
+    }
   }
 
-  async findOne(id: number) {
-    const application = await this.applicationRepository
+  async checkApplicationByLeader(
+    createApplicationDto: CreateApplicationDto,
+  ): Promise<boolean> {
+    const participantType = createApplicationDto.isOrchestra
+      ? ParticipantType.ORCHESTRA
+      : ParticipantType.ENSEMBLE;
+    const existingApplication = await this.applicationRepository
+      .createQueryBuilder('application')
+      .leftJoinAndSelect('application.subNomination', 'subNomination')
+      .where('application.leaderFirstName = :leaderFirstName', {
+        leaderFirstName: createApplicationDto.leaderFirstName,
+      })
+      .andWhere('application.leaderLastName = :leaderLastName', {
+        leaderLastName: createApplicationDto.leaderLastName,
+      })
+      .andWhere('application.participantType = :participantType', {
+        participantType,
+      })
+      .andWhere('subNomination.id = :subNominationId', {
+        subNominationId: createApplicationDto.subNominationId,
+      })
+      .select()
+      .getOne();
+
+    if (existingApplication) {
+      return true;
+    }
+  }
+
+  async checkApplicationByParticipants(
+    createApplicationDto: CreateApplicationDto,
+    festivalId: number,
+  ): Promise<boolean> {
+    let shouldRejectApplication = false;
+    const existingParticipant = await this.participantsService.getByFullData(
+      createApplicationDto.participants[0],
+    );
+
+    if (!existingParticipant) {
+      return shouldRejectApplication;
+    }
+    const participantApplications = await this.getActiveApplicationsById(
+      existingParticipant.id,
+      festivalId,
+      createApplicationDto,
+    );
+    if (!participantApplications.length) {
+      return shouldRejectApplication;
+    }
+    participantApplications.map(async (participantApplication) => {
+      if (participantApplication.participantType === ParticipantType.SOLO) {
+        shouldRejectApplication = true;
+        return;
+      }
+
+      const existingApplication =
+        this.participantsService.compareParticipantsArrays(
+          createApplicationDto.participants,
+          await this.participantsService.getByApplicationId(
+            participantApplication.id,
+          ),
+        );
+
+      if (existingApplication) {
+        shouldRejectApplication = true;
+        return;
+      }
+    });
+
+    return shouldRejectApplication;
+  }
+
+  async getActiveApplicationsById(
+    id: number,
+    festivalId: number,
+    createApplicationDto: CreateApplicationDto,
+  ): Promise<Application[]> {
+    return await this.applicationRepository
+      .createQueryBuilder('application')
+      .leftJoinAndSelect('application.participants', 'participants')
+      .leftJoinAndSelect('application.festival', 'festival')
+      .leftJoinAndSelect('application.subNomination', 'subNomination')
+      .where('participants.id = :id', { id })
+      .andWhere('festival.id = :festivalId', { festivalId })
+      .andWhere('application.quantity = :quantity', {
+        quantity: createApplicationDto.quantity,
+      })
+      .andWhere('subNomination.id = :subNominationId', {
+        subNominationId: createApplicationDto.subNominationId,
+      })
+      .select(['application.id', 'application.participantType'])
+      .getMany();
+  }
+
+  selectQueryBuilder(): SelectQueryBuilder<Application> {
+    return this.applicationRepository
       .createQueryBuilder('application')
       .leftJoinAndSelect('application.compositions', 'compositions')
       .leftJoinAndSelect('application.participants', 'participants')
       .leftJoinAndSelect('application.school', 'school')
       .leftJoinAndSelect('application.country', 'country')
       .leftJoinAndSelect('application.festival', 'festival')
+      .leftJoinAndSelect('festival.type', 'festivalType')
       .leftJoinAndSelect('application.subNomination', 'subNomination')
+      .leftJoinAndSelect('subNomination.name', 'textContent')
+      .leftJoinAndSelect('textContent.translations', 'translations')
       .leftJoinAndSelect(
         'application.participantDocuments',
         'participantDocuments',
       )
+      .leftJoinAndSelect(
+        'application.participantRecordings',
+        'participantRecordings',
+      )
+      .leftJoinAndSelect(
+        'application.participantVideoLinks',
+        'participantVideoLinks',
+      );
+  }
+
+  async findAll() {
+    return await this.selectQueryBuilder().select().getMany();
+  }
+
+  async findOne(id: number) {
+    return await this.selectQueryBuilder()
       .where('application.id= :id', { id })
       .select()
       .getOne();
-    return application;
   }
 
   async update(id: number, updateApplicationDto: UpdateApplicationDto) {}
@@ -157,19 +291,14 @@ export class ApplicationsService {
   ): Promise<UpdateResult> {
     await this.applicationScoreService.create(createApplicationScoreDto);
     const { scores, applicationId: id } = createApplicationScoreDto;
-    const application = await this.findOne(id);
-    const overallScore: number = scores.reduce(
-      (total: number, current: number) => {
-        return total + current;
-      },
-      0,
-    );
-
-    const averageScore = Math.round((overallScore / scores.length) * 100) / 100;
-    const scoringSystem = await this.scoringSystemService.determinePlaceByScore(
-      averageScore,
-      application.festival.type,
-    );
+    const application: Application = await this.findOne(id);
+    const overallScore: number = getOverallScore(scores);
+    const averageScore: number = getAverageScore(overallScore, scores);
+    const scoringSystem: ScoringSystem =
+      await this.scoringSystemService.determinePlaceByScore(
+        averageScore,
+        application.festival.type,
+      );
     application.place = { id: scoringSystem.id } as ScoringSystem;
     application.totalScore = overallScore;
     return this.applicationRepository.update({ id }, application);

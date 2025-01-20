@@ -2,12 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  JoinTable,
 } from 'typeorm';
 import { Application } from '../../applications/entities/application.entity';
-
 @Entity()
 export class Participant {
   @PrimaryGeneratedColumn()
@@ -25,8 +25,11 @@ export class Participant {
   @Column({ type: 'int' })
   birthYear: number;
 
-  @ManyToOne(() => Application, (application) => application.participants)
-  application: Application;
+  @ManyToMany(() => Application, (application) => application.participants, {
+    cascade: true,
+  })
+  @JoinTable()
+  applications: Application[];
 
   @CreateDateColumn()
   createdAt: string;

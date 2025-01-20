@@ -13,7 +13,6 @@ import { Festival } from '../festivals/entities/festival.entity';
 import { Nomination } from '../nominations/entities/nomination.entity';
 import { ParticipantDocument } from '../participant-documents/entities/participant-document.entity';
 import { ParticipantRecording } from '../participant-recordings/entities/participant-recording.entity';
-import { ParticipantType } from '../participant-types/entities/participant-type.entity';
 import { ParticipantVideoLink } from '../participant-video-links/entities/participant-video-link.entity';
 import { Participant } from '../participants/entities/participant.entity';
 import { Region } from '../regions/entities/region.entity';
@@ -43,7 +42,6 @@ const options: DataSourceOptions & SeederOptions = {
     Nomination,
     ParticipantDocument,
     ParticipantRecording,
-    ParticipantType,
     ParticipantVideoLink,
     Participant,
     Region,
