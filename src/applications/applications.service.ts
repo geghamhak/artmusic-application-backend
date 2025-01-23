@@ -258,8 +258,15 @@ export class ApplicationsService {
       .leftJoinAndSelect('application.festival', 'festival')
       .leftJoinAndSelect('festival.type', 'festivalType')
       .leftJoinAndSelect('application.subNomination', 'subNomination')
-      .leftJoinAndSelect('subNomination.name', 'textContent')
-      .leftJoinAndSelect('textContent.translations', 'translations')
+      .leftJoinAndSelect('subNomination.name', 'subNominationTextContent')
+      .leftJoinAndSelect(
+        'subNominationTextContent.translations',
+        'subNominationTranslations',
+      )
+      .leftJoinAndSelect(
+        'subNominationTranslations.language',
+        'subNominationTranslationsLanguage',
+      )
       .leftJoinAndSelect(
         'application.participantDocuments',
         'participantDocuments',
@@ -287,7 +294,40 @@ export class ApplicationsService {
 
   async findByFestivalId(festivalId: number): Promise<Application[]> {
     return await this.selectQueryBuilder()
+      .leftJoinAndSelect('school.name', 'schoolTextContent')
+      .leftJoinAndSelect('schoolTextContent.translations', 'schoolTranslations')
+      .leftJoinAndSelect(
+        'schoolTranslations.language',
+        'schoolTranslationsLanguage',
+      )
+      .leftJoinAndSelect('school.region', 'region')
+      .leftJoinAndSelect('region.name', 'regionTextContent')
+      .leftJoinAndSelect('regionTextContent.translations', 'regionTranslations')
+      .leftJoinAndSelect(
+        'regionTranslations.language',
+        'regionTranslationsLanguage',
+      )
+      .leftJoinAndSelect('country.name', 'countryTextContent')
+      .leftJoinAndSelect(
+        'countryTextContent.translations',
+        'countryTranslations',
+      )
+      .leftJoinAndSelect(
+        'countryTranslations.language',
+        'countryTranslationsLanguage',
+      )
+      .leftJoinAndSelect('subNomination.nomination', 'nomination')
+      .leftJoinAndSelect('nomination.name', 'nominationTextContent')
+      .leftJoinAndSelect(
+        'nominationTextContent.translations',
+        'nominationTranslations',
+      )
+      .leftJoinAndSelect(
+        'nominationTranslations.language',
+        'nominationTranslationsLanguage',
+      )
       .where('festival.id= :festivalId', { festivalId })
+      .orderBy('nomination.id')
       .select()
       .getMany();
   }

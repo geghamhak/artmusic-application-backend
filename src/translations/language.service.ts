@@ -16,4 +16,10 @@ export class LanguageService {
       .select(['language.id', 'language.code'])
       .getMany();
   }
+
+  async findByCode(code: string): Promise<Language> {
+    return await this.languageRepository.findOneBy({
+      code,
+    });
+  }
 }
