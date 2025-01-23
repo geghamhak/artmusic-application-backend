@@ -194,11 +194,12 @@ export class ApplicationsService {
     if (!existingParticipant) {
       return shouldRejectApplication;
     }
-    const participantApplications = await this.getActiveApplicationsById(
-      existingParticipant.id,
-      festivalId,
-      createApplicationDto,
-    );
+    const participantApplications =
+      await this.findActiveApplicationsByParticipantId(
+        existingParticipant.id,
+        festivalId,
+        createApplicationDto,
+      );
     if (!participantApplications.length) {
       return shouldRejectApplication;
     }
@@ -225,7 +226,7 @@ export class ApplicationsService {
     return shouldRejectApplication;
   }
 
-  async getActiveApplicationsById(
+  async findActiveApplicationsByParticipantId(
     id: number,
     festivalId: number,
     createApplicationDto: CreateApplicationDto,
@@ -282,6 +283,13 @@ export class ApplicationsService {
       .where('application.id= :id', { id })
       .select()
       .getOne();
+  }
+
+  async findByFestivalId(festivalId: number): Promise<Application[]> {
+    return await this.selectQueryBuilder()
+      .where('festival.id= :festivalId', { festivalId })
+      .select()
+      .getMany();
   }
 
   async update(id: number, updateApplicationDto: UpdateApplicationDto) {}

@@ -48,6 +48,7 @@ import { HomePageModule } from './home-page/home-page.module';
 import { ApplicationCompositionModule } from './application-composition/application-composition.module';
 import { ApplicationCompositionService } from './application-composition/application-composition.service';
 import { ApplicationComposition } from './application-composition/entities/application-composition.entity';
+import { ExcelModule } from './excel/excel.module';
 
 @Module({
   imports: [
@@ -107,6 +108,7 @@ import { ApplicationComposition } from './application-composition/entities/appli
     HeaderModule,
     HomePageModule,
     ApplicationCompositionModule,
+    ExcelModule,
   ],
   providers: [
     CountriesService,
