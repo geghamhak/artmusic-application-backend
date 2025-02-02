@@ -75,26 +75,38 @@ export class ApplicationsService {
       application.isOnline = !!isOnline;
       application.email = email;
       application.phoneNumber = phoneNumber;
-      application.quantity = quantity;
       application.participantDocuments =
         await this.participantDocumentsService.saveMany(uploadedImages);
+      application.subNomination = { id: subNominationId } as SubNomination;
+      application.country = { id: countryId } as Country;
+      application.compositions =
+        await this.applicationCompositionService.saveMany(
+          applicationCompositions,
+        );
+      application.festival = { id: festival.id } as Festival;
+
+      if (createApplicationDto.quantity) {
+        application.quantity = quantity;
+      }
+
       if (totalDuration) {
         application.totalDuration = totalDuration;
       }
+
       if (videoLinks) {
         application.participantVideoLinks =
           await this.participantVideoLinksService.saveMany(videoLinks);
       }
+
       if (participants && participants.length > 0) {
         application.participants =
           await this.participantsService.saveMany(participants);
       }
+
       if (uploadedAudio && uploadedAudio.length > 0) {
         application.participantRecordings =
           await this.participantRecordingsService.saveMany(uploadedAudio);
       }
-      application.subNomination = { id: subNominationId } as SubNomination;
-      application.country = { id: countryId } as Country;
 
       if (schoolId) {
         application.school = { id: schoolId } as School;
@@ -108,13 +120,6 @@ export class ApplicationsService {
         application.regionName = regionName;
       }
 
-      application.compositions =
-        await this.applicationCompositionService.saveMany(
-          applicationCompositions,
-        );
-
-      application.festival = { id: festival.id } as Festival;
-
       await this.applicationRepository.save(application);
     } catch (error) {
       throw error;
@@ -122,9 +127,12 @@ export class ApplicationsService {
   }
 
   checkIfFestivalIsExpired(festival: Festival) {
+    if (!festival) {
+      throw new BadRequestException('The festival is not found');
+    }
     const currentDate = new Date();
     currentDate.setSeconds(0, 0);
-    if (festival && festival.applicationEndDate <= currentDate) {
+    if (festival.applicationEndDate <= currentDate) {
       throw new BadRequestException('The festival is expired');
     }
   }

@@ -18,16 +18,12 @@ export class ExcelService {
     }
   }
 
-  async createExportFileBuffer(
-    applications: Application[],
-  ) {
+  async createExportFileBuffer(applications: Application[]) {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('ExportApplications');
     worksheet.columns = this.getApplicationWorksheetColumns();
     for (const application of applications) {
-      worksheet.addRow(
-        this.getApplicationWorksheetRow(application),
-      );
+      worksheet.addRow(this.getApplicationWorksheetRow(application));
     }
 
     return await workbook.xlsx.writeBuffer();
@@ -64,13 +60,13 @@ export class ExcelService {
       id: application.id,
       code: application.code,
       country: application.country.name.translations.find(
-        (translation) => (translation.language.code === 'en'),
+        (translation) => translation.language.code === 'en',
       ).translation,
       subNomination: application.subNomination.name.translations.find(
-          (translation) => translation.language.code === armLanguageCode,
+        (translation) => translation.language.code === armLanguageCode,
       ).translation,
       nomination: application.subNomination.nomination.name.translations.find(
-          (translation) => (translation.language.code === armLanguageCode),
+        (translation) => translation.language.code === armLanguageCode,
       ).translation,
       region: application.school.region
         ? application.school.region.name.translations.find(

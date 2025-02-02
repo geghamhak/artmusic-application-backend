@@ -3,7 +3,7 @@ import { HasMimeType, IsFiles } from 'nestjs-form-data';
 import { IsOptional } from 'class-validator';
 import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
 import { ApplicationComposition } from '../../application-composition/entities/application-composition.entity';
-import {ParticipantType} from "../../participants/participants.service";
+import { ParticipantType } from '../../participants/participants.service';
 
 export class CreateApplicationDto {
   countryId: number;
