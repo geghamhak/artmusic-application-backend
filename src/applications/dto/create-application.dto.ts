@@ -18,7 +18,7 @@ export class CreateApplicationDto {
   participants: CreateParticipantDto[];
   subNominationId: number;
   phoneNumber: string;
-  quantity: number;
+  quantity?: number;
   isOrchestra?: boolean;
   schoolId?: number;
   schoolName?: string;
