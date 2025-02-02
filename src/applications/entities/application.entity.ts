@@ -44,7 +44,7 @@ export class Application {
   @Column({ type: 'varchar', length: '255' })
   phoneNumber: string;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', nullable: true })
   quantity: number;
 
   @Column({ type: 'varchar', length: '255' })

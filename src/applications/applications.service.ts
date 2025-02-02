@@ -246,9 +246,6 @@ export class ApplicationsService {
       .leftJoinAndSelect('application.subNomination', 'subNomination')
       .where('participants.id = :id', { id })
       .andWhere('festival.id = :festivalId', { festivalId })
-      .andWhere('application.quantity = :quantity', {
-        quantity: createApplicationDto.quantity,
-      })
       .andWhere('subNomination.id = :subNominationId', {
         subNominationId: createApplicationDto.subNominationId,
       })
