@@ -9,7 +9,7 @@ export class ExcelController {
   @Get('applications/:festivalId')
   async exportApplications(@Res() res: Response, @Param() festivalId: number) {
     return res
-      .set('Content-Disposition', `attachment; filename=example.xlsx`)
+      .set('Content-Disposition', `attachment; filename=applications.xlsx`)
       .send(await this.excelService.exportApplications(festivalId))
       .end();
   }

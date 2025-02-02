@@ -133,7 +133,7 @@ export class ApplicationsService {
     createApplicationDto: CreateApplicationDto,
     festivalId: number,
   ) {
-    let shouldRejectApplication = false;
+    let shouldRejectApplication: boolean;
     if (
       [ParticipantType.ENSEMBLE, ParticipantType.ORCHESTRA].includes(
         createApplicationDto.participantType as ParticipantType,
