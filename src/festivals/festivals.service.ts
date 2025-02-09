@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateFestivalDto } from './dto/create-festival.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -38,7 +42,7 @@ export class FestivalsService {
   findActiveByName(festivalName: FestivalsEnum): Promise<Festival> {
     const currentDate = new Date();
     currentDate.toISOString();
-    return this.festivalRepository
+    const activeFestival = this.festivalRepository
       .createQueryBuilder('festival')
       .leftJoinAndSelect('festival.type', 'festivalType')
       .where('festival.applicationStartDate <= :currentDate', { currentDate })
@@ -46,6 +50,10 @@ export class FestivalsService {
       .andWhere('festivalType.key= :key', { key: festivalName })
       .select()
       .getOne();
+    if (!activeFestival) {
+      throw new NotFoundException('The festival is not active');
+    }
+    return activeFestival;
   }
   async create(createFestivalDto: CreateFestivalDto) {
     try {
