@@ -23,7 +23,7 @@ export class FestivalsController {
     return this.festivalsService.findOne(+id);
   }
 
-  @Get('/active/:name')
+  @Get('/:name/active')
   findActiveByName(@Param('name') name: FestivalsEnum) {
     return this.festivalsService.findActiveByName(name);
   }
