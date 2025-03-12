@@ -212,7 +212,10 @@ export class ApplicationsService {
       return shouldRejectApplication;
     }
     participantApplications.map(async (participantApplication) => {
-      if (participantApplication.participantType.toUpperCase() === ParticipantType.SOLO) {
+      if (
+        participantApplication.participantType.toUpperCase() ===
+        ParticipantType.SOLO
+      ) {
         shouldRejectApplication = true;
         return;
       }
