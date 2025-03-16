@@ -27,6 +27,7 @@ import FestivalTypeSeeder from './seeds/FestivalType.seeder';
 import { ApplicationComposition } from '../application-composition/entities/application-composition.entity';
 import CountrySeeder from './seeds/Country.seeder';
 import { Header } from '../header/entities/header.entity';
+import { HomePage } from '../home-page/entities/home-page.entity';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql' as const,
@@ -55,6 +56,7 @@ const options: DataSourceOptions & SeederOptions = {
     ApplicationScore,
     ApplicationComposition,
     Header,
+    HomePage,
   ],
   seeds: [
     LanguageSeeder,
