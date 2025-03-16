@@ -17,33 +17,42 @@ export class HeaderService {
   ) {}
   async create(createHeaderDto: CreateHeaderDto) {
     try {
-      this.checkIfHeaderExists();
-      const newHeader = new Header();
-      const languages = await this.languageService.getAllLanguages();
-      const { bannerTitle } = createHeaderDto;
+      const header = await this.checkIfHeaderExists();
+      if (!header) {
+        const newHeader = new Header();
+        const languages = await this.languageService.getAllLanguages();
+        const { bannerTitle } = createHeaderDto;
 
-      newHeader.bannerTitle = await this.textContentService.addTranslations(
-        bannerTitle,
-        languages,
-      );
+        newHeader.bannerTitle = await this.textContentService.addTranslations(
+          bannerTitle,
+          languages,
+        );
 
-      await this.headerRepository.save(newHeader);
+        await this.headerRepository.save(newHeader);
 
-      // add images
+        // add images
+      } else {
+        throw new BadRequestException(`The header already exists`);
+      }
     } catch (error) {
       throw error;
     }
   }
 
-  private checkIfHeaderExists() {
-    const header = this.headerRepository.findOne({});
-    if (header) {
+  private async checkIfHeaderExists() {
+    const headerCount = await this.headerRepository.count();
+    if (headerCount) {
       return new BadRequestException(`The header already exists`);
     }
   }
 
-  find() {
-    return this.headerRepository.findOne({});
+  async find() {
+    const headerCount = await this.headerRepository.count();
+    if (headerCount) {
+      return await this.headerRepository.findOne({
+        where: { id: 1 },
+      });
+    }
   }
 
   async update(updateHeaderDto: UpdateHeaderDto) {
