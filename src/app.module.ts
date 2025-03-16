@@ -105,6 +105,7 @@ import { JwtModule } from '@nestjs/jwt';
             ApplicationScore,
             ApplicationComposition,
             Header,
+            Header,
             HomePage,
             Contact,
             FestivalImage,
