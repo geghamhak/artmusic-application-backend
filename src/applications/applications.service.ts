@@ -1,26 +1,29 @@
-import {CreateApplicationDto} from './dto/create-application.dto';
-import {Application} from './entities/application.entity';
-import {ParticipantVideoLinksService} from '../participant-video-links/participant-video-links.service';
-import {ParticipantsService, ParticipantType,} from '../participants/participants.service';
-import {ParticipantRecordingsService} from '../participant-recordings/participant-recordings.service';
-import {ParticipantDocumentsService} from '../participant-documents/participant-documents.service';
-import {InjectRepository} from '@nestjs/typeorm';
-import {Country} from '../countries/entities/country.entity';
-import {Repository, SelectQueryBuilder, UpdateResult} from 'typeorm';
-import {BadRequestException, Injectable} from '@nestjs/common';
-import {School} from '../schools/entities/school.entity';
-import {Region} from '../regions/entities/region.entity';
-import {ScoringSystemService} from '../scoring-system/scoring-system.service';
-import {UpdateApplicationDto} from './dto/update-application.dto';
-import {SubNomination} from '../sub-nominations/entities/sub-nomination.entity';
-import {ScoringSystem} from '../scoring-system/entities/scoring-system.entity';
-import {ApplicationScoreService} from '../application-score/application-score.service';
-import {FestivalsService} from '../festivals/festivals.service';
-import {CreateApplicationScoreDto} from '../application-score/dto/create-application-score.dto';
-import {ApplicationCompositionService} from '../application-composition/application-composition.service';
-import {Festival} from '../festivals/entities/festival.entity';
-import {getOverallScore} from '../utils/getOverallScore';
-import {getAverageScore} from '../utils/getAverageScore';
+import { CreateApplicationDto } from './dto/create-application.dto';
+import { Application } from './entities/application.entity';
+import { ParticipantVideoLinksService } from '../participant-video-links/participant-video-links.service';
+import {
+  ParticipantsService,
+  ParticipantType,
+} from '../participants/participants.service';
+import { ParticipantRecordingsService } from '../participant-recordings/participant-recordings.service';
+import { ParticipantDocumentsService } from '../participant-documents/participant-documents.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Country } from '../countries/entities/country.entity';
+import { Repository, SelectQueryBuilder, UpdateResult } from 'typeorm';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { School } from '../schools/entities/school.entity';
+import { Region } from '../regions/entities/region.entity';
+import { ScoringSystemService } from '../scoring-system/scoring-system.service';
+import { UpdateApplicationDto } from './dto/update-application.dto';
+import { SubNomination } from '../sub-nominations/entities/sub-nomination.entity';
+import { ScoringSystem } from '../scoring-system/entities/scoring-system.entity';
+import { ApplicationScoreService } from '../application-score/application-score.service';
+import { FestivalsService } from '../festivals/festivals.service';
+import { CreateApplicationScoreDto } from '../application-score/dto/create-application-score.dto';
+import { ApplicationCompositionService } from '../application-composition/application-composition.service';
+import { Festival } from '../festivals/entities/festival.entity';
+import { getOverallScore } from '../utils/getOverallScore';
+import { getAverageScore } from '../utils/getAverageScore';
 
 @Injectable()
 export class ApplicationsService {
@@ -299,47 +302,47 @@ export class ApplicationsService {
 
   async findByFestivalId(festivalId: number): Promise<Application[]> {
     return await this.selectQueryBuilder()
-        .leftJoinAndSelect('school.name', 'schoolTextContent')
-        .leftJoinAndSelect('schoolTextContent.translations', 'schoolTranslations')
-        .leftJoinAndSelect(
-            'schoolTranslations.language',
-            'schoolTranslationsLanguage',
-        )
-        .leftJoinAndSelect('school.region', 'region')
-        .leftJoinAndSelect('region.name', 'regionTextContent')
-        .leftJoinAndSelect('regionTextContent.translations', 'regionTranslations')
-        .leftJoinAndSelect(
-            'regionTranslations.language',
-            'regionTranslationsLanguage',
-        )
-        .leftJoinAndSelect('country.name', 'countryTextContent')
-        .leftJoinAndSelect(
-            'countryTextContent.translations',
-            'countryTranslations',
-        )
-        .leftJoinAndSelect(
-            'countryTranslations.language',
-            'countryTranslationsLanguage',
-        )
-        .leftJoinAndSelect('subNomination.nomination', 'nomination')
-        .leftJoinAndSelect('nomination.name', 'nominationTextContent')
-        .leftJoinAndSelect(
-            'nominationTextContent.translations',
-            'nominationTranslations',
-        )
-        .leftJoinAndSelect(
-            'nominationTranslations.language',
-            'nominationTranslationsLanguage',
-        )
-        .where('festival.id= :festivalId', {festivalId})
-        .orderBy('nomination.id')
-        .addOrderBy('application.participantType')
-        .addOrderBy('participants.birthYear', 'DESC')
-        .addOrderBy('participants.lastName')
-        .addOrderBy('participants.firstName')
-        .addOrderBy('participants.fatherName')
-        .select()
-        .getMany();
+      .leftJoinAndSelect('school.name', 'schoolTextContent')
+      .leftJoinAndSelect('schoolTextContent.translations', 'schoolTranslations')
+      .leftJoinAndSelect(
+        'schoolTranslations.language',
+        'schoolTranslationsLanguage',
+      )
+      .leftJoinAndSelect('school.region', 'region')
+      .leftJoinAndSelect('region.name', 'regionTextContent')
+      .leftJoinAndSelect('regionTextContent.translations', 'regionTranslations')
+      .leftJoinAndSelect(
+        'regionTranslations.language',
+        'regionTranslationsLanguage',
+      )
+      .leftJoinAndSelect('country.name', 'countryTextContent')
+      .leftJoinAndSelect(
+        'countryTextContent.translations',
+        'countryTranslations',
+      )
+      .leftJoinAndSelect(
+        'countryTranslations.language',
+        'countryTranslationsLanguage',
+      )
+      .leftJoinAndSelect('subNomination.nomination', 'nomination')
+      .leftJoinAndSelect('nomination.name', 'nominationTextContent')
+      .leftJoinAndSelect(
+        'nominationTextContent.translations',
+        'nominationTranslations',
+      )
+      .leftJoinAndSelect(
+        'nominationTranslations.language',
+        'nominationTranslationsLanguage',
+      )
+      .where('festival.id= :festivalId', { festivalId })
+      .orderBy('nomination.id')
+      .addOrderBy('application.participantType')
+      .addOrderBy('participants.birthYear', 'DESC')
+      .addOrderBy('participants.lastName')
+      .addOrderBy('participants.firstName')
+      .addOrderBy('participants.fatherName')
+      .select()
+      .getMany();
   }
 
   async update(id: number, updateApplicationDto: UpdateApplicationDto) {}
