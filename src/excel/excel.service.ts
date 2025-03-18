@@ -35,18 +35,19 @@ export class ExcelService {
       { header: 'performanceDate', key: 'performanceDate' },
       { header: 'performanceTime', key: 'performanceTime' },
       { header: 'nomination', key: 'nomination' },
-      { header: 'subNomination', key: 'subNomination' },
+      { header: 'subNomination', key: 'subNomination', width: 20 },
+      { header: 'birthYear', key: 'birthYear' },
       { header: 'country', key: 'country' },
       { header: 'region', key: 'region' },
-      { header: 'school', key: 'school' },
+      { header: 'school', key: 'school', width: 35 },
       { header: 'isFree', key: 'isFree' },
       { header: 'isOnline', key: 'isOnline' },
       { header: 'leaderFirstName', key: 'leaderFirstName' },
       { header: 'leaderLastName', key: 'leaderLastName' },
       { header: 'quantity', key: 'quantity' },
       { header: 'participantType', key: 'participantType' },
-      { header: 'compositions', key: 'compositions' },
-      { header: 'participants', key: 'participants' },
+      { header: 'compositions', key: 'compositions', width: 25 },
+      { header: 'participants', key: 'participants', width: 35 },
       { header: 'email', key: 'email' },
       { header: 'phoneNumber', key: 'phoneNumber' },
       { header: 'totalDuration', key: 'totalDuration' },
@@ -93,7 +94,7 @@ export class ExcelService {
         ? application.participants
             .map(
               (participant) =>
-                `${participant.lastName} ${participant.firstName} ${participant.fatherName}`,
+                `${participant.lastName} ${participant.firstName} ${participant.fatherName} ${participant.birthYear}`,
             )
             .join(', ')
         : '',

@@ -46,7 +46,6 @@ import { StaffModule } from './staff/staff.module';
 import { HeaderModule } from './header/header.module';
 import { HomePageModule } from './home-page/home-page.module';
 import { ApplicationCompositionModule } from './application-composition/application-composition.module';
-import { ApplicationCompositionService } from './application-composition/application-composition.service';
 import { ApplicationComposition } from './application-composition/entities/application-composition.entity';
 import { ExcelModule } from './excel/excel.module';
 

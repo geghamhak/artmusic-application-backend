@@ -4,8 +4,6 @@ import {
   Post,
   Body,
   Patch,
-  Param,
-  Delete,
 } from '@nestjs/common';
 import { HomePageService } from './home-page.service';
 import { CreateHomePageDto } from './dto/create-home-page.dto';
