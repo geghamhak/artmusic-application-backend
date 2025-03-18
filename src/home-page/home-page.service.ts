@@ -18,39 +18,48 @@ export class HomePageService {
 
   async create(createHomePageDto: CreateHomePageDto) {
     try {
-      this.checkIfHomePageExists();
-      const newHomePage = new HomePage();
-      const languages = await this.languageService.getAllLanguages();
-      const { title, information, videoLink } = createHomePageDto;
+      const homePage = await this.checkIfHomePageExists();
+      if (!homePage) {
+        const newHomePage = new HomePage();
+        const languages = await this.languageService.getAllLanguages();
+        const { title, information, videoLink } = createHomePageDto;
 
-      newHomePage.title = await this.textContentService.addTranslations(
-        title,
-        languages,
-      );
-      newHomePage.information = await this.textContentService.addTranslations(
-        information,
-        languages,
-      );
+        newHomePage.title = await this.textContentService.addTranslations(
+          title,
+          languages,
+        );
+        newHomePage.information = await this.textContentService.addTranslations(
+          information,
+          languages,
+        );
 
-      if (videoLink) {
-        newHomePage.videoLink = videoLink;
+        if (videoLink) {
+          newHomePage.videoLink = videoLink;
+        }
+
+        await this.homePageRepository.save(newHomePage);
+      } else {
+        throw new BadRequestException(`The home page already exists`);
       }
-
-      await this.homePageRepository.save(newHomePage);
     } catch (error) {
       throw error;
     }
   }
 
-  private checkIfHomePageExists() {
-    const homePage = this.homePageRepository.findOne({});
-    if (homePage) {
+  private async checkIfHomePageExists() {
+    const homePageCount = await this.homePageRepository.count();
+    if (homePageCount) {
       return new BadRequestException(`The homepage already exists`);
     }
   }
 
-  find() {
-    return this.homePageRepository.findOne({});
+  async find() {
+    const homePageCount = await this.homePageRepository.count();
+    if (homePageCount) {
+      return await this.homePageRepository.findOne({
+        where: { id: 1 },
+      });
+    }
   }
 
   async update(updateHomePageDto: UpdateHomePageDto) {

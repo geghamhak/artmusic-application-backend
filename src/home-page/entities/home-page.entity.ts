@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  Entity,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -8,6 +9,7 @@ import {
 } from 'typeorm';
 import { TextContent } from '../../translations/entities/textContent.entity';
 
+@Entity()
 export class HomePage {
   @PrimaryGeneratedColumn()
   id: number;

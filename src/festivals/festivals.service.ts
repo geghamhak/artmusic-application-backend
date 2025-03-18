@@ -39,10 +39,10 @@ export class FestivalsService {
     return this.festivalRepository.findOneBy({ id });
   }
 
-  findActiveByName(festivalName: FestivalsEnum): Promise<Festival> {
+  async findActiveByName(festivalName: FestivalsEnum): Promise<Festival> {
     const currentDate = new Date();
     currentDate.toISOString();
-    const activeFestival = this.festivalRepository
+    const activeFestival = await this.festivalRepository
       .createQueryBuilder('festival')
       .leftJoinAndSelect('festival.type', 'festivalType')
       .where('festival.applicationStartDate <= :currentDate', { currentDate })

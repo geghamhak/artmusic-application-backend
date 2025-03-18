@@ -48,6 +48,8 @@ import { HomePageModule } from './home-page/home-page.module';
 import { ApplicationCompositionModule } from './application-composition/application-composition.module';
 import { ApplicationComposition } from './application-composition/entities/application-composition.entity';
 import { ExcelModule } from './excel/excel.module';
+import { Header } from './header/entities/header.entity';
+import { HomePage } from './home-page/entities/home-page.entity';
 
 @Module({
   imports: [
@@ -82,6 +84,8 @@ import { ExcelModule } from './excel/excel.module';
             TextContent,
             ApplicationScore,
             ApplicationComposition,
+            Header,
+            HomePage,
           ],
           synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
