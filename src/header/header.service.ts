@@ -47,12 +47,23 @@ export class HeaderService {
   }
 
   async find() {
-    const headerCount = await this.headerRepository.count();
-    if (headerCount) {
-      return await this.headerRepository.findOne({
-        where: { id: 1 },
-      });
-    }
+    const header = await this.headerRepository
+      .createQueryBuilder('header')
+      .leftJoinAndSelect('header.bannerTitle', 'textContent')
+      .leftJoinAndSelect('textContent.translations', 'translations')
+      .leftJoinAndSelect('translations.language', 'translationLanguage')
+      .select([
+        'header.id',
+        'textContent.id',
+        'translations.translation',
+        'translationLanguage.code',
+      ])
+      .getMany();
+    const bannerTitle = header[0].bannerTitle.translations.map((i) => ({
+      languageCode: i.language.code,
+      translation: i.translation,
+    }));
+    return { bannerTitle };
   }
 
   async update(updateHeaderDto: UpdateHeaderDto) {
