@@ -54,12 +54,36 @@ export class HomePageService {
   }
 
   async find() {
-    const homePageCount = await this.homePageRepository.count();
-    if (homePageCount) {
-      return await this.homePageRepository.findOne({
-        where: { id: 1 },
-      });
-    }
+    const homePage = await this.homePageRepository
+      .createQueryBuilder('homepage')
+      .leftJoinAndSelect('homepage.title', 'titleContent')
+      .leftJoinAndSelect('titleContent.translations', 'titleTranslations')
+      .leftJoinAndSelect('titleTranslations.language', 'titleLanguage')
+      .leftJoinAndSelect('homepage.information', 'infoContent')
+      .leftJoinAndSelect('infoContent.translations', 'infoTranslations')
+      .leftJoinAndSelect('infoTranslations.language', 'infoLanguage')
+      .select([
+        'homepage.id',
+        'titleContent.id',
+        'titleTranslations.translation',
+        'titleLanguage.code',
+        'infoContent.id',
+        'infoTranslations.translation',
+        'infoLanguage.code',
+      ])
+      .getMany();
+
+    const title = homePage[0].title.translations.map((i) => ({
+      languageCode: i.language.code,
+      translation: i.translation,
+    }));
+
+    const information = homePage[0].information.translations.map((i) => ({
+      languageCode: i.language.code,
+      translation: i.translation,
+    }));
+
+    return { title, information };
   }
 
   async update(updateHomePageDto: UpdateHomePageDto) {

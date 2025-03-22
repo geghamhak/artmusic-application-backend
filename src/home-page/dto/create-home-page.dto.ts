@@ -1,3 +1,4 @@
+import { IsOptional } from 'class-validator';
 import { CreateTextContentDto } from '../../translations/dto/create-text-content.dto';
 import { HasMimeType, IsFiles } from 'nestjs-form-data';
 import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
@@ -5,6 +6,7 @@ import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/File
 export class CreateHomePageDto {
   title: CreateTextContentDto[];
   information: CreateTextContentDto[];
+  @IsOptional()
   @IsFiles()
   @HasMimeType(['image/jpeg', 'image/png'])
   images?: FileSystemStoredFile[];
