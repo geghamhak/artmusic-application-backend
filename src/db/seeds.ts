@@ -28,6 +28,7 @@ import { ApplicationComposition } from '../application-composition/entities/appl
 import CountrySeeder from './seeds/Country.seeder';
 import { Header } from '../header/entities/header.entity';
 import { HomePage } from '../home-page/entities/home-page.entity';
+import { Contact } from '../contact/entities/contact.entity';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql' as const,
@@ -57,6 +58,7 @@ const options: DataSourceOptions & SeederOptions = {
     ApplicationComposition,
     Header,
     HomePage,
+    Contact,
   ],
   seeds: [
     LanguageSeeder,

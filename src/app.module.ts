@@ -50,6 +50,8 @@ import { ApplicationComposition } from './application-composition/entities/appli
 import { ExcelModule } from './excel/excel.module';
 import { Header } from './header/entities/header.entity';
 import { HomePage } from './home-page/entities/home-page.entity';
+import { ContactModule } from './contact/contact.module';
+import { Contact } from './contact/entities/contact.entity';
 
 @Module({
   imports: [
@@ -86,6 +88,7 @@ import { HomePage } from './home-page/entities/home-page.entity';
             ApplicationComposition,
             Header,
             HomePage,
+            Contact,
           ],
           synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
@@ -112,6 +115,7 @@ import { HomePage } from './home-page/entities/home-page.entity';
     HomePageModule,
     ApplicationCompositionModule,
     ExcelModule,
+    ContactModule,
   ],
   providers: [
     CountriesService,
