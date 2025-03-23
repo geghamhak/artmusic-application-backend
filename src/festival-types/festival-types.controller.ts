@@ -12,6 +12,11 @@ export class FestivalTypesController {
     return this.festivalTypesService.create(createFestivalTypeDto);
   }
 
+  @Get('keys')
+  findAllKeys() {
+    return this.festivalTypesService.findAllKeys();
+  }
+
   @Get(':name')
   getByName(@Param('name') name: string) {
     return this.festivalTypesService.getByKey(name as FestivalsEnum);

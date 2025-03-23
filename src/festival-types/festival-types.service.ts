@@ -50,6 +50,15 @@ export class FestivalTypesService {
     }
   }
 
+  async findAllKeys() {
+    const festival_types = await this.festivalTypeRepository
+      .createQueryBuilder('festival_type')
+      .select(['festival_type.key'])
+      .getMany();
+    const festivalTypes = festival_types.map((i) => i.key);
+    return { festivalTypes };
+  }
+
   remove(id: number) {
     return this.festivalTypeRepository.delete(id);
   }
