@@ -73,12 +73,12 @@ export class HomePageService {
       ])
       .getMany();
 
-    const title = homePage[0].title.translations.map((i) => ({
+    const title = homePage[0]?.title.translations.map((i) => ({
       languageCode: i.language.code,
       translation: i.translation,
     }));
 
-    const information = homePage[0].information.translations.map((i) => ({
+    const information = homePage[0]?.information.translations.map((i) => ({
       languageCode: i.language.code,
       translation: i.translation,
     }));
