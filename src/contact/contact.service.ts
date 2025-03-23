@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,35 +18,23 @@ export class ContactService {
 
   async create(createContactDto: CreateContactDto) {
     try {
-      const contact = await this.checkIfContactExists();
-      if (!contact) {
-        const newContact = new Contact();
-        const languages = await this.languageService.getAllLanguages();
-        const { images, information } = createContactDto;
+      const newContact = new Contact();
+      const languages = await this.languageService.getAllLanguages();
+      const { images, information } = createContactDto;
 
-        newContact.information = await this.textContentService.addTranslations(
-          information,
-          languages,
-        );
+      newContact.information = await this.textContentService.addTranslations(
+        information,
+        languages,
+      );
 
-        await this.contactRepository.save(newContact);
-      } else {
-        throw new BadRequestException(`The contact already exists`);
-      }
+      await this.contactRepository.save(newContact);
     } catch (error) {
       throw error;
     }
   }
 
-  private async checkIfContactExists() {
-    const contactCount = await this.contactRepository.count();
-    if (contactCount) {
-      return new BadRequestException(`The contact already exists`);
-    }
-  }
-
   async findAll() {
-    const contact = await this.contactRepository
+    const contactsData = await this.contactRepository
       .createQueryBuilder('contact')
       .leftJoinAndSelect('contact.information', 'textContent')
       .leftJoinAndSelect('textContent.translations', 'translations')
@@ -58,11 +46,16 @@ export class ContactService {
         'translationLanguage.code',
       ])
       .getMany();
-    const information = contact[0].information.translations.map((i) => ({
-      languageCode: i.language.code,
-      translation: i.translation,
+
+    const contacts = contactsData.map((contact) => ({
+      contactId: contact.id,
+      translations: (contact.information?.translations || []).map((i) => ({
+        languageCode: i.language.code,
+        translation: i.translation,
+      })),
     }));
-    return { information };
+
+    return { contacts };
   }
 
   async update(updateContactDto: UpdateContactDto) {
