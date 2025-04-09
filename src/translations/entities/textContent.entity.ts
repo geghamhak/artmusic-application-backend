@@ -1,14 +1,11 @@
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
   OneToMany,
-  ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Translation } from './translation.entity';
-import { Language } from './language.entity';
 
 @Entity()
 export class TextContent {
