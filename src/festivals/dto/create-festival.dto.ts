@@ -16,4 +16,7 @@ export class CreateFestivalDto {
   bannerDescription: CreateTextContentDto[];
   applicationEndDate?: string;
   applicationStartDate?: string;
+  @IsFile({ each: true })
+  @HasMimeType(['image/jpeg', 'image/png'], { each: true })
+  gallery: FileSystemStoredFile[];
 }
