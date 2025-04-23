@@ -1,5 +1,7 @@
+import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
+
 export interface UploadSingleFile {
-  file: Express.Multer.File;
+  file: FileSystemStoredFile;
   entity: string;
   entityId: string;
   isPublic: boolean;
@@ -12,7 +14,7 @@ export interface UploadSingleFileResponse {
 }
 
 export interface UploadMultipleFiles {
-  files: Express.Multer.File[];
+  files: FileSystemStoredFile[];
   entity: string;
   entityId: string;
   isPublic: boolean;
