@@ -25,7 +25,7 @@ export class RdsStack extends Construct {
       vpc: props.vpc,
       vpcSubnets: { subnetType: SubnetType.PRIVATE_ISOLATED },
       instanceType: InstanceType.of(
-        InstanceClass.BURSTABLE4_GRAVITON,
+        InstanceClass.BURSTABLE2,
         InstanceSize.MICRO,
       ),
       multiAz: false,
