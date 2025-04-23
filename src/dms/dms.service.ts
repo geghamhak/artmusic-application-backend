@@ -65,11 +65,11 @@ export class DmsService {
       const command = new PutObjectCommand({
         Bucket: this.bucketName,
         Key: key,
-        Body: file.buffer,
+        Body: file.path,
         ContentType: file.mimetype,
         ACL: isPublic ? 'public-read' : 'private',
         Metadata: {
-          originalName: file.originalname,
+          originalName: file.originalName,
           entity,
           id,
         },
