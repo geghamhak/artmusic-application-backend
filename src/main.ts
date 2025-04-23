@@ -1,16 +1,33 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { ResponseInterceptor } from './interceptors/response-interceptor';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { bootstrapLambda } from './lambda.bootstrap';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+function attachPipes(app: INestApplication<any>) {
   app.useGlobalPipes(
     new ValidationPipe({
-      transform: true, // Transform is recomended configuration for avoind issues with arrays of files transformations
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
     }),
   );
-  app.useGlobalInterceptors(new ResponseInterceptor());
-  await app.listen(3001);
+  app.enableCors();
 }
-bootstrap().then((e) => console.log(e));
+
+if (process.env.NODE_ENV === 'local') {
+  async function bootstrap() {
+    const app = await NestFactory.create(AppModule);
+    attachPipes(app);
+    await app.listen(3001);
+  }
+
+  bootstrap().then((e) => console.log(e));
+}
+
+const handler = async (event: any, context: any, callback: any) => {
+  console.log('Event', event);
+  const server = await bootstrapLambda(attachPipes);
+  return server(event, context, callback);
+};
+
+module.exports.handler = handler;
