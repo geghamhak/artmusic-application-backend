@@ -68,7 +68,10 @@ export class HeaderService {
 
   async update(updateHeaderDto: UpdateHeaderDto) {
     try {
-      const header = await this.headerRepository.findOne({});
+      const header = await this.headerRepository.findOne({
+        where: { id: 1 },
+        relations: ['bannerTitle'],
+      });
       const { bannerTitle } = updateHeaderDto;
       if (bannerTitle) {
         await this.textContentService.updateTranslations(

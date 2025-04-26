@@ -28,7 +28,8 @@ export class HeaderController {
   }
 
   @Patch()
-  update(updateHeaderDto: UpdateHeaderDto) {
+  @FormDataRequest({ storage: FileSystemStoredFile })
+  update(@Body() updateHeaderDto: UpdateHeaderDto) {
     return this.headerService.update(updateHeaderDto);
   }
 
