@@ -49,7 +49,7 @@ export class ContactService {
 
     const contacts = contactsData.map((contact) => ({
       contactId: contact.id,
-      translations: (contact.information?.translations || []).map((i) => ({
+      information: (contact.information?.translations || []).map((i) => ({
         languageCode: i.language.code,
         translation: i.translation,
       })),
@@ -60,7 +60,10 @@ export class ContactService {
 
   async update(updateContactDto: UpdateContactDto) {
     try {
-      const contact = await this.contactRepository.findOne({});
+      const contact = await this.contactRepository.findOne({
+        where: { id: 1 },
+        relations: ['information'],
+      });
       const { images, information } = updateContactDto;
 
       if (information.length > 0) {

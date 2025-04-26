@@ -20,6 +20,7 @@ export class ContactController {
   }
 
   @Patch()
+  @FormDataRequest({ storage: FileSystemStoredFile })
   update(@Body() updateContactDto: UpdateContactDto) {
     return this.contactService.update(updateContactDto);
   }

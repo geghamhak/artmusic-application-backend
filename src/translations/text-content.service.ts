@@ -5,6 +5,7 @@ import { TextContent } from './entities/textContent.entity';
 import { TranslationsService } from './translations.service';
 import { Language } from './entities/language.entity';
 import { CreateTextContentDto } from './dto/create-text-content.dto';
+import { Translation } from './entities/translation.entity';
 
 @Injectable()
 export class TextContentService {
@@ -46,13 +47,12 @@ export class TextContentService {
   ): Promise<TextContent> {
     const existingTranslations =
       await this.translationsService.getByTextContentId(+textContent.id);
-    existingTranslations.map(async (existingTranslation) => {
-      const translationToUpdate = translations.find(
-        (translation) =>
-          translation.languageCode === existingTranslation.language.code,
+
+    existingTranslations.map(async ({ id, language }) => {
+      const { translation } = translations.find(
+        (translation) => translation.languageCode === language.code,
       );
-      existingTranslation.translation = translationToUpdate.translation;
-      await this.translationsService.update(existingTranslation);
+      await this.translationsService.update({ id, translation } as Translation);
     });
 
     return textContent;

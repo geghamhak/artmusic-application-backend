@@ -49,13 +49,13 @@ export class TranslationsService {
   async getByTextContentId(textContentId: number): Promise<Translation[]> {
     return await this.translationRepository
       .createQueryBuilder('translations')
-      .leftJoinAndSelect('translation.textContent', 'textContent')
-      .leftJoinAndSelect('translation.language', 'language')
-      .where('translation.textContent = :textContentId', { textContentId })
+      .leftJoinAndSelect('translations.textContent', 'textContent')
+      .leftJoinAndSelect('translations.language', 'language')
+      .where('translations.textContent = :textContentId', { textContentId })
       .select([
+        'translations.id',
         'textContent.id',
         'language.code',
-        'translations.translation',
         'translations.translation',
       ])
       .getMany();
