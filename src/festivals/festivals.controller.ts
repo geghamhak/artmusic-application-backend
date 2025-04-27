@@ -30,7 +30,7 @@ export class FestivalsController {
 
   @Get('/type/:type')
   findByName(@Param('type') type: FestivalsEnum) {
-    return this.festivalsService.findByName(type);
+    return this.festivalsService.findByType(type);
   }
 
   @Delete(':id')

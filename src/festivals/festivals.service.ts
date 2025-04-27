@@ -56,18 +56,20 @@ export class FestivalsService {
     return activeFestival;
   }
 
-  async findByName(festivalName: FestivalsEnum): Promise<Festival[]> {
-    const activeFestivals = await this.festivalRepository
+  async findByType(festivalName: FestivalsEnum): Promise<Festival[]> {
+    const festivals = await this.festivalRepository
       .createQueryBuilder('festival')
-      .leftJoinAndSelect('festival.type', 'festivalType')
-      .andWhere('festivalType.key= :key', { key: festivalName })
-      .select()
+      .leftJoinAndSelect('festival.title', 'textContent')
+      .leftJoinAndSelect('textContent.translations', 'translations')
+      .innerJoin('festival.type', 'festivalType')
+      .where('festivalType.key = :key', { key: festivalName })
+      .select(['festival.id', 'textContent', 'translations'])
       .getMany();
 
-    if (!activeFestivals.length) {
+    if (!festivals.length) {
       throw new NotFoundException(`${festivalName} does not have any festival`);
     }
-    return activeFestivals;
+    return festivals;
   }
   async create(createFestivalDto: CreateFestivalDto) {
     try {
