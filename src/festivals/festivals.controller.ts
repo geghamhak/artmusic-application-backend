@@ -28,6 +28,11 @@ export class FestivalsController {
     return this.festivalsService.findActiveByName(name);
   }
 
+  @Get('/type/:type')
+  findByName(@Param('type') type: FestivalsEnum) {
+    return this.festivalsService.findByName(type);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.festivalsService.remove(+id);
