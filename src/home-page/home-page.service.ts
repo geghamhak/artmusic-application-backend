@@ -88,7 +88,11 @@ export class HomePageService {
 
   async update(updateHomePageDto: UpdateHomePageDto) {
     try {
-      const homePage = await this.homePageRepository.findOne({});
+      const homePage = await this.homePageRepository.findOne({
+        where: { id: 1 },
+        relations: ['title', 'information'],
+      });
+
       const { title, information, videoLink } = updateHomePageDto;
 
       if (title.length > 0) {

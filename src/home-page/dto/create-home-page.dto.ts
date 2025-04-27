@@ -8,7 +8,7 @@ export class CreateHomePageDto {
   information: CreateTextContentDto[];
   @IsOptional()
   @IsFiles()
-  @HasMimeType(['image/jpeg', 'image/png'])
+  @HasMimeType(['image/jpeg', 'image/png'], { each: true })
   images?: FileSystemStoredFile[];
   videoLink?: string;
 }

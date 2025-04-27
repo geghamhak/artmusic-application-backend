@@ -20,6 +20,7 @@ export class HomePageController {
   }
 
   @Patch()
+  @FormDataRequest({ storage: FileSystemStoredFile })
   update(@Body() updateHomePageDto: UpdateHomePageDto) {
     return this.homePageService.update(updateHomePageDto);
   }
