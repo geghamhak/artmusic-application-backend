@@ -57,20 +57,39 @@ export class FestivalsService {
   }
 
   async findByType(festivalName: FestivalsEnum): Promise<Festival[]> {
-    const festivals = await this.festivalRepository
+    const festivalsData = await this.festivalRepository
       .createQueryBuilder('festival')
       .leftJoinAndSelect('festival.title', 'textContent')
       .leftJoinAndSelect('textContent.translations', 'translations')
+      .leftJoinAndSelect('translations.language', 'language')
       .innerJoin('festival.type', 'festivalType')
       .where('festivalType.key = :key', { key: festivalName })
-      .select(['festival.id', 'textContent', 'translations'])
+      .select([
+        'festival.id',
+        'textContent.id',
+        'translations.id',
+        'translations.translation',
+        'language.code',
+      ])
       .getMany();
 
-    if (!festivals.length) {
-      throw new NotFoundException(`${festivalName} does not have any festival`);
-    }
+    if (!festivalsData.length) return [];
+
+    const festivals = festivalsData.map((festival) => {
+      return {
+        id: festival.id,
+        title: {
+          translations: festival.title.translations.map((translation) => ({
+            languageCode: translation.language.code,
+            translation: translation.translation,
+          })),
+        },
+      } as unknown as Festival;
+    });
+
     return festivals;
   }
+
   async create(createFestivalDto: CreateFestivalDto) {
     try {
       const { applicationStartDate, applicationEndDate } = createFestivalDto;
