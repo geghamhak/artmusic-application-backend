@@ -1,6 +1,15 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Patch,
+} from '@nestjs/common';
 import { FestivalsEnum, FestivalsService } from './festivals.service';
 import { CreateFestivalDto } from './dto/create-festival.dto';
+import { UpdateFestivalDto } from './dto/update-festival.dto';
 import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
 
 @Controller('festivals')
@@ -31,6 +40,15 @@ export class FestivalsController {
   @Get('/type/:type')
   findByName(@Param('type') type: FestivalsEnum) {
     return this.festivalsService.findByType(type);
+  }
+
+  @Patch(':id')
+  @FormDataRequest({ storage: FileSystemStoredFile })
+  update(
+    @Param('id') id: string,
+    @Body() updateFestivalDto: UpdateFestivalDto,
+  ) {
+    return this.festivalsService.update(+id, updateFestivalDto);
   }
 
   @Delete(':id')

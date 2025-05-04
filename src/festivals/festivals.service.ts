@@ -11,6 +11,7 @@ import { TextContentService } from '../translations/text-content.service';
 import { LanguageService } from '../translations/language.service';
 import { FestivalTypesService } from '../festival-types/festival-types.service';
 import { FestivalType } from '../festival-types/entities/festival-type.entity';
+import { UpdateFestivalDto } from './dto/update-festival.dto';
 
 export enum FestivalsEnum {
   ARTMUSIC = 'artmusic',
@@ -183,6 +184,52 @@ export class FestivalsService {
           languages,
         );
       await this.festivalRepository.save(newFestival);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async update(id: number, updateFestivalDto: UpdateFestivalDto) {
+    try {
+      const festival = await this.festivalRepository.findOne({
+        where: { id },
+        relations: ['title', 'description', 'bannerDescription'],
+      });
+      const {
+        title,
+        description,
+        bannerDescription,
+        applicationStartDate,
+        applicationEndDate,
+      } = updateFestivalDto;
+
+      if (title.length > 0) {
+        await this.textContentService.updateTranslations(festival.title, title);
+      }
+
+      if (description.length > 0) {
+        await this.textContentService.updateTranslations(
+          festival.description,
+          description,
+        );
+      }
+
+      if (bannerDescription.length > 0) {
+        await this.textContentService.updateTranslations(
+          festival.bannerDescription,
+          bannerDescription,
+        );
+      }
+
+      if (applicationStartDate.length > 0) {
+        this.festivalRepository.update(festival.id, { applicationStartDate });
+      }
+
+      if (applicationEndDate.length > 0) {
+        this.festivalRepository.update(festival.id, { applicationEndDate });
+      }
+
+      // update images
     } catch (error) {
       throw error;
     }
