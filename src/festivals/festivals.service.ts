@@ -35,8 +35,68 @@ export class FestivalsService {
     return this.festivalRepository.find();
   }
 
-  findOne(id: number) {
-    return this.festivalRepository.findOneBy({ id });
+  async findOne(id: number) {
+    const festival = await this.festivalRepository
+      .createQueryBuilder('festival')
+      .leftJoinAndSelect('festival.title', 'title')
+      .leftJoinAndSelect('title.translations', 'titleTranslations')
+      .leftJoinAndSelect('titleTranslations.language', 'titleLanguage')
+
+      .leftJoinAndSelect('festival.description', 'description')
+      .leftJoinAndSelect('description.translations', 'descriptionTranslations')
+      .leftJoinAndSelect(
+        'descriptionTranslations.language',
+        'descriptionLanguage',
+      )
+
+      .leftJoinAndSelect('festival.bannerDescription', 'bannerDescription')
+      .leftJoinAndSelect('bannerDescription.translations', 'bannerTranslations')
+      .leftJoinAndSelect('bannerTranslations.language', 'bannerLanguage')
+
+      .where('festival.id = :id', { id })
+      .select([
+        'festival.id',
+        'festival.applicationStartDate',
+        'festival.applicationEndDate',
+
+        'title.id',
+        'titleTranslations.id',
+        'titleTranslations.translation',
+        'titleLanguage.code',
+
+        'description.id',
+        'descriptionTranslations.id',
+        'descriptionTranslations.translation',
+        'descriptionLanguage.code',
+
+        'bannerDescription.id',
+        'bannerTranslations.id',
+        'bannerTranslations.translation',
+        'bannerLanguage.code',
+      ])
+      .getOne();
+
+    if (!festival) {
+      throw new NotFoundException(`Festival with id ${id} not found`);
+    }
+
+    return {
+      id: festival.id,
+      applicationStartDate: festival.applicationStartDate,
+      applicationEndDate: festival.applicationEndDate,
+      title: festival.title.translations.map((t) => ({
+        translation: t.translation,
+        languageCode: t.language.code,
+      })),
+      description: festival.description.translations.map((t) => ({
+        translation: t.translation,
+        languageCode: t.language.code,
+      })),
+      bannerDescription: festival.bannerDescription.translations.map((t) => ({
+        translation: t.translation,
+        languageCode: t.language.code,
+      })),
+    } as unknown as Festival;
   }
 
   async findActiveByName(festivalName: FestivalsEnum): Promise<Festival> {
