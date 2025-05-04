@@ -4,7 +4,7 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
-  GetObjectCommand,
+  ListObjectsV2Command,
 } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
@@ -13,6 +13,7 @@ import {
   UploadSingleFile,
   UploadSingleFileResponse,
 } from './dms.service-types';
+import { _Object } from '@aws-sdk/client-s3/dist-types/models/models_0';
 
 @Injectable()
 export class DmsService {
@@ -39,7 +40,7 @@ export class DmsService {
     files,
     entity,
     entityId,
-    isPublic = true,
+    type,
   }: UploadMultipleFiles): Promise<UploadSingleFileResponse[]> {
     return Promise.all(
       files.map(async (file) => {
@@ -47,6 +48,7 @@ export class DmsService {
           file,
           entity,
           entityId,
+          type,
           isPublic,
         });
       }),
@@ -57,17 +59,17 @@ export class DmsService {
     file,
     entity,
     entityId,
-    isPublic = true,
-  }: UploadSingleFile): Promise<UploadSingleFileResponse> {
+    type,
+  }: UploadSingleFile): Promise<void> {
     try {
+      const key = type ? `${entity}/${entityId}/${type}/${id}` : `${entity}/${entityId}/${id}`;
       const id = uuidv4();
-      const key = `${entity}/${entityId}/${id}`;
       const command = new PutObjectCommand({
         Bucket: this.bucketName,
         Key: key,
         Body: file.buffer,
         ContentType: file.mimetype,
-        ACL: isPublic ? 'public-read' : 'private',
+        ACL: 'private',
         Metadata: {
           originalName: file.originalname,
           entity,
@@ -76,35 +78,35 @@ export class DmsService {
       });
 
       await this.client.send(command);
-
-      return {
-        url: isPublic
-          ? (await this.getFileUrl(key)).url
-          : (await this.getPreSignedUrl(key)).url,
-        key,
-        isPublic,
-      };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
-  async getFileUrl(key: string) {
-    return { url: `https://${this.bucketName}.s3.amazonaws.com/${key}` };
-  }
-
-  async getPreSignedUrl(key: string): Promise<{ url: string }> {
+  // prefix /entity/entityId/type?/
+  async getPreSignedUrls(prefix: string): Promise<{ url: string, key: string }[]> {
     try {
-      const command = new GetObjectCommand({
+      const urls = [];
+      const command = new ListObjectsV2Command({
         Bucket: this.bucketName,
-        Key: key,
+        Prefix: prefix,
       });
 
-      const url = await getSignedUrl(this.client, command, {
-        expiresIn: 60 * 60 * 24,
+      const s3Objects = await this.client.send(command) as ListObjectsV2Output;
+
+      s3Objects.Contents.map((image): _Object => {
+        const key = image.Key;
+        const urlCommand = new ListObjectsV2Command({
+          Bucket: this.bucketName,
+          Prefix: key,
+        });
+        const url = await getSignedUrl(this.client, urlCommand, {
+          expiresIn: 60 * 60 * 24,
+        });
+        urls.push({ url, key });
       });
 
-      return { url };
+      return urls;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

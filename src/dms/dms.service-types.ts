@@ -2,7 +2,7 @@ export interface UploadSingleFile {
   file: Express.Multer.File;
   entity: string;
   entityId: string;
-  isPublic: boolean;
+  type?: string;
 }
 
 export interface UploadSingleFileResponse {
@@ -15,5 +15,5 @@ export interface UploadMultipleFiles {
   files: Express.Multer.File[];
   entity: string;
   entityId: string;
-  isPublic: boolean;
+  type?: string;
 }
