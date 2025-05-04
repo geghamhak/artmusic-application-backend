@@ -6,12 +6,14 @@ import { Repository } from 'typeorm';
 import { TextContentService } from '../translations/text-content.service';
 import { LanguageService } from '../translations/language.service';
 import { Header } from './entities/header.entity';
+import { DmsService } from 'src/dms/dms.service';
 
 @Injectable()
 export class HeaderService {
   constructor(
     @InjectRepository(Header)
     private headerRepository: Repository<Header>,
+    private dmsService: DmsService,
     private textContentService: TextContentService,
     private languageService: LanguageService,
   ) {}
@@ -21,16 +23,28 @@ export class HeaderService {
       if (!header) {
         const newHeader = new Header();
         const languages = await this.languageService.getAllLanguages();
-        const { bannerTitle } = createHeaderDto;
+        const { bannerTitle, banner, logo } = createHeaderDto;
 
         newHeader.bannerTitle = await this.textContentService.addTranslations(
           bannerTitle,
           languages,
         );
 
-        await this.headerRepository.save(newHeader);
+        const createdHeader = await this.headerRepository.save(newHeader);
 
-        // add images
+        await this.dmsService.uploadSingleFile({
+          file: banner,
+          entity: 'header',
+          entityId: createdHeader.id,
+          type: 'banner',
+        });
+
+        await this.dmsService.uploadSingleFile({
+          file: logo,
+          entity: 'header',
+          entityId: createdHeader.id,
+          type: 'logo',
+        });
       } else {
         throw new BadRequestException(`The header already exists`);
       }

@@ -5,15 +5,13 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   ListObjectsV2Command,
+  GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import {
-  UploadMultipleFiles,
-  UploadSingleFile,
-  UploadSingleFileResponse,
-} from './dms.service-types';
-import { _Object } from '@aws-sdk/client-s3/dist-types/models/models_0';
+import { UploadMultipleFiles, UploadSingleFile } from './dms.service-types';
+import { ListObjectsV2Output } from '@aws-sdk/client-s3/dist-types/models/models_0';
+import { readFile } from 'fs/promises';
 
 @Injectable()
 export class DmsService {
@@ -41,15 +39,14 @@ export class DmsService {
     entity,
     entityId,
     type,
-  }: UploadMultipleFiles): Promise<UploadSingleFileResponse[]> {
-    return Promise.all(
+  }: UploadMultipleFiles): Promise<void> {
+    Promise.all(
       files.map(async (file) => {
         return await this.uploadSingleFile({
           file,
           entity,
           entityId,
           type,
-          isPublic,
         });
       }),
     );
@@ -62,16 +59,19 @@ export class DmsService {
     type,
   }: UploadSingleFile): Promise<void> {
     try {
-      const key = type ? `${entity}/${entityId}/${type}/${id}` : `${entity}/${entityId}/${id}`;
       const id = uuidv4();
+      const key = type
+        ? `${entity}/${entityId}/${type}/${id}`
+        : `${entity}/${entityId}/${id}`;
+      const buffer = await readFile(file.path);
       const command = new PutObjectCommand({
         Bucket: this.bucketName,
         Key: key,
-        Body: file.buffer,
+        Body: buffer,
         ContentType: file.mimetype,
         ACL: 'private',
         Metadata: {
-          originalName: file.originalname,
+          originalName: file.originalName,
           entity,
           id,
         },
@@ -84,7 +84,9 @@ export class DmsService {
   }
 
   // prefix /entity/entityId/type?/
-  async getPreSignedUrls(prefix: string): Promise<{ url: string, key: string }[]> {
+  async getPreSignedUrls(
+    prefix: string,
+  ): Promise<{ url: string; key: string }[]> {
     try {
       const urls = [];
       const command = new ListObjectsV2Command({
@@ -92,19 +94,23 @@ export class DmsService {
         Prefix: prefix,
       });
 
-      const s3Objects = await this.client.send(command) as ListObjectsV2Output;
+      const s3Objects = (await this.client.send(
+        command,
+      )) as ListObjectsV2Output;
 
-      s3Objects.Contents.map((image): _Object => {
-        const key = image.Key;
-        const urlCommand = new ListObjectsV2Command({
-          Bucket: this.bucketName,
-          Prefix: key,
-        });
-        const url = await getSignedUrl(this.client, urlCommand, {
-          expiresIn: 60 * 60 * 24,
-        });
-        urls.push({ url, key });
-      });
+      await Promise.all(
+        s3Objects.Contents.map(async (image) => {
+          const key = image.Key;
+          const urlCommand = new GetObjectCommand({
+            Bucket: this.bucketName,
+            Key: key,
+          });
+          const url = await getSignedUrl(this.client, urlCommand, {
+            expiresIn: 60 * 60 * 24,
+          });
+          urls.push({ url, key });
+        }),
+      );
 
       return urls;
     } catch (error) {
