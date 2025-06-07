@@ -77,7 +77,10 @@ export class HeaderService {
       languageCode: i.language.code,
       translation: i.translation,
     }));
-    return { bannerTitle };
+    const logo = await this.dmsService.getPreSignedUrls('header/1/logo/');
+    const banner = await this.dmsService.getPreSignedUrls('header/1/banner/');
+
+    return { bannerTitle, banner, logo };
   }
 
   async update(updateHeaderDto: UpdateHeaderDto) {
@@ -86,7 +89,8 @@ export class HeaderService {
         where: { id: 1 },
         relations: ['bannerTitle'],
       });
-      const { bannerTitle } = updateHeaderDto;
+      const { bannerTitle, banner, logo, bannerDeleted, logoDeleted } =
+        updateHeaderDto;
       if (bannerTitle) {
         await this.textContentService.updateTranslations(
           header.bannerTitle,
@@ -94,13 +98,35 @@ export class HeaderService {
         );
       }
 
-      // update images
+      if (bannerDeleted && banner) {
+        await this.dmsService.deleteFile(bannerDeleted[0] as unknown as string);
+        await this.dmsService.uploadSingleFile({
+          file: banner,
+          entity: 'header',
+          entityId: 1,
+          type: 'banner',
+        });
+      }
+
+      if (logoDeleted && logo) {
+        await this.dmsService.deleteFile(logoDeleted[0] as unknown as string);
+        await this.dmsService.uploadSingleFile({
+          file: logo,
+          entity: 'header',
+          entityId: 1,
+          type: 'logo',
+        });
+      }
     } catch (error) {
       throw error;
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} header`;
+  async remove(key: string) {
+    try {
+      await this.dmsService.deleteFile(key);
+    } catch (error) {
+      throw error;
+    }
   }
 }

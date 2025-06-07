@@ -97,20 +97,21 @@ export class DmsService {
       const s3Objects = (await this.client.send(
         command,
       )) as ListObjectsV2Output;
-
-      await Promise.all(
-        s3Objects.Contents.map(async (image) => {
-          const key = image.Key;
-          const urlCommand = new GetObjectCommand({
-            Bucket: this.bucketName,
-            Key: key,
-          });
-          const url = await getSignedUrl(this.client, urlCommand, {
-            expiresIn: 60 * 60 * 24,
-          });
-          urls.push({ url, key });
-        }),
-      );
+      if (s3Objects.Contents) {
+        await Promise.all(
+          s3Objects.Contents.map(async (image) => {
+            const key = image.Key;
+            const urlCommand = new GetObjectCommand({
+              Bucket: this.bucketName,
+              Key: key,
+            });
+            const url = await getSignedUrl(this.client, urlCommand, {
+              expiresIn: 60 * 60 * 24,
+            });
+            urls.push({ url, key });
+          }),
+        );
+      }
 
       return urls;
     } catch (error) {

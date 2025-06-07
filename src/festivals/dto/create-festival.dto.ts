@@ -1,3 +1,4 @@
+import { IsOptional } from 'class-validator';
 import { CreateTextContentDto } from '../../translations/dto/create-text-content.dto';
 import { FestivalsEnum } from '../festivals.service';
 import { HasMimeType, IsFile } from 'nestjs-form-data';
@@ -18,5 +19,6 @@ export class CreateFestivalDto {
   applicationStartDate?: string;
   @IsFile({ each: true })
   @HasMimeType(['image/jpeg', 'image/png'], { each: true })
-  gallery: FileSystemStoredFile[];
+  @IsOptional()
+  gallery?: FileSystemStoredFile[];
 }

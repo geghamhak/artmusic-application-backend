@@ -33,8 +33,8 @@ export class HeaderController {
     return this.headerService.update(updateHeaderDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.headerService.remove(+id);
+  @Delete(':key')
+  remove(@Param('key') key: string) {
+    return this.headerService.remove(key);
   }
 }

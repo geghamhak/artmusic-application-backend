@@ -12,6 +12,7 @@ import { LanguageService } from '../translations/language.service';
 import { FestivalTypesService } from '../festival-types/festival-types.service';
 import { FestivalType } from '../festival-types/entities/festival-type.entity';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
+import { DmsService } from 'src/dms/dms.service';
 
 export enum FestivalsEnum {
   ARTMUSIC = 'artmusic',
@@ -27,6 +28,7 @@ export class FestivalsService {
   constructor(
     @InjectRepository(Festival)
     private festivalRepository: Repository<Festival>,
+    private dmsService: DmsService,
     private textContentService: TextContentService,
     private languageService: LanguageService,
     private festivalTypeService: FestivalTypesService,
@@ -81,6 +83,16 @@ export class FestivalsService {
       throw new NotFoundException(`Festival with id ${id} not found`);
     }
 
+    const banner = await this.dmsService.getPreSignedUrls(
+      `festivals/${id}/banner/`,
+    );
+    const termsAndConditions = await this.dmsService.getPreSignedUrls(
+      `festivals/${id}/termsAndConditions/`,
+    );
+    const gallery = await this.dmsService.getPreSignedUrls(
+      `festivals/${id}/gallery/`,
+    );
+
     return {
       id: festival.id,
       applicationStartDate: festival.applicationStartDate,
@@ -97,6 +109,9 @@ export class FestivalsService {
         translation: t.translation,
         languageCode: t.language.code,
       })),
+      banner,
+      termsAndConditions,
+      gallery,
     } as unknown as Festival;
   }
 
@@ -167,7 +182,14 @@ export class FestivalsService {
       const newFestival = new Festival();
       newFestival.applicationStartDate = startDate;
       newFestival.applicationEndDate = endDate;
-      const { title, description, bannerDescription } = createFestivalDto;
+      const {
+        title,
+        description,
+        bannerDescription,
+        banner,
+        termsAndConditions,
+        gallery,
+      } = createFestivalDto;
       newFestival.type = { id: festivalType.id } as FestivalType;
       const languages = await this.languageService.getAllLanguages();
       newFestival.title = await this.textContentService.addTranslations(
@@ -183,7 +205,28 @@ export class FestivalsService {
           bannerDescription,
           languages,
         );
-      await this.festivalRepository.save(newFestival);
+      const festival = await this.festivalRepository.save(newFestival);
+
+      await this.dmsService.uploadSingleFile({
+        file: banner,
+        entity: 'festivals',
+        entityId: festival.id,
+        type: 'banner',
+      });
+      await this.dmsService.uploadSingleFile({
+        file: termsAndConditions,
+        entity: 'festivals',
+        entityId: festival.id,
+        type: 'termsAndConditions',
+      });
+      if (gallery) {
+        await this.dmsService.uploadMultipleFiles({
+          files: gallery,
+          entity: 'festivals',
+          entityId: festival.id,
+          type: 'gallery',
+        });
+      }
     } catch (error) {
       throw error;
     }
@@ -201,35 +244,74 @@ export class FestivalsService {
         bannerDescription,
         applicationStartDate,
         applicationEndDate,
+        banner,
+        bannerDeleted,
+        termsAndConditions,
+        gallery,
+        galleryDeleted,
       } = updateFestivalDto;
 
-      if (title.length > 0) {
+      if (title?.length) {
         await this.textContentService.updateTranslations(festival.title, title);
       }
 
-      if (description.length > 0) {
+      if (description?.length) {
         await this.textContentService.updateTranslations(
           festival.description,
           description,
         );
       }
 
-      if (bannerDescription.length > 0) {
+      if (bannerDescription?.length) {
         await this.textContentService.updateTranslations(
           festival.bannerDescription,
           bannerDescription,
         );
       }
 
-      if (applicationStartDate.length > 0) {
+      if (applicationStartDate?.length) {
         this.festivalRepository.update(festival.id, { applicationStartDate });
       }
 
-      if (applicationEndDate.length > 0) {
+      if (applicationEndDate?.length) {
         this.festivalRepository.update(festival.id, { applicationEndDate });
       }
 
-      // update images
+      if (bannerDeleted?.length && banner) {
+        await this.dmsService.deleteFile(bannerDeleted[0] as unknown as string);
+        await this.dmsService.uploadSingleFile({
+          file: banner,
+          entity: 'festivals',
+          entityId: festival.id,
+          type: 'banner',
+        });
+      }
+
+      if (termsAndConditions) {
+        await this.dmsService.uploadSingleFile({
+          file: termsAndConditions,
+          entity: 'festivals',
+          entityId: festival.id,
+          type: 'termsAndConditions',
+        });
+      }
+
+      if (galleryDeleted?.length) {
+        Promise.all(
+          galleryDeleted.map(async (key) => {
+            return await this.dmsService.deleteFile(key);
+          }),
+        );
+      }
+
+      if (gallery) {
+        await this.dmsService.uploadMultipleFiles({
+          files: gallery,
+          entity: 'festivals',
+          entityId: festival.id,
+          type: 'gallery',
+        });
+      }
     } catch (error) {
       throw error;
     }

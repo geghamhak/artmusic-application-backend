@@ -5,12 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TranslationsModule } from '../translations/translations.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { HomePage } from './entities/home-page.entity';
+import { DmsModule } from 'src/dms/dms.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([HomePage]),
     TranslationsModule,
     NestjsFormDataModule,
+    DmsModule,
   ],
   controllers: [HomePageController],
   providers: [HomePageService],

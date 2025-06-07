@@ -6,6 +6,7 @@ import { Festival } from './entities/festival.entity';
 import { TranslationsModule } from '../translations/translations.module';
 import { FestivalTypesModule } from '../festival-types/festival-types.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
+import { DmsModule } from 'src/dms/dms.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
     TranslationsModule,
     FestivalTypesModule,
     NestjsFormDataModule,
+    DmsModule,
   ],
   exports: [TypeOrmModule, FestivalsService],
   controllers: [FestivalsController],

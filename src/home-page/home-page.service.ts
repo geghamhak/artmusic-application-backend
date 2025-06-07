@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { TextContentService } from '../translations/text-content.service';
 import { LanguageService } from '../translations/language.service';
 import { HomePage } from './entities/home-page.entity';
+import { DmsService } from 'src/dms/dms.service';
 
 @Injectable()
 export class HomePageService {
@@ -13,6 +14,7 @@ export class HomePageService {
     @InjectRepository(HomePage)
     private homePageRepository: Repository<HomePage>,
     private textContentService: TextContentService,
+    private dmsService: DmsService,
     private languageService: LanguageService,
   ) {}
 
@@ -22,7 +24,7 @@ export class HomePageService {
       if (!homePage) {
         const newHomePage = new HomePage();
         const languages = await this.languageService.getAllLanguages();
-        const { title, information, videoLink } = createHomePageDto;
+        const { title, information, videoLink, images } = createHomePageDto;
 
         newHomePage.title = await this.textContentService.addTranslations(
           title,
@@ -35,6 +37,15 @@ export class HomePageService {
 
         if (videoLink) {
           newHomePage.videoLink = videoLink;
+        }
+
+        if (images) {
+          await this.dmsService.uploadMultipleFiles({
+            files: images,
+            entity: 'homePage',
+            entityId: newHomePage.id,
+            type: 'images',
+          });
         }
 
         await this.homePageRepository.save(newHomePage);
@@ -83,7 +94,9 @@ export class HomePageService {
       translation: i.translation,
     }));
 
-    return { title, information };
+    const images = await this.dmsService.getPreSignedUrls('homePage/1/images/');
+
+    return { title, information, images };
   }
 
   async update(updateHomePageDto: UpdateHomePageDto) {
@@ -93,13 +106,14 @@ export class HomePageService {
         relations: ['title', 'information'],
       });
 
-      const { title, information, videoLink } = updateHomePageDto;
+      const { title, information, videoLink, images, imagesDeleted } =
+        updateHomePageDto;
 
-      if (title.length > 0) {
+      if (title) {
         await this.textContentService.updateTranslations(homePage.title, title);
       }
 
-      if (information.length > 0) {
+      if (information) {
         await this.textContentService.updateTranslations(
           homePage.information,
           information,
@@ -110,7 +124,22 @@ export class HomePageService {
         homePage.videoLink = videoLink;
       }
 
-      // update images
+      if (imagesDeleted) {
+        Promise.all(
+          imagesDeleted.map(async (key) => {
+            return await this.dmsService.deleteFile(key);
+          }),
+        );
+      }
+
+      if (images) {
+        await this.dmsService.uploadMultipleFiles({
+          files: images,
+          entity: 'homePage',
+          entityId: homePage.id,
+          type: 'images',
+        });
+      }
     } catch (error) {
       throw error;
     }
