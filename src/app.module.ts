@@ -52,6 +52,8 @@ import { Header } from './header/entities/header.entity';
 import { HomePage } from './home-page/entities/home-page.entity';
 import { ContactModule } from './contact/contact.module';
 import { Contact } from './contact/entities/contact.entity';
+import { StaffPageModule } from './staff-page/staff-page.module';
+import { StaffPageModule } from './staff-page/staff-page.module';
 
 @Module({
   imports: [
@@ -116,6 +118,7 @@ import { Contact } from './contact/entities/contact.entity';
     ApplicationCompositionModule,
     ExcelModule,
     ContactModule,
+    StaffPageModule,
   ],
   providers: [
     CountriesService,

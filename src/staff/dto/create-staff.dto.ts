@@ -4,7 +4,7 @@ import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/File
 
 export class CreateStaffDto {
   name: CreateTextContentDto[];
-  role: CreateTextContentDto[];
+  description: CreateTextContentDto[];
   @IsFile()
   @HasMimeType(['image/jpeg', 'image/png'])
   image: FileSystemStoredFile;

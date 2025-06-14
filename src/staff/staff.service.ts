@@ -19,14 +19,14 @@ export class StaffService {
     try {
       const newStaff = new Staff();
       const languages = await this.languageService.getAllLanguages();
-      const { name, role } = createStaffDto;
+      const { name, description } = createStaffDto;
 
       newStaff.name = await this.textContentService.addTranslations(
         name,
         languages,
       );
-      newStaff.role = await this.textContentService.addTranslations(
-        role,
+      newStaff.description = await this.textContentService.addTranslations(
+        description,
         languages,
       );
 
@@ -42,19 +42,18 @@ export class StaffService {
     return `This action returns all staff`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} staff`;
-  }
-
   async update(id: number, updateStaffDto: UpdateStaffDto) {
     try {
       const staff = await this.staffRepository.findOneBy({ id });
-      const { name, role } = updateStaffDto;
+      const { name, description } = updateStaffDto;
       if (name) {
         await this.textContentService.updateTranslations(staff.name, name);
       }
-      if (role) {
-        await this.textContentService.updateTranslations(staff.role, role);
+      if (description) {
+        await this.textContentService.updateTranslations(
+          staff.description,
+          description,
+        );
       }
 
       // update images

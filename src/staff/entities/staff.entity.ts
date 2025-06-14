@@ -18,7 +18,7 @@ export class Staff {
 
   @OneToOne(() => TextContent)
   @JoinColumn()
-  role: TextContent;
+  description: TextContent;
 
   @CreateDateColumn()
   createdAt: string;
