@@ -82,19 +82,21 @@ export class HomePageService {
         'infoTranslations.translation',
         'infoLanguage.code',
       ])
-      .getMany();
+      .getOne();
 
-    const title = homePage[0]?.title.translations.map((i) => ({
+    const title = homePage?.title.translations.map((i) => ({
       languageCode: i.language.code,
       translation: i.translation,
     }));
 
-    const information = homePage[0]?.information.translations.map((i) => ({
+    const information = homePage?.information.translations.map((i) => ({
       languageCode: i.language.code,
       translation: i.translation,
     }));
 
-    const images = await this.dmsService.getPreSignedUrls('homePage/1/images/');
+    const images = await this.dmsService.getPreSignedUrls(
+      `homePage/${homePage.id}/images/`,
+    );
 
     return { title, information, images };
   }
@@ -102,7 +104,7 @@ export class HomePageService {
   async update(updateHomePageDto: UpdateHomePageDto) {
     try {
       const homePage = await this.homePageRepository.findOne({
-        where: { id: 1 },
+        where: { id: updateHomePageDto.id },
         relations: ['title', 'information'],
       });
 
@@ -125,11 +127,7 @@ export class HomePageService {
       }
 
       if (imagesDeleted) {
-        Promise.all(
-          imagesDeleted.map(async (key) => {
-            return await this.dmsService.deleteFile(key);
-          }),
-        );
+        await this.dmsService.batchDeleteFiles(imagesDeleted);
       }
 
       if (images) {
@@ -140,6 +138,15 @@ export class HomePageService {
           type: 'images',
         });
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async remove(id: number) {
+    try {
+      await this.homePageRepository.delete(id);
+      await this.dmsService.batchDeleteFilesByPrefix(`home-page/${id}/`);
     } catch (error) {
       throw error;
     }

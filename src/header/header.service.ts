@@ -72,13 +72,17 @@ export class HeaderService {
         'translations.translation',
         'translationLanguage.code',
       ])
-      .getMany();
-    const bannerTitle = header[0].bannerTitle.translations.map((i) => ({
+      .getOne();
+    const bannerTitle = header.bannerTitle.translations.map((i) => ({
       languageCode: i.language.code,
       translation: i.translation,
     }));
-    const logo = await this.dmsService.getPreSignedUrls('header/1/logo/');
-    const banner = await this.dmsService.getPreSignedUrls('header/1/banner/');
+    const logo = await this.dmsService.getPreSignedUrls(
+      `header/${header.id}/logo/`,
+    );
+    const banner = await this.dmsService.getPreSignedUrls(
+      `header/${header.id}/banner/`,
+    );
 
     return { bannerTitle, banner, logo };
   }
@@ -86,7 +90,7 @@ export class HeaderService {
   async update(updateHeaderDto: UpdateHeaderDto) {
     try {
       const header = await this.headerRepository.findOne({
-        where: { id: 1 },
+        where: { id: updateHeaderDto.id },
         relations: ['bannerTitle'],
       });
       const { bannerTitle, banner, logo, bannerDeleted, logoDeleted } =
@@ -122,9 +126,13 @@ export class HeaderService {
     }
   }
 
-  async remove(key: string) {
+  async remove(id: number) {
     try {
-      await this.dmsService.deleteFile(key);
+      await this.headerRepository.delete(id);
+      await this.dmsService.batchDeleteFiles([
+        `header/${id}/logo/`,
+        `header/${id}/banner/`,
+      ]);
     } catch (error) {
       throw error;
     }

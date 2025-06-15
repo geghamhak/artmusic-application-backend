@@ -61,7 +61,7 @@ export class ContactService {
   async update(updateContactDto: UpdateContactDto) {
     try {
       const contact = await this.contactRepository.findOne({
-        where: { id: 1 },
+        where: { id: updateContactDto.id },
         relations: ['information'],
       });
       const { information } = updateContactDto;

@@ -33,7 +33,7 @@ export class StaffController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.staffService.remove(+id);
+  remove(@Param('id') id: number, key: string) {
+    return this.staffService.remove(+id, key);
   }
 }

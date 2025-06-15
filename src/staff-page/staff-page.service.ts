@@ -2,10 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateStaffPageDto } from './dto/create-staff-page.dto';
 import { UpdateStaffPageDto } from './dto/update-staff-page.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { HomePage } from '../home-page/entities/home-page.entity';
 import { Repository } from 'typeorm';
 import { TextContentService } from '../translations/text-content.service';
-import { DmsService } from '../dms/dms.service';
 import { LanguageService } from '../translations/language.service';
 import { StaffPage } from './entities/staff-page.entity';
 
@@ -72,7 +70,7 @@ export class StaffPageService {
   async update(updateStaffPageDto: UpdateStaffPageDto) {
     try {
       const staffPage = await this.staffPageRepository.findOne({
-        where: { id: 1 },
+        where: { id: updateStaffPageDto.id },
         relations: ['title'],
       });
 
@@ -84,6 +82,14 @@ export class StaffPageService {
           title,
         );
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async remove(id: number) {
+    try {
+      await this.staffPageRepository.delete(id);
     } catch (error) {
       throw error;
     }

@@ -121,7 +121,7 @@ export class DmsService {
     }
   }
 
-  async batchDeleteFiles(prefix: string): Promise<{ message: string }> {
+  async batchDeleteFilesByPrefix(prefix: string): Promise<{ message: string }> {
     try {
       const listObjectsV2Command = new ListObjectsV2Command({
         Bucket: this.bucketName,
@@ -132,9 +132,39 @@ export class DmsService {
         listObjectsV2Command,
       )) as ListObjectsV2Output;
 
-      const keys = s3Objects.Contents.map((image) => image.Key);
+      const deleteObjectsCommand = new DeleteObjectsCommand({
+        Bucket: this.bucketName,
+        Delete: {
+          Objects: s3Objects.Contents.map((image) => {
+            return {
+              Key: image.Key,
+            };
+          }),
+        },
+      });
 
-      return { message: 'File deleted successfully' };
+      await this.client.send(deleteObjectsCommand);
+      return { message: 'Files deleted successfully' };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async batchDeleteFiles(keys: string[]) {
+    try {
+      const command = new DeleteObjectsCommand({
+        Bucket: this.bucketName,
+        Delete: {
+          Objects: keys.map((key) => {
+            return {
+              Key: key,
+            };
+          }),
+        },
+      });
+
+      await this.client.send(command);
+      return { message: 'Files deleted successfully' };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

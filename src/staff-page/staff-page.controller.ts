@@ -10,9 +10,6 @@ import {
 import { StaffPageService } from './staff-page.service';
 import { CreateStaffPageDto } from './dto/create-staff-page.dto';
 import { UpdateStaffPageDto } from './dto/update-staff-page.dto';
-import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
-import { CreateHomePageDto } from '../home-page/dto/create-home-page.dto';
-import { UpdateHomePageDto } from '../home-page/dto/update-home-page.dto';
 
 @Controller('staff-page')
 export class StaffPageController {
@@ -31,5 +28,10 @@ export class StaffPageController {
   @Patch()
   update(@Body() updateStaffPageDto: UpdateStaffPageDto) {
     return this.staffPageService.update(updateStaffPageDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: number) {
+    return this.staffPageService.remove(id);
   }
 }

@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { TextContentService } from '../translations/text-content.service';
 import { LanguageService } from '../translations/language.service';
 import { Staff } from './entities/staff.entity';
+import { DmsService } from '../dms/dms.service';
 
 @Injectable()
 export class StaffService {
@@ -14,25 +15,28 @@ export class StaffService {
     private staffRepository: Repository<Staff>,
     private textContentService: TextContentService,
     private languageService: LanguageService,
+    private dmsService: DmsService,
   ) {}
   async create(createStaffDto: CreateStaffDto) {
     try {
-      const newStaff = new Staff();
+      const newStaffMember = new Staff();
       const languages = await this.languageService.getAllLanguages();
-      const { name, description } = createStaffDto;
+      const { name, description, image } = createStaffDto;
 
-      newStaff.name = await this.textContentService.addTranslations(
+      newStaffMember.name = await this.textContentService.addTranslations(
         name,
         languages,
       );
-      newStaff.description = await this.textContentService.addTranslations(
-        description,
-        languages,
-      );
+      newStaffMember.description =
+        await this.textContentService.addTranslations(description, languages);
 
-      await this.staffRepository.save(newStaff);
+      const staffMember = await this.staffRepository.save(newStaffMember);
 
-      // add images logic
+      await this.dmsService.uploadSingleFile({
+        file: image,
+        entity: 'staff',
+        entityId: staffMember.id,
+      });
     } catch (error) {
       throw error;
     }
@@ -44,25 +48,40 @@ export class StaffService {
 
   async update(id: number, updateStaffDto: UpdateStaffDto) {
     try {
-      const staff = await this.staffRepository.findOneBy({ id });
-      const { name, description } = updateStaffDto;
+      const staffMember = await this.staffRepository.findOneBy({ id });
+      const { name, description, image, imageDeleted } = updateStaffDto;
       if (name) {
-        await this.textContentService.updateTranslations(staff.name, name);
+        await this.textContentService.updateTranslations(
+          staffMember.name,
+          name,
+        );
       }
       if (description) {
         await this.textContentService.updateTranslations(
-          staff.description,
+          staffMember.description,
           description,
         );
       }
 
-      // update images
+      if (imageDeleted && image) {
+        await this.dmsService.deleteFile(imageDeleted);
+        await this.dmsService.uploadSingleFile({
+          file: image,
+          entity: 'staff',
+          entityId: staffMember.id,
+        });
+      }
     } catch (error) {
       throw error;
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} staff`;
+  async remove(id: number, key: string) {
+    try {
+      await this.staffRepository.delete(id);
+      await this.dmsService.deleteFile(key);
+    } catch (error) {
+      throw error;
+    }
   }
 }
