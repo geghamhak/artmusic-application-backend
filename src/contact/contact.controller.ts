@@ -15,8 +15,8 @@ export class ContactController {
   }
 
   @Get()
-  findAll() {
-    return this.contactService.findAll();
+  find() {
+    return this.contactService.find();
   }
 
   @Patch()

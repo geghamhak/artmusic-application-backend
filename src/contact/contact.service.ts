@@ -33,8 +33,8 @@ export class ContactService {
     }
   }
 
-  async findAll() {
-    const contactsData = await this.contactRepository
+  async find() {
+    const contactData = await this.contactRepository
       .createQueryBuilder('contact')
       .leftJoinAndSelect('contact.information', 'textContent')
       .leftJoinAndSelect('textContent.translations', 'translations')
@@ -45,15 +45,15 @@ export class ContactService {
         'translations.translation',
         'translationLanguage.code',
       ])
-      .getMany();
+      .getOne();
 
-    const contacts = contactsData.map((contact) => ({
-      contactId: contact.id,
-      information: (contact.information?.translations || []).map((i) => ({
+    const contacts = {
+      contactId: contactData.id,
+      information: (contactData.information?.translations || []).map((i) => ({
         languageCode: i.language.code,
         translation: i.translation,
       })),
-    }));
+    };
 
     return { contacts };
   }

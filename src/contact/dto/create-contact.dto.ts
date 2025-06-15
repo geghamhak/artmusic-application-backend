@@ -4,8 +4,4 @@ import { CreateTextContentDto } from 'src/translations/dto/create-text-content.d
 
 export class CreateContactDto {
   information: CreateTextContentDto[];
-  @IsOptional()
-  @IsFile()
-  @HasMimeType(['image/jpeg', 'image/png'])
-  images: FileSystemStoredFile[];
 }
