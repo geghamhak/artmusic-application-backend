@@ -5,6 +5,7 @@ export interface UploadSingleFile {
   entity: string;
   entityId: number;
   type?: string;
+  code?: string;
 }
 
 export interface UploadSingleFileResponse {
@@ -18,4 +19,5 @@ export interface UploadMultipleFiles {
   entity: string;
   entityId: number;
   type?: string;
+  code?: string;
 }

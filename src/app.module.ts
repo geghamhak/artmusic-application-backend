@@ -57,6 +57,8 @@ import { StaffPageModule } from './staff-page/staff-page.module';
 import { FestivalImage } from './festival-images/entities/festival-image.entity';
 import { StaffPage } from './staff-page/entities/staff-page.entity';
 import { Staff } from './staff/entities/staff.entity';
+import { JuriesModule } from './juries/juries.module';
+import { Jury } from './juries/entities/jury.entity';
 
 @Module({
   imports: [
@@ -97,6 +99,7 @@ import { Staff } from './staff/entities/staff.entity';
             FestivalImage,
             StaffPage,
             Staff,
+            Jury,
           ],
           synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
@@ -126,6 +129,7 @@ import { Staff } from './staff/entities/staff.entity';
     ContactModule,
     StaffPageModule,
     FestivalImagesModule,
+    JuriesModule,
   ],
   providers: [
     CountriesService,

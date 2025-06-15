@@ -20,7 +20,7 @@ export class ContactService {
     try {
       const newContact = new Contact();
       const languages = await this.languageService.getAllLanguages();
-      const { images, information } = createContactDto;
+      const { information } = createContactDto;
 
       newContact.information = await this.textContentService.addTranslations(
         information,
@@ -64,7 +64,7 @@ export class ContactService {
         where: { id: 1 },
         relations: ['information'],
       });
-      const { images, information } = updateContactDto;
+      const { information } = updateContactDto;
 
       if (information.length > 0) {
         await this.textContentService.updateTranslations(
@@ -72,8 +72,6 @@ export class ContactService {
           information,
         );
       }
-
-      // update images
     } catch (error) {
       throw error;
     }

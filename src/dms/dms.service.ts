@@ -6,6 +6,7 @@ import {
   DeleteObjectCommand,
   ListObjectsV2Command,
   GetObjectCommand,
+  DeleteObjectsCommand,
 } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
@@ -40,7 +41,7 @@ export class DmsService {
     entityId,
     type,
   }: UploadMultipleFiles): Promise<void> {
-    Promise.all(
+    await Promise.all(
       files.map(async (file) => {
         return await this.uploadSingleFile({
           file,
@@ -57,9 +58,10 @@ export class DmsService {
     entity,
     entityId,
     type,
+    code,
   }: UploadSingleFile): Promise<void> {
     try {
-      const id = uuidv4();
+      const id = code ?? uuidv4();
       const key = type
         ? `${entity}/${entityId}/${type}/${id}`
         : `${entity}/${entityId}/${id}`;
@@ -114,6 +116,25 @@ export class DmsService {
       }
 
       return urls;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async batchDeleteFiles(prefix: string): Promise<{ message: string }> {
+    try {
+      const listObjectsV2Command = new ListObjectsV2Command({
+        Bucket: this.bucketName,
+        Prefix: prefix,
+      });
+
+      const s3Objects = (await this.client.send(
+        listObjectsV2Command,
+      )) as ListObjectsV2Output;
+
+      const keys = s3Objects.Contents.map((image) => image.Key);
+
+      return { message: 'File deleted successfully' };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

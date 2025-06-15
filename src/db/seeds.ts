@@ -32,6 +32,7 @@ import { Contact } from '../contact/entities/contact.entity';
 import { StaffPage } from '../staff-page/entities/staff-page.entity';
 import { FestivalImage } from '../festival-images/entities/festival-image.entity';
 import { Staff } from '../staff/entities/staff.entity';
+import { Jury } from '../juries/entities/jury.entity';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql' as const,
@@ -65,6 +66,7 @@ const options: DataSourceOptions & SeederOptions = {
     FestivalImage,
     Staff,
     StaffPage,
+    Jury,
   ],
   seeds: [
     LanguageSeeder,

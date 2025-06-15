@@ -1,7 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateFestivalImageDto } from './dto/create-festival-image.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Festival } from '../festivals/entities/festival.entity';
 import { Repository } from 'typeorm';
 import { DmsService } from '../dms/dms.service';
 import { TextContentService } from '../translations/text-content.service';
@@ -48,13 +47,13 @@ export class FestivalImagesService {
           languages,
         );
       }
-      const festivalImage =
-        await this.festivalImageRepository.save(newFestivalImage);
+      await this.festivalImageRepository.save(newFestivalImage);
       await this.dmsService.uploadSingleFile({
         file: image,
         entity: 'festivals',
         entityId: festivalId,
-        type: `gallery/${festivalImage.id}`,
+        type: 'gallery',
+        code,
       });
     });
   }
@@ -71,12 +70,18 @@ export class FestivalImagesService {
     return application ? application.subNomination.id : subNominationId;
   }
 
-  async remove(galleryDeleted: string[]) {
+  async remove(festivalId: number, galleryDeleted: string[]) {
+    // codes from strings
+    const codes = galleryDeleted.map((deletedKey) => {
+      const str = deletedKey.split('/');
+      return str[str.length - 1].split('.')[0];
+    });
     await this.festivalImageRepository
       .createQueryBuilder()
       .delete()
       .from('festivalImage')
-      .where('festivalImage.code IN (:...codes)', { codes: galleryDeleted })
+      .where('festivalImage.festivalId = :festivalId', { festivalId })
+      .andWhere('festivalImage.code IN (:...codes)', { codes })
       .execute();
 
     await Promise.all(

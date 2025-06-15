@@ -299,7 +299,7 @@ export class FestivalsService {
       }
 
       if (galleryDeleted?.length) {
-        await this.festivalImagesService.remove(galleryDeleted);
+        await this.festivalImagesService.remove(festival.id, galleryDeleted);
       }
 
       if (gallery) {
