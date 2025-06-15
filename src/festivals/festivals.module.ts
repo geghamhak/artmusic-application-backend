@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { FestivalsService } from './festivals.service';
 import { FestivalsController } from './festivals.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,6 +7,7 @@ import { TranslationsModule } from '../translations/translations.module';
 import { FestivalTypesModule } from '../festival-types/festival-types.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { DmsModule } from 'src/dms/dms.module';
+import { FestivalImagesModule } from '../festival-images/festival-images.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DmsModule } from 'src/dms/dms.module';
     TranslationsModule,
     FestivalTypesModule,
     NestjsFormDataModule,
+    forwardRef(() => FestivalImagesModule),
     DmsModule,
   ],
   exports: [TypeOrmModule, FestivalsService],

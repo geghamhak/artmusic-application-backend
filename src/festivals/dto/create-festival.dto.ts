@@ -3,6 +3,7 @@ import { CreateTextContentDto } from '../../translations/dto/create-text-content
 import { FestivalsEnum } from '../festivals.service';
 import { HasMimeType, IsFile } from 'nestjs-form-data';
 import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
+import { CreateFestivalImageDto } from '../../festival-images/dto/create-festival-image.dto';
 
 export class CreateFestivalDto {
   type: FestivalsEnum;
@@ -20,5 +21,5 @@ export class CreateFestivalDto {
   @IsFile({ each: true })
   @HasMimeType(['image/jpeg', 'image/png'], { each: true })
   @IsOptional()
-  gallery?: FileSystemStoredFile[];
+  gallery?: CreateFestivalImageDto[];
 }

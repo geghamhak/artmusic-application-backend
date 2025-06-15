@@ -52,8 +52,11 @@ import { Header } from './header/entities/header.entity';
 import { HomePage } from './home-page/entities/home-page.entity';
 import { ContactModule } from './contact/contact.module';
 import { Contact } from './contact/entities/contact.entity';
+import { FestivalImagesModule } from './festival-images/festival-images.module';
 import { StaffPageModule } from './staff-page/staff-page.module';
-import { StaffPageModule } from './staff-page/staff-page.module';
+import { FestivalImage } from './festival-images/entities/festival-image.entity';
+import { StaffPage } from './staff-page/entities/staff-page.entity';
+import { Staff } from './staff/entities/staff.entity';
 
 @Module({
   imports: [
@@ -91,6 +94,9 @@ import { StaffPageModule } from './staff-page/staff-page.module';
             Header,
             HomePage,
             Contact,
+            FestivalImage,
+            StaffPage,
+            Staff,
           ],
           synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
@@ -119,6 +125,7 @@ import { StaffPageModule } from './staff-page/staff-page.module';
     ExcelModule,
     ContactModule,
     StaffPageModule,
+    FestivalImagesModule,
   ],
   providers: [
     CountriesService,

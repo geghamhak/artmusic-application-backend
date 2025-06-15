@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { ApplicationsController } from './applications.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -23,7 +23,7 @@ import { ApplicationCompositionModule } from '../application-composition/applica
     ScoringSystemModule,
     ApplicationScoreModule,
     NestjsFormDataModule,
-    FestivalsModule,
+    forwardRef(() => FestivalsModule),
     ApplicationCompositionModule,
   ],
   exports: [TypeOrmModule, ApplicationsService],

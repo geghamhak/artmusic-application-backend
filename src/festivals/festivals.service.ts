@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -13,6 +15,7 @@ import { FestivalTypesService } from '../festival-types/festival-types.service';
 import { FestivalType } from '../festival-types/entities/festival-type.entity';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
 import { DmsService } from 'src/dms/dms.service';
+import { FestivalImagesService } from '../festival-images/festival-images.service';
 
 export enum FestivalsEnum {
   ARTMUSIC = 'artmusic',
@@ -32,6 +35,8 @@ export class FestivalsService {
     private textContentService: TextContentService,
     private languageService: LanguageService,
     private festivalTypeService: FestivalTypesService,
+    @Inject(forwardRef(() => FestivalImagesService))
+    private festivalImagesService: FestivalImagesService,
   ) {}
 
   findAll() {
@@ -151,7 +156,7 @@ export class FestivalsService {
 
     if (!festivalsData.length) return [];
 
-    const festivals = festivalsData.map((festival) => {
+    return festivalsData.map((festival) => {
       return {
         id: festival.id,
         title: {
@@ -162,8 +167,6 @@ export class FestivalsService {
         },
       } as unknown as Festival;
     });
-
-    return festivals;
   }
 
   async create(createFestivalDto: CreateFestivalDto) {
@@ -220,12 +223,7 @@ export class FestivalsService {
         type: 'termsAndConditions',
       });
       if (gallery) {
-        await this.dmsService.uploadMultipleFiles({
-          files: gallery,
-          entity: 'festivals',
-          entityId: festival.id,
-          type: 'gallery',
-        });
+        await this.festivalImagesService.add(gallery, festival.id);
       }
     } catch (error) {
       throw error;
@@ -270,11 +268,15 @@ export class FestivalsService {
       }
 
       if (applicationStartDate?.length) {
-        this.festivalRepository.update(festival.id, { applicationStartDate });
+        await this.festivalRepository.update(festival.id, {
+          applicationStartDate,
+        });
       }
 
       if (applicationEndDate?.length) {
-        this.festivalRepository.update(festival.id, { applicationEndDate });
+        await this.festivalRepository.update(festival.id, {
+          applicationEndDate,
+        });
       }
 
       if (bannerDeleted?.length && banner) {
@@ -297,20 +299,11 @@ export class FestivalsService {
       }
 
       if (galleryDeleted?.length) {
-        Promise.all(
-          galleryDeleted.map(async (key) => {
-            return await this.dmsService.deleteFile(key);
-          }),
-        );
+        await this.festivalImagesService.remove(galleryDeleted);
       }
 
       if (gallery) {
-        await this.dmsService.uploadMultipleFiles({
-          files: gallery,
-          entity: 'festivals',
-          entityId: festival.id,
-          type: 'gallery',
-        });
+        await this.festivalImagesService.add(gallery);
       }
     } catch (error) {
       throw error;

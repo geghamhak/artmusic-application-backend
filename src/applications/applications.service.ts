@@ -10,7 +10,12 @@ import { ParticipantDocumentsService } from '../participant-documents/participan
 import { InjectRepository } from '@nestjs/typeorm';
 import { Country } from '../countries/entities/country.entity';
 import { Repository, SelectQueryBuilder, UpdateResult } from 'typeorm';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { School } from '../schools/entities/school.entity';
 import { Region } from '../regions/entities/region.entity';
 import { ScoringSystemService } from '../scoring-system/scoring-system.service';
@@ -30,13 +35,14 @@ export class ApplicationsService {
   constructor(
     @InjectRepository(Application)
     private applicationRepository: Repository<Application>,
+    @Inject(forwardRef(() => FestivalsService))
+    private festivalService: FestivalsService,
     private participantVideoLinksService: ParticipantVideoLinksService,
     private participantsService: ParticipantsService,
     private participantRecordingsService: ParticipantRecordingsService,
     private participantDocumentsService: ParticipantDocumentsService,
     private scoringSystemService: ScoringSystemService,
     private applicationScoreService: ApplicationScoreService,
-    private festivalService: FestivalsService,
     private applicationCompositionService: ApplicationCompositionService,
   ) {}
   async create(createApplicationDto: CreateApplicationDto) {
@@ -343,6 +349,19 @@ export class ApplicationsService {
       .addOrderBy('participants.fatherName')
       .select()
       .getMany();
+  }
+
+  async getByFestivalIdAndCode(
+    festivalId: number,
+    code: string,
+  ): Promise<Application> {
+    return await this.applicationRepository
+      .createQueryBuilder('application')
+      .where('application.festivalId = :festivalId', { festivalId })
+      .andWhere('application.code = :code', {
+        code,
+      })
+      .getOne();
   }
 
   async update(id: number, updateApplicationDto: UpdateApplicationDto) {}

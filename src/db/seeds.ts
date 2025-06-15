@@ -29,6 +29,9 @@ import CountrySeeder from './seeds/Country.seeder';
 import { Header } from '../header/entities/header.entity';
 import { HomePage } from '../home-page/entities/home-page.entity';
 import { Contact } from '../contact/entities/contact.entity';
+import { StaffPage } from '../staff-page/entities/staff-page.entity';
+import { FestivalImage } from '../festival-images/entities/festival-image.entity';
+import { Staff } from '../staff/entities/staff.entity';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql' as const,
@@ -59,6 +62,9 @@ const options: DataSourceOptions & SeederOptions = {
     Header,
     HomePage,
     Contact,
+    FestivalImage,
+    Staff,
+    StaffPage,
   ],
   seeds: [
     LanguageSeeder,
