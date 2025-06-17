@@ -13,8 +13,8 @@ import { TextContentService } from '../translations/text-content.service';
 import { FestivalTypesService } from '../festival-types/festival-types.service';
 import { FestivalType } from '../festival-types/entities/festival-type.entity';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
-import { DmsService } from 'src/dms/dms.service';
 import { FestivalImagesService } from '../festival-images/festival-images.service';
+import { DmsService } from '../dms/dms.service';
 
 export enum FestivalsEnum {
   ARTMUSIC = 'artmusic',
@@ -152,7 +152,7 @@ export class FestivalsService {
       ])
       .getMany();
 
-    if (!festivalsData.length) return [];
+    if (festivalsData && !festivalsData.length) return [];
 
     return festivalsData.map((festival) => {
       return {

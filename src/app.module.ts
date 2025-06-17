@@ -62,6 +62,7 @@ import { Jury } from './juries/entities/jury.entity';
 import { EmailQueueModule } from './email-queue/email-queue.module';
 import { SqsModule } from '@ssut/nestjs-sqs';
 import * as AWS from '@aws-sdk/client-sqs';
+import { EmailQueue } from './email-queue/entities/email-queue.entity';
 
 @Module({
   imports: [
@@ -103,6 +104,7 @@ import * as AWS from '@aws-sdk/client-sqs';
             StaffPage,
             Staff,
             Jury,
+            EmailQueue,
           ],
           synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
@@ -113,16 +115,14 @@ import * as AWS from '@aws-sdk/client-sqs';
         producers: [
           {
             name: configService.get('EMAIL_QUEUE_NAME'),
-            queueUrl: configService.get('REPORT_QUEUE_URL'),
-            region: configService.get<string>('AWS_REGION'),
+            queueUrl: configService.get('EMAIL_QUEUE_URL'),
+            region: configService.get('AWS_REGION'),
             terminateGracefully: true, // gracefully shutdown when SIGINT/SIGTERM is received
             sqs: new AWS.SQS({
-              region: configService.get<string>('AWS_REGION'),
+              region: configService.get('AWS_REGION'),
               credentials: {
-                accessKeyId: configService.get<string>('AWS_ACCESS_KEY_ID'),
-                secretAccessKey: configService.get<string>(
-                  'AWS_SECRET_ACCESS_KEY',
-                ),
+                accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
+                secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
               },
             }),
           },

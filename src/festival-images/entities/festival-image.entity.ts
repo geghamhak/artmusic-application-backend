@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  Entity,
   JoinColumn,
   ManyToOne,
   OneToOne,
@@ -11,6 +12,7 @@ import { SubNomination } from '../../sub-nominations/entities/sub-nomination.ent
 import { Festival } from '../../festivals/entities/festival.entity';
 import { TextContent } from '../../translations/entities/textContent.entity';
 
+@Entity()
 export class FestivalImage {
   @PrimaryGeneratedColumn()
   id: number;

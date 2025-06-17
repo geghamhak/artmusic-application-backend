@@ -33,7 +33,7 @@ export class EmailQueueService {
     private readonly sqsService: SqsService,
     private readonly configService: ConfigService,
   ) {
-    this.queueName = this.configService.get<string>('REPORT_QUEUE_NAME');
+    this.queueName = this.configService.get('EMAIL_QUEUE_NAME');
   }
   async sendMessage(body: EmailPayload) {
     try {

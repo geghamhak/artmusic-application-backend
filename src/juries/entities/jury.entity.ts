@@ -1,5 +1,6 @@
 import {
   CreateDateColumn,
+  Entity,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -7,6 +8,7 @@ import {
 } from 'typeorm';
 import { TextContent } from '../../translations/entities/textContent.entity';
 
+@Entity()
 export class Jury {
   @PrimaryGeneratedColumn()
   id: number;

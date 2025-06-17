@@ -1,5 +1,4 @@
 import {
-  Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
@@ -29,7 +28,10 @@ export class SubNomination {
   @OneToMany(() => Application, (application) => application.subNomination)
   applications: Application[];
 
-  @OneToMany(() => FestivalImage, (festivalImage) => festivalImage.festival)
+  @OneToMany(
+    () => FestivalImage,
+    (festivalImage) => festivalImage.subNomination,
+  )
   festivalImages: FestivalImage[];
 
   @CreateDateColumn()

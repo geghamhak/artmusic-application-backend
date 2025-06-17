@@ -33,13 +33,14 @@ import { StaffPage } from '../staff-page/entities/staff-page.entity';
 import { FestivalImage } from '../festival-images/entities/festival-image.entity';
 import { Staff } from '../staff/entities/staff.entity';
 import { Jury } from '../juries/entities/jury.entity';
+import { EmailQueue } from '../email-queue/entities/email-queue.entity';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql' as const,
   host: 'localhost',
   port: 3306,
   username: 'root',
-  password: '1234',
+  password: 'House2016$$',
   database: 'artmusic',
   entities: [
     Application,
@@ -67,6 +68,7 @@ const options: DataSourceOptions & SeederOptions = {
     Staff,
     StaffPage,
     Jury,
+    EmailQueue,
   ],
   seeds: [
     LanguageSeeder,
