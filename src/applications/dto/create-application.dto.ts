@@ -7,6 +7,7 @@ import { ParticipantType } from '../../participants/participants.service';
 
 export class CreateApplicationDto {
   countryId: number;
+  languageCode: string;
   festivalId: number;
   applicationCompositions: ApplicationComposition[];
   totalDuration?: string;

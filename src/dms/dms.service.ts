@@ -18,10 +18,10 @@ import { readFile } from 'fs/promises';
 export class DmsService {
   private readonly client: S3Client;
   private bucketName = this.configService.get('S3_BUCKET_NAME');
-  private readonly s3Region = this.configService.get('S3_REGION');
-  private readonly accessKeyId = this.configService.get('S3_ACCESS_KEY');
+  private readonly s3Region = this.configService.get('AWS_REGION');
+  private readonly accessKeyId = this.configService.get('AWS_ACCESS_KEY');
   private readonly secretAccessKey = this.configService.get(
-    'S3_SECRET_ACCESS_KEY',
+    'AWS_SECRET_ACCESS_KEY',
   );
 
   constructor(private readonly configService: ConfigService) {

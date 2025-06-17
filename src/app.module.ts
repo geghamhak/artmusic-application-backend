@@ -59,6 +59,9 @@ import { StaffPage } from './staff-page/entities/staff-page.entity';
 import { Staff } from './staff/entities/staff.entity';
 import { JuriesModule } from './juries/juries.module';
 import { Jury } from './juries/entities/jury.entity';
+import { EmailQueueModule } from './email-queue/email-queue.module';
+import { SqsModule } from '@ssut/nestjs-sqs';
+import * as AWS from '@aws-sdk/client-sqs';
 
 @Module({
   imports: [
@@ -104,6 +107,28 @@ import { Jury } from './juries/entities/jury.entity';
           synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
     }),
+    SqsModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        producers: [
+          {
+            name: configService.get('EMAIL_QUEUE_NAME'),
+            queueUrl: configService.get('REPORT_QUEUE_URL'),
+            region: configService.get<string>('AWS_REGION'),
+            terminateGracefully: true, // gracefully shutdown when SIGINT/SIGTERM is received
+            sqs: new AWS.SQS({
+              region: configService.get<string>('AWS_REGION'),
+              credentials: {
+                accessKeyId: configService.get<string>('AWS_ACCESS_KEY_ID'),
+                secretAccessKey: configService.get<string>(
+                  'AWS_SECRET_ACCESS_KEY',
+                ),
+              },
+            }),
+          },
+        ],
+      }),
+    }),
     TranslationsModule,
     CountriesModule,
     RegionsModule,
@@ -130,6 +155,7 @@ import { Jury } from './juries/entities/jury.entity';
     StaffPageModule,
     FestivalImagesModule,
     JuriesModule,
+    EmailQueueModule,
   ],
   providers: [
     CountriesService,

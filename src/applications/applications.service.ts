@@ -29,6 +29,7 @@ import { ApplicationCompositionService } from '../application-composition/applic
 import { Festival } from '../festivals/entities/festival.entity';
 import { getOverallScore } from '../utils/getOverallScore';
 import { getAverageScore } from '../utils/getAverageScore';
+import { EmailQueueService } from '../email-queue/email-queue.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -44,6 +45,7 @@ export class ApplicationsService {
     private scoringSystemService: ScoringSystemService,
     private applicationScoreService: ApplicationScoreService,
     private applicationCompositionService: ApplicationCompositionService,
+    private emailQueueService: EmailQueueService,
   ) {}
   async create(createApplicationDto: CreateApplicationDto) {
     try {
@@ -127,6 +129,14 @@ export class ApplicationsService {
       }
 
       await this.applicationRepository.save(application);
+
+      // email queue
+      // await this.emailQueueService.sendMessage({
+      //   type: TemplateTypeEnum.EmailConfirmation,
+      //   subject: 'Your application have been successfully received',
+      //   emailsTo: [application.email],
+      //   languageCode,
+      // });
     } catch (error) {
       throw error;
     }

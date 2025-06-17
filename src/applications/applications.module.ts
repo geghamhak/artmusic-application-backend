@@ -12,6 +12,7 @@ import { ApplicationScoreModule } from '../application-score/application-score.m
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { FestivalsModule } from '../festivals/festivals.module';
 import { ApplicationCompositionModule } from '../application-composition/application-composition.module';
+import { EmailQueueModule } from '../email-queue/email-queue.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ApplicationCompositionModule } from '../application-composition/applica
     NestjsFormDataModule,
     forwardRef(() => FestivalsModule),
     ApplicationCompositionModule,
+    EmailQueueModule,
   ],
   exports: [TypeOrmModule, ApplicationsService],
   controllers: [ApplicationsController],
