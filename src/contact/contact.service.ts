@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Contact } from './entities/contact.entity';
 import { Repository } from 'typeorm';
 import { TextContentService } from 'src/translations/text-content.service';
-import { LanguageService } from 'src/translations/language.service';
 
 @Injectable()
 export class ContactService {

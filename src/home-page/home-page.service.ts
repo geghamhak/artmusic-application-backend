@@ -4,7 +4,6 @@ import { UpdateHomePageDto } from './dto/update-home-page.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TextContentService } from '../translations/text-content.service';
-import { LanguageService } from '../translations/language.service';
 import { HomePage } from './entities/home-page.entity';
 import { DmsService } from 'src/dms/dms.service';
 

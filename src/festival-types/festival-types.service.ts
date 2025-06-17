@@ -5,7 +5,6 @@ import { Repository } from 'typeorm';
 import { FestivalType } from './entities/festival-type.entity';
 import { FestivalsEnum } from '../festivals/festivals.service';
 import { Festival } from '../festivals/entities/festival.entity';
-import { LanguageService } from '../translations/language.service';
 import { TextContentService } from '../translations/text-content.service';
 
 @Injectable()

@@ -30,7 +30,6 @@ import { Festival } from '../festivals/entities/festival.entity';
 import { getOverallScore } from '../utils/getOverallScore';
 import { getAverageScore } from '../utils/getAverageScore';
 import { EmailQueueService } from '../email-queue/email-queue.service';
-import { last } from 'rxjs';
 
 @Injectable()
 export class ApplicationsService {
@@ -46,7 +45,6 @@ export class ApplicationsService {
     private scoringSystemService: ScoringSystemService,
     private applicationScoreService: ApplicationScoreService,
     private applicationCompositionService: ApplicationCompositionService,
-    private emailQueueService: EmailQueueService,
   ) {}
   async create(createApplicationDto: CreateApplicationDto) {
     try {

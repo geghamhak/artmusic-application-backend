@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Participant } from './entities/participant.entity';
 import { TextContentService } from '../translations/text-content.service';
-import { LanguageService } from '../translations/language.service';
 
 export enum ParticipantType {
   SOLO = 'SOLO',

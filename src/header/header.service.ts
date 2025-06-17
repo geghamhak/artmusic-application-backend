@@ -4,7 +4,6 @@ import { UpdateHeaderDto } from './dto/update-header.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TextContentService } from '../translations/text-content.service';
-import { LanguageService } from '../translations/language.service';
 import { Header } from './entities/header.entity';
 import { DmsService } from 'src/dms/dms.service';
 

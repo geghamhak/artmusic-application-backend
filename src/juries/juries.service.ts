@@ -1,15 +1,10 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateJuryDto } from './dto/create-jury.dto';
 import { UpdateJuryDto } from './dto/update-jury.dto';
-import { Festival } from '../festivals/entities/festival.entity';
-import { FestivalType } from '../festival-types/entities/festival-type.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DmsService } from '../dms/dms.service';
 import { TextContentService } from '../translations/text-content.service';
-import { LanguageService } from '../translations/language.service';
-import { FestivalTypesService } from '../festival-types/festival-types.service';
-import { FestivalImagesService } from '../festival-images/festival-images.service';
 import { Jury } from './entities/jury.entity';
 
 @Injectable()

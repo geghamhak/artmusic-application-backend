@@ -4,7 +4,6 @@ import { UpdateStaffPageDto } from './dto/update-staff-page.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TextContentService } from '../translations/text-content.service';
-import { LanguageService } from '../translations/language.service';
 import { StaffPage } from './entities/staff-page.entity';
 
 @Injectable()

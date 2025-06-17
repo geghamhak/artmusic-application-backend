@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DmsService } from '../dms/dms.service';
 import { TextContentService } from '../translations/text-content.service';
-import { LanguageService } from '../translations/language.service';
 import { FestivalImage } from './entities/festival-image.entity';
 import { ApplicationsService } from '../applications/applications.service';
 import { SubNomination } from '../sub-nominations/entities/sub-nomination.entity';
