@@ -6,21 +6,27 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   JoinTable,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Application } from '../../applications/entities/application.entity';
+import { TextContent } from '../../translations/entities/textContent.entity';
 @Entity()
 export class Participant {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: '255' })
-  firstName: string;
+  @OneToOne(() => TextContent)
+  @JoinColumn()
+  firstName: TextContent;
 
-  @Column({ type: 'varchar', length: '255' })
-  lastName: string;
+  @OneToOne(() => TextContent)
+  @JoinColumn()
+  lastName: TextContent;
 
-  @Column({ type: 'varchar', length: '255', nullable: true })
-  fatherName: string;
+  @OneToOne(() => TextContent)
+  @JoinColumn()
+  fatherName: TextContent;
 
   @Column({ type: 'int' })
   birthYear: number;

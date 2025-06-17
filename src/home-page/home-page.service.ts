@@ -15,7 +15,6 @@ export class HomePageService {
     private homePageRepository: Repository<HomePage>,
     private textContentService: TextContentService,
     private dmsService: DmsService,
-    private languageService: LanguageService,
   ) {}
 
   async create(createHomePageDto: CreateHomePageDto) {
@@ -23,17 +22,12 @@ export class HomePageService {
       const homePage = await this.checkIfHomePageExists();
       if (!homePage) {
         const newHomePage = new HomePage();
-        const languages = await this.languageService.getAllLanguages();
         const { title, information, videoLink, images } = createHomePageDto;
 
-        newHomePage.title = await this.textContentService.addTranslations(
-          title,
-          languages,
-        );
-        newHomePage.information = await this.textContentService.addTranslations(
-          information,
-          languages,
-        );
+        newHomePage.title =
+          await this.textContentService.addTranslations(title);
+        newHomePage.information =
+          await this.textContentService.addTranslations(information);
 
         if (videoLink) {
           newHomePage.videoLink = videoLink;

@@ -15,20 +15,16 @@ export class HeaderService {
     private headerRepository: Repository<Header>,
     private dmsService: DmsService,
     private textContentService: TextContentService,
-    private languageService: LanguageService,
   ) {}
   async create(createHeaderDto: CreateHeaderDto) {
     try {
       const header = await this.checkIfHeaderExists();
       if (!header) {
         const newHeader = new Header();
-        const languages = await this.languageService.getAllLanguages();
         const { bannerTitle, banner, logo } = createHeaderDto;
 
-        newHeader.bannerTitle = await this.textContentService.addTranslations(
-          bannerTitle,
-          languages,
-        );
+        newHeader.bannerTitle =
+          await this.textContentService.addTranslations(bannerTitle);
 
         const createdHeader = await this.headerRepository.save(newHeader);
 

@@ -13,19 +13,15 @@ export class ContactService {
     @InjectRepository(Contact)
     private contactRepository: Repository<Contact>,
     private textContentService: TextContentService,
-    private languageService: LanguageService,
   ) {}
 
   async create(createContactDto: CreateContactDto) {
     try {
       const newContact = new Contact();
-      const languages = await this.languageService.getAllLanguages();
       const { information } = createContactDto;
 
-      newContact.information = await this.textContentService.addTranslations(
-        information,
-        languages,
-      );
+      newContact.information =
+        await this.textContentService.addTranslations(information);
 
       await this.contactRepository.save(newContact);
     } catch (error) {

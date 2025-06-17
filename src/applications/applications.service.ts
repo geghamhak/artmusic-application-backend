@@ -30,6 +30,7 @@ import { Festival } from '../festivals/entities/festival.entity';
 import { getOverallScore } from '../utils/getOverallScore';
 import { getAverageScore } from '../utils/getAverageScore';
 import { EmailQueueService } from '../email-queue/email-queue.service';
+import { last } from 'rxjs';
 
 @Injectable()
 export class ApplicationsService {
@@ -72,10 +73,15 @@ export class ApplicationsService {
         schoolId,
         festivalId,
         applicationCompositions,
+        languageCode,
       } = createApplicationDto;
       const festival = await this.festivalService.findOne(festivalId);
       this.checkIfFestivalIsExpired(festival);
-      await this.checkIfApplicationExists(createApplicationDto, festivalId);
+      await this.checkIfApplicationExists(
+        createApplicationDto,
+        festivalId,
+        languageCode,
+      );
       application.isFree = !!isFree;
       application.leaderFirstName = leaderFirstName;
       application.leaderLastName = leaderLastName;
@@ -107,8 +113,11 @@ export class ApplicationsService {
       }
 
       if (participants && participants.length > 0) {
-        application.participants =
-          await this.participantsService.saveMany(participants);
+        application.participants = await this.participantsService.saveMany(
+          participants,
+          festivalId,
+          languageCode,
+        );
       }
 
       if (uploadedAudio && uploadedAudio.length > 0) {
@@ -156,6 +165,7 @@ export class ApplicationsService {
   async checkIfApplicationExists(
     createApplicationDto: CreateApplicationDto,
     festivalId: number,
+    languageCode: string,
   ) {
     let shouldRejectApplication: boolean;
     if (
@@ -169,6 +179,7 @@ export class ApplicationsService {
       shouldRejectApplication = await this.checkApplicationByParticipants(
         createApplicationDto,
         festivalId,
+        languageCode,
       );
     }
 
@@ -209,10 +220,13 @@ export class ApplicationsService {
   async checkApplicationByParticipants(
     createApplicationDto: CreateApplicationDto,
     festivalId: number,
+    languageCode: string,
   ): Promise<boolean> {
     let shouldRejectApplication = false;
     const existingParticipant = await this.participantsService.getByFullData(
       createApplicationDto.participants[0],
+      festivalId,
+      languageCode,
     );
 
     if (!existingParticipant) {
@@ -241,6 +255,7 @@ export class ApplicationsService {
           createApplicationDto.participants,
           await this.participantsService.getByApplicationId(
             participantApplication.id,
+            languageCode,
           ),
         );
 

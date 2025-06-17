@@ -13,7 +13,6 @@ export class FestivalTypesService {
   constructor(
     @InjectRepository(FestivalType)
     private festivalTypeRepository: Repository<FestivalType>,
-    private languageService: LanguageService,
     private textContentService: TextContentService,
   ) {}
 
@@ -30,11 +29,8 @@ export class FestivalTypesService {
       const { name } = createFestivalTypeDto;
       await this.checkIfFestivalExists(name[0].translation as FestivalsEnum);
       const newFestivalType = new Festival();
-      const languages = await this.languageService.getAllLanguages();
-      newFestivalType.title = await this.textContentService.addTranslations(
-        name,
-        languages,
-      );
+      newFestivalType.title =
+        await this.textContentService.addTranslations(name);
       return this.festivalTypeRepository.save(newFestivalType);
     } catch (error) {
       throw new Error('Unable to create festival type');

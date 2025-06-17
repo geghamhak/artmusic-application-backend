@@ -19,21 +19,14 @@ export class JuriesService {
     private juryRepository: Repository<Jury>,
     private dmsService: DmsService,
     private textContentService: TextContentService,
-    private languageService: LanguageService,
   ) {}
   async create(createJuryDto: CreateJuryDto) {
     try {
       const { title, description, image } = createJuryDto;
       const newJury = new Jury();
-      const languages = await this.languageService.getAllLanguages();
-      newJury.title = await this.textContentService.addTranslations(
-        title,
-        languages,
-      );
-      newJury.description = await this.textContentService.addTranslations(
-        description,
-        languages,
-      );
+      newJury.title = await this.textContentService.addTranslations(title);
+      newJury.description =
+        await this.textContentService.addTranslations(description);
 
       const jury = await this.juryRepository.save(newJury);
 

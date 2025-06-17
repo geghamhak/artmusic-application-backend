@@ -16,7 +16,6 @@ export class FestivalImagesService {
     private festivalImageRepository: Repository<FestivalImage>,
     private dmsService: DmsService,
     private textContentService: TextContentService,
-    private languageService: LanguageService,
     @Inject(forwardRef(() => ApplicationsService))
     private applicationService: ApplicationsService,
   ) {}
@@ -27,7 +26,6 @@ export class FestivalImagesService {
     if (!festivalImagesDto.length) {
       return;
     }
-    const languages = await this.languageService.getAllLanguages();
     festivalImagesDto.map(async (festivalImageDto: CreateFestivalImageDto) => {
       const { title, image, subNominationId } = festivalImageDto;
       const code = image.originalName;
@@ -42,10 +40,8 @@ export class FestivalImagesService {
       } as SubNomination;
 
       if (title) {
-        newFestivalImage.title = await this.textContentService.addTranslations(
-          title,
-          languages,
-        );
+        newFestivalImage.title =
+          await this.textContentService.addTranslations(title);
       }
       await this.festivalImageRepository.save(newFestivalImage);
       await this.dmsService.uploadSingleFile({

@@ -13,7 +13,6 @@ export class StaffPageService {
     @InjectRepository(StaffPage)
     private staffPageRepository: Repository<StaffPage>,
     private textContentService: TextContentService,
-    private languageService: LanguageService,
   ) {}
 
   async create(createStaffPageDto: CreateStaffPageDto) {
@@ -21,13 +20,9 @@ export class StaffPageService {
       const existingStaffPage = await this.checkIfStaffPageExists();
       if (!existingStaffPage) {
         const staffPage = new StaffPage();
-        const languages = await this.languageService.getAllLanguages();
         const { title } = createStaffPageDto;
 
-        staffPage.title = await this.textContentService.addTranslations(
-          title,
-          languages,
-        );
+        staffPage.title = await this.textContentService.addTranslations(title);
 
         await this.staffPageRepository.save(staffPage);
       } else {

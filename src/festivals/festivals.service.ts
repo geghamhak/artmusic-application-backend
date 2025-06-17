@@ -10,7 +10,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Festival } from './entities/festival.entity';
 import { TextContentService } from '../translations/text-content.service';
-import { LanguageService } from '../translations/language.service';
 import { FestivalTypesService } from '../festival-types/festival-types.service';
 import { FestivalType } from '../festival-types/entities/festival-type.entity';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
@@ -33,7 +32,6 @@ export class FestivalsService {
     private festivalRepository: Repository<Festival>,
     private dmsService: DmsService,
     private textContentService: TextContentService,
-    private languageService: LanguageService,
     private festivalTypeService: FestivalTypesService,
     @Inject(forwardRef(() => FestivalImagesService))
     private festivalImagesService: FestivalImagesService,
@@ -194,20 +192,11 @@ export class FestivalsService {
         gallery,
       } = createFestivalDto;
       newFestival.type = { id: festivalType.id } as FestivalType;
-      const languages = await this.languageService.getAllLanguages();
-      newFestival.title = await this.textContentService.addTranslations(
-        title,
-        languages,
-      );
-      newFestival.description = await this.textContentService.addTranslations(
-        description,
-        languages,
-      );
+      newFestival.title = await this.textContentService.addTranslations(title);
+      newFestival.description =
+        await this.textContentService.addTranslations(description);
       newFestival.bannerDescription =
-        await this.textContentService.addTranslations(
-          bannerDescription,
-          languages,
-        );
+        await this.textContentService.addTranslations(bannerDescription);
       const festival = await this.festivalRepository.save(newFestival);
 
       await this.dmsService.uploadSingleFile({

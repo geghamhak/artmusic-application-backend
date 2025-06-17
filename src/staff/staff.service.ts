@@ -14,21 +14,16 @@ export class StaffService {
     @InjectRepository(Staff)
     private staffRepository: Repository<Staff>,
     private textContentService: TextContentService,
-    private languageService: LanguageService,
     private dmsService: DmsService,
   ) {}
   async create(createStaffDto: CreateStaffDto) {
     try {
       const newStaffMember = new Staff();
-      const languages = await this.languageService.getAllLanguages();
       const { name, description, image } = createStaffDto;
 
-      newStaffMember.name = await this.textContentService.addTranslations(
-        name,
-        languages,
-      );
+      newStaffMember.name = await this.textContentService.addTranslations(name);
       newStaffMember.description =
-        await this.textContentService.addTranslations(description, languages);
+        await this.textContentService.addTranslations(description);
 
       const staffMember = await this.staffRepository.save(newStaffMember);
 
