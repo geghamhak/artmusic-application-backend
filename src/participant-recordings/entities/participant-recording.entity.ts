@@ -13,7 +13,7 @@ export class ParticipantRecording {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Application, (application) => application.participants,  {
+  @ManyToOne(() => Application, (application) => application.participants, {
     onDelete: 'CASCADE',
   })
   application: Application;

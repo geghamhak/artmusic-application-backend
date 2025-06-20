@@ -138,6 +138,17 @@ export class HomePageService {
 
   async remove(id: number) {
     try {
+      const homePage = await this.homePageRepository
+        .createQueryBuilder('homePage')
+        .leftJoinAndSelect('homePage.title', 'titleContent')
+        .leftJoinAndSelect('homePage.information', 'informationContent')
+        .where('homePage.id = :id', { id })
+        .select(['titleContent.id', 'informationContent.id', 'homepage.id'])
+        .getOne();
+
+      const { title, information } = homePage;
+
+      await this.textContentService.deleteByIds([title.id, information.id]);
       await this.homePageRepository.delete(id);
       await this.dmsService.batchDeleteFilesByPrefix(`home-page/${id}/`);
     } catch (error) {

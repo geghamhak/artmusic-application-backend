@@ -71,4 +71,21 @@ export class ContactService {
       throw error;
     }
   }
+
+  async remove(id: number) {
+    try {
+      const contact = await this.contactRepository
+        .createQueryBuilder()
+        .leftJoinAndSelect('contact.information', 'information')
+        .where('id = :id', { id })
+        .select(['contact.id', 'information.id'])
+        .getOne();
+
+      const { information } = contact;
+      await this.textContentService.deleteByIds([information.id]);
+      await this.contactRepository.delete(contact.id);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

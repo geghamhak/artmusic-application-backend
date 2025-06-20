@@ -178,4 +178,32 @@ export class ParticipantsService {
       ),
     );
   }
+
+  async remove(id: number): Promise<void> {
+    try {
+      const participant = await this.participantRepository
+        .createQueryBuilder('participant')
+        .leftJoinAndSelect('participant.firstName', 'firstNameTextContent')
+        .leftJoinAndSelect('participant.lastName', 'lastNameTextContent')
+        .leftJoinAndSelect('participant.fatherName', 'fatherNameTextContent')
+        .where('participant.id = :id', { id })
+        .select([
+          'firstNameTextContent.id',
+          'lastNameTextContent.id',
+          'fatherNameTextContent.id',
+        ])
+        .getOne();
+
+      const { firstName, lastName, fatherName } = participant;
+
+      await this.textContentService.deleteByIds([
+        firstName.id,
+        lastName.id,
+        fatherName.id,
+      ]);
+      await this.participantRepository.delete(id);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

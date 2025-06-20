@@ -123,6 +123,14 @@ export class HeaderService {
 
   async remove(id: number) {
     try {
+      const header = await this.headerRepository
+        .createQueryBuilder('header')
+        .leftJoinAndSelect('header.bannerTitle', 'bannerTitle')
+        .where('id = :id', { id })
+        .select(['bannerTitle.id', 'header.id'])
+        .getOne();
+      const { bannerTitle } = header;
+      await this.textContentService.deleteByIds([bannerTitle.id]);
       await this.headerRepository.delete(id);
       await this.dmsService.batchDeleteFiles([
         `header/${id}/logo/`,

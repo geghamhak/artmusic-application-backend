@@ -389,6 +389,14 @@ export class ApplicationsService {
 
   async update(id: number, updateApplicationDto: UpdateApplicationDto) {}
 
+  async remove(id: number) {
+    try {
+      await this.applicationRepository.delete(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async addApplicationScore(
     createApplicationScoreDto: CreateApplicationScoreDto,
   ): Promise<UpdateResult> {

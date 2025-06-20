@@ -83,6 +83,14 @@ export class StaffPageService {
 
   async remove(id: number) {
     try {
+      const staffPage = await this.staffPageRepository
+        .createQueryBuilder('staffPage')
+        .leftJoinAndSelect('staffPage.title', 'title')
+        .where('staffPage.id = :id', { id })
+        .select(['title.id', 'staffPage.id'])
+        .getOne();
+      const { title } = staffPage;
+      await this.textContentService.deleteByIds([title.id]);
       await this.staffPageRepository.delete(id);
     } catch (error) {
       throw error;
