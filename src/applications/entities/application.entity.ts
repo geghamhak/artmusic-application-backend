@@ -92,12 +92,14 @@ export class Application {
   @OneToMany(
     () => ApplicationScore,
     (applicationScore) => applicationScore.application,
+      { cascade: ['remove'] }
   )
   scores?: ApplicationScore[];
 
   @OneToMany(
     () => ApplicationComposition,
     (applicationComposition) => applicationComposition.application,
+      { cascade: ['remove'] }
   )
   compositions?: ApplicationComposition[];
 
@@ -110,18 +112,21 @@ export class Application {
   @OneToMany(
     () => ParticipantRecording,
     (participantRecording) => participantRecording.application,
+      { cascade: ['remove'] }
   )
   participantRecordings?: ParticipantRecording[];
 
   @OneToMany(
     () => ParticipantVideoLink,
     (participantVideoLink) => participantVideoLink.application,
+      { cascade: ['remove'] }
   )
   participantVideoLinks?: ParticipantVideoLink[];
 
   @OneToMany(
     () => ParticipantDocument,
     (participantDocument) => participantDocument.application,
+      { cascade: ['remove'] }
   )
   participantDocuments: ParticipantDocument[];
 

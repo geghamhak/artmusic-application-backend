@@ -18,7 +18,7 @@ export class School {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => TextContent)
+  @OneToOne(() => TextContent, { onDelete: 'CASCADE' })
   @JoinColumn()
   name: TextContent;
 

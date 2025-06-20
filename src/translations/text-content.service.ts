@@ -10,7 +10,7 @@ import { LanguageService } from './language.service';
 
 @Injectable()
 export class TextContentService {
-  private allLanguages: Language[];
+  private allLanguages: Language[] = [];
   constructor(
     @InjectRepository(TextContent)
     private textContentRepository: Repository<TextContent>,
@@ -84,5 +84,13 @@ export class TextContentService {
     });
 
     return textContent;
+  }
+
+  async deleteByIds(ids: number[]): Promise<void> {
+    await this.textContentRepository
+      .createQueryBuilder('textContent')
+      .delete()
+      .where('id IN (:...ids)', { ids })
+      .execute();
   }
 }

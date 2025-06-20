@@ -72,7 +72,7 @@ export class FestivalImagesService {
       return str[str.length - 1].split('.')[0];
     });
     await this.festivalImageRepository
-      .createQueryBuilder()
+      .createQueryBuilder('festivalImage')
       .delete()
       .from('festivalImage')
       .where('festivalImage.festivalId = :festivalId', { festivalId })

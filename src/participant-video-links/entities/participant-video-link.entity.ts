@@ -16,7 +16,9 @@ export class ParticipantVideoLink {
   @Column({ type: 'varchar', length: '255', nullable: true })
   link: string;
 
-  @ManyToOne(() => Application, (application) => application.participants)
+  @ManyToOne(() => Application, (application) => application.participants, {
+    onDelete: 'CASCADE',
+  })
   application: Application;
 
   @CreateDateColumn()

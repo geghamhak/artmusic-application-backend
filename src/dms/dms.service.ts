@@ -19,7 +19,7 @@ export class DmsService {
   private readonly client: S3Client;
   private bucketName = this.configService.get('S3_BUCKET_NAME');
   private readonly s3Region = this.configService.get('AWS_REGION');
-  private readonly accessKeyId = this.configService.get('AWS_ACCESS_KEY');
+  private readonly accessKeyId = this.configService.get('AWS_ACCESS_KEY_ID');
   private readonly secretAccessKey = this.configService.get(
     'AWS_SECRET_ACCESS_KEY',
   );

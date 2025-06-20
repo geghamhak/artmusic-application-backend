@@ -24,7 +24,9 @@ export class FestivalImage {
   @JoinColumn()
   title: TextContent;
 
-  @ManyToOne(() => Festival, (festival) => festival.festivalImages)
+  @ManyToOne(() => Festival, (festival) => festival.festivalImages, {
+    onDelete: 'CASCADE',
+  })
   festival?: Festival;
 
   @ManyToOne(

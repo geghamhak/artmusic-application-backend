@@ -168,6 +168,7 @@ export class FestivalsService {
   }
 
   async create(createFestivalDto: CreateFestivalDto) {
+    let festivalId: number;
     try {
       const { applicationStartDate, applicationEndDate } = createFestivalDto;
       const startDate = new Date(applicationStartDate);
@@ -198,7 +199,7 @@ export class FestivalsService {
       newFestival.bannerDescription =
         await this.textContentService.addTranslations(bannerDescription);
       const festival = await this.festivalRepository.save(newFestival);
-
+      festivalId = festival.id;
       await this.dmsService.uploadSingleFile({
         file: banner,
         entity: 'festivals',
@@ -215,6 +216,9 @@ export class FestivalsService {
         await this.festivalImagesService.add(gallery, festival.id);
       }
     } catch (error) {
+      if (festivalId) {
+        await this.removeFestivalInfo(festivalId);
+      }
       throw error;
     }
   }
@@ -323,8 +327,44 @@ export class FestivalsService {
       })
       .getOne();
 
+    console.log(existingFestival);
     if (existingFestival) {
       throw new BadRequestException('Festival already exists');
+    }
+  }
+
+  async removeFestivalInfo(id: number) {
+    try {
+      console.log(`Removing festival info for ${id}`);
+      const festival = await this.festivalRepository
+        .createQueryBuilder('festival')
+        .leftJoinAndSelect('festival.title', 'titleTextContent')
+        .leftJoinAndSelect('festival.description', 'descriptionTextContent')
+        .leftJoinAndSelect(
+          'festival.bannerDescription',
+          'bannerDescriptionTextContent',
+        )
+        .where('festival.id = :id', { id })
+        .select([
+          'festival.id',
+          'titleTextContent.id',
+          'descriptionTextContent.id',
+          'bannerDescriptionTextContent.id',
+        ])
+        .getOne();
+
+      console.log(festival);
+      const { title, description, bannerDescription } = festival;
+
+      console.log(title, description, bannerDescription);
+      await this.festivalRepository.delete(id);
+      await this.textContentService.deleteByIds([
+        title.id,
+        description.id,
+        bannerDescription.id,
+      ]);
+    } catch (error) {
+      throw error;
     }
   }
 }

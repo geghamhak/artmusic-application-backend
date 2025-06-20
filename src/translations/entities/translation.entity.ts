@@ -20,7 +20,9 @@ export class Translation {
   @ManyToOne(() => Language, (language) => language.translations)
   language: Language;
 
-  @ManyToOne(() => TextContent, (textContent) => textContent.translations)
+  @ManyToOne(() => TextContent, (textContent) => textContent.translations, {
+    onDelete: 'CASCADE',
+  })
   textContent: TextContent;
 
   @CreateDateColumn()

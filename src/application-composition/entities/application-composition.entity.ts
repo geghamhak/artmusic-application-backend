@@ -19,7 +19,9 @@ export class ApplicationComposition {
   @Column({ type: 'varchar', length: '255', nullable: true })
   craftSubNomination: string;
 
-  @ManyToOne(() => Application, (application) => application.compositions)
+  @ManyToOne(() => Application, (application) => application.compositions, {
+    onDelete: 'CASCADE',
+  })
   application: Application;
 
   @CreateDateColumn()

@@ -19,25 +19,29 @@ export class Festival {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => TextContent)
+  @OneToOne(() => TextContent, { onDelete: 'CASCADE' })
   @JoinColumn()
   title: TextContent;
 
-  @OneToOne(() => TextContent)
+  @OneToOne(() => TextContent, { onDelete: 'CASCADE' })
   @JoinColumn()
   description: TextContent;
 
-  @OneToOne(() => TextContent)
+  @OneToOne(() => TextContent, { onDelete: 'CASCADE' })
   @JoinColumn()
   bannerDescription: TextContent;
 
   @ManyToOne(() => FestivalType, (festivalType) => festivalType.nominations)
   type: FestivalType;
 
-  @OneToMany(() => Application, (application) => application.festival)
+  @OneToMany(() => Application, (application) => application.festival, {
+    cascade: ['remove'],
+  })
   applications: Application[];
 
-  @OneToMany(() => FestivalImage, (festivalImage) => festivalImage.festival)
+  @OneToMany(() => FestivalImage, (festivalImage) => festivalImage.festival, {
+    cascade: ['remove'],
+  })
   festivalImages: FestivalImage[];
 
   @Column({ type: 'date' })

@@ -19,7 +19,9 @@ export class ParticipantDocument {
   @Column({ type: 'varchar', length: '50' })
   originalMimeType: string;
 
-  @ManyToOne(() => Application, (application) => application.participants)
+  @ManyToOne(() => Application, (application) => application.participants, {
+    onDelete: 'CASCADE',
+  })
   application: Application;
 
   @CreateDateColumn()

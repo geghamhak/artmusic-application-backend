@@ -6,7 +6,7 @@ export class Contact {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => TextContent)
+  @OneToOne(() => TextContent, { onDelete: 'CASCADE' })
   @JoinColumn()
   information: TextContent;
 }

@@ -16,7 +16,9 @@ export class ApplicationScore {
   @Column()
   score: number;
 
-  @ManyToOne(() => Application, (application) => application.scores)
+  @ManyToOne(() => Application, (application) => application.scores, {
+    onDelete: 'CASCADE',
+  })
   application?: Application;
 
   @CreateDateColumn()

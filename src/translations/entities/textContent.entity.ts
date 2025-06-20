@@ -12,7 +12,9 @@ export class TextContent {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => Translation, (translation) => translation.textContent)
+  @OneToMany(() => Translation, (translation) => translation.textContent, {
+    cascade: ['remove'],
+  })
   translations: Translation[];
 
   @CreateDateColumn()

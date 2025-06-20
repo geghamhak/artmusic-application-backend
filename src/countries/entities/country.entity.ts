@@ -16,7 +16,7 @@ export class Country {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => TextContent)
+  @OneToOne(() => TextContent, { onDelete: 'CASCADE' })
   @JoinColumn()
   name: TextContent;
 
