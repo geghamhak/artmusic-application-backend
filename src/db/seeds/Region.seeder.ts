@@ -7,6 +7,9 @@ import { Translation } from '../../translations/entities/translation.entity';
 
 const Regions = [
   {
+    name: 'Երևան',
+  },
+  {
     name: 'Արագածոտն',
   },
   {
@@ -35,9 +38,6 @@ const Regions = [
   },
   {
     name: 'Վայոց ձոր',
-  },
-  {
-    name: 'Երևան',
   },
 ];
 

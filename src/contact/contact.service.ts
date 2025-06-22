@@ -18,10 +18,10 @@ export class ContactService {
     try {
       const newContact = new Contact();
       const { information } = createContactDto;
-
       newContact.information =
         await this.textContentService.addTranslations(information);
 
+      newContact.location = createContactDto.location;
       await this.contactRepository.save(newContact);
     } catch (error) {
       throw error;
