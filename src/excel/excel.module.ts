@@ -7,5 +7,6 @@ import { ApplicationsModule } from '../applications/applications.module';
   imports: [ApplicationsModule],
   controllers: [ExcelController],
   providers: [ExcelService],
+  exports: [ExcelService],
 })
 export class ExcelModule {}

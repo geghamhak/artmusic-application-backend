@@ -8,6 +8,7 @@ import { FestivalTypesModule } from '../festival-types/festival-types.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { DmsModule } from 'src/dms/dms.module';
 import { FestivalImagesModule } from '../festival-images/festival-images.module';
+import { ExcelModule } from '../excel/excel.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { FestivalImagesModule } from '../festival-images/festival-images.module'
     NestjsFormDataModule,
     DmsModule,
     forwardRef(() => FestivalImagesModule),
+    ExcelModule,
   ],
   exports: [TypeOrmModule, FestivalsService],
   controllers: [FestivalsController],

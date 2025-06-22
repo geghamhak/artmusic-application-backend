@@ -436,16 +436,16 @@ const Nominations = [
     ],
   },
   {
-    name: 'Ազգային նվագարաններ',
+    name: 'Հայկական ազգային նվագարաններ',
     originalLanguage: 'am',
     priority: 5,
     translations: [
       {
-        name: 'National orchestras',
+        name: 'Armenian national orchestras',
         languageCode: 'en',
       },
       {
-        name: 'Национальные инструменты',
+        name: 'Армянские национальные инструменты',
         languageCode: 'ru',
       },
     ],
@@ -496,24 +496,9 @@ const Nominations = [
         ],
       },
       {
-        name: 'Ակորդեոն',
-        originalLanguage: 'am',
-        priority: 4,
-        translations: [
-          {
-            name: 'Accordion',
-            languageCode: 'en',
-          },
-          {
-            name: 'Аккордеон',
-            languageCode: 'ru',
-          },
-        ],
-      },
-      {
         name: 'Քամանի / Բամբիռ',
         originalLanguage: 'am',
-        priority: 5,
+        priority: 4,
         translations: [
           {
             name: 'Qamani / Bambir',
@@ -528,7 +513,7 @@ const Nominations = [
       {
         name: 'Թառ',
         originalLanguage: 'am',
-        priority: 6,
+        priority: 5,
         translations: [
           {
             name: 'Tar',
@@ -543,7 +528,7 @@ const Nominations = [
       {
         name: 'Սազ',
         originalLanguage: 'am',
-        priority: 7,
+        priority: 6,
         translations: [
           {
             name: 'Saz',
@@ -558,7 +543,7 @@ const Nominations = [
       {
         name: 'Ուդ',
         originalLanguage: 'am',
-        priority: 8,
+        priority: 7,
         translations: [
           {
             name: 'Ud',
@@ -573,7 +558,7 @@ const Nominations = [
       {
         name: 'Շվի',
         originalLanguage: 'am',
-        priority: 9,
+        priority: 8,
         translations: [
           {
             name: 'Shvi',
@@ -588,7 +573,7 @@ const Nominations = [
       {
         name: 'Սրինգ',
         originalLanguage: 'am',
-        priority: 10,
+        priority: 9,
         translations: [
           {
             name: 'Sring',
@@ -603,7 +588,7 @@ const Nominations = [
       {
         name: 'Դուդուկ',
         originalLanguage: 'am',
-        priority: 11,
+        priority: 10,
         translations: [
           {
             name: 'Duduk',
@@ -618,7 +603,7 @@ const Nominations = [
       {
         name: 'Պկու',
         originalLanguage: 'am',
-        priority: 12,
+        priority: 11,
         translations: [
           {
             name: 'Pku',
@@ -633,7 +618,7 @@ const Nominations = [
       {
         name: 'Զուրնա',
         originalLanguage: 'am',
-        priority: 13,
+        priority: 12,
         translations: [
           {
             name: 'Zurna',
@@ -648,7 +633,7 @@ const Nominations = [
       {
         name: 'Պարկապզուկ',
         originalLanguage: 'am',
-        priority: 14,
+        priority: 13,
         translations: [
           {
             name: 'Parkapzuk',
@@ -663,7 +648,7 @@ const Nominations = [
       {
         name: 'Շրթհարմոն',
         originalLanguage: 'am',
-        priority: 15,
+        priority: 14,
         translations: [
           {
             name: 'Harmonica',
@@ -675,10 +660,42 @@ const Nominations = [
           },
         ],
       },
+    ],
+  },
+  {
+    name: 'Ոչ հայկական ազգային նվագարաններ',
+    originalLanguage: 'am',
+    priority: 5,
+    translations: [
+      {
+        name: 'Non-armenian national orchestras',
+        languageCode: 'en',
+      },
+      {
+        name: 'Не Армянские национальные инструменты',
+        languageCode: 'ru',
+      },
+    ],
+    subNominations: [
+      {
+        name: 'Ակորդեոն',
+        originalLanguage: 'am',
+        priority: 1,
+        translations: [
+          {
+            name: 'Accordion',
+            languageCode: 'en',
+          },
+          {
+            name: 'Аккордеон',
+            languageCode: 'ru',
+          },
+        ],
+      },
       {
         name: 'Դհոլ / Զարբ / Դափ',
         originalLanguage: 'am',
-        priority: 16,
+        priority: 2,
         translations: [
           {
             name: 'Dhol / Zarb / Dap',
@@ -693,7 +710,7 @@ const Nominations = [
       {
         name: 'Կախոն /Բուբեն',
         originalLanguage: 'am',
-        priority: 17,
+        priority: 3,
         translations: [
           {
             name: 'Cajon / Tambourine',
@@ -708,7 +725,7 @@ const Nominations = [
       {
         name: 'Կանկլես',
         originalLanguage: 'am',
-        priority: 18,
+        priority: 4,
         translations: [
           {
             name: 'Kankles',
@@ -723,7 +740,7 @@ const Nominations = [
       {
         name: 'այլ',
         originalLanguage: 'am',
-        priority: 19,
+        priority: 5,
         translations: [
           {
             name: 'others',

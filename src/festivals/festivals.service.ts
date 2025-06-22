@@ -15,6 +15,8 @@ import { FestivalType } from '../festival-types/entities/festival-type.entity';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
 import { FestivalImagesService } from '../festival-images/festival-images.service';
 import { DmsService } from '../dms/dms.service';
+import { FileSystemStoredFile } from 'nestjs-form-data';
+import { ExcelService } from '../excel/excel.service';
 
 export enum FestivalsEnum {
   ARTMUSIC = 'artmusic',
@@ -35,6 +37,7 @@ export class FestivalsService {
     private festivalTypeService: FestivalTypesService,
     @Inject(forwardRef(() => FestivalImagesService))
     private festivalImagesService: FestivalImagesService,
+    private excelService: ExcelService,
   ) {}
 
   findAll() {
@@ -200,6 +203,12 @@ export class FestivalsService {
         await this.textContentService.addTranslations(bannerDescription);
       const festival = await this.festivalRepository.save(newFestival);
       festivalId = festival.id;
+      if (createFestivalDto.existingSchedule) {
+        await this.addApplicationsFromSchedule(
+          createFestivalDto.existingSchedule,
+          festival.id,
+        );
+      }
       await this.dmsService.uploadSingleFile({
         file: banner,
         entity: 'festivals',
@@ -365,6 +374,21 @@ export class FestivalsService {
       ]);
     } catch (error) {
       throw error;
+    }
+  }
+
+  async addApplicationsFromSchedule(
+    existingSchedule: FileSystemStoredFile,
+    festivalId: number,
+  ) {
+    try {
+      console.log(existingSchedule.mimetype);
+      await this.excelService.addApplicationsFromSchedule(
+        existingSchedule,
+        festivalId,
+      );
+    } catch (error) {
+      throw new Error('Unable to proceed .xlsx file');
     }
   }
 }

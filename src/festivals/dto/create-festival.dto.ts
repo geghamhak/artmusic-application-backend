@@ -22,4 +22,8 @@ export class CreateFestivalDto {
   @HasMimeType(['image/jpeg', 'image/png'], { each: true })
   @IsOptional()
   gallery?: CreateFestivalImageDto[];
+  @IsFile()
+  // @HasMimeType(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/octet-stream'], { each: true })
+  @IsOptional()
+  existingSchedule?: FileSystemStoredFile;
 }

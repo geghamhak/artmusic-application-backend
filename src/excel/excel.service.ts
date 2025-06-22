@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as ExcelJS from 'exceljs';
 import { ApplicationsService } from '../applications/applications.service';
 import { Application } from '../applications/entities/application.entity';
+import { FileSystemStoredFile } from 'nestjs-form-data';
 
 @Injectable()
 export class ExcelService {
@@ -102,5 +103,24 @@ export class ExcelService {
       phoneNumber: application.phoneNumber,
       totalDuration: application.totalDuration,
     };
+  }
+
+  async addApplicationsFromSchedule(
+    existingSchedule: FileSystemStoredFile,
+    festivalId: number,
+  ) {
+    try {
+      const workbook = new ExcelJS.Workbook();
+      const fileData = await workbook.xlsx.readFile(existingSchedule.path);
+      const worksheets = fileData.worksheets;
+      worksheets.map((worksheet) => {
+        worksheet.eachRow((row) => {
+          console.log(row.values);
+        });
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 }
