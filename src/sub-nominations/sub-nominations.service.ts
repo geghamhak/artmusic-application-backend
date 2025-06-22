@@ -23,12 +23,18 @@ export class SubNominationsService {
       .leftJoinAndSelect('translations.language', 'translationLanguage')
       .select([
         'sub_nomination.id',
+        'sub_nomination.priority',
+        'nomination.priority',
         'nomination.key',
         'nomination.id',
         'textContent.id',
         'translations.translation',
         'translationLanguage.code',
       ])
+      .orderBy({
+        'nomination.priority': 'ASC',
+        'sub_nomination.priority': 'ASC',
+      })
       .getMany();
 
     const mappedSubNominations: ISubNominationResponse[] =

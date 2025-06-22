@@ -22,10 +22,14 @@ export class NominationsService {
       .leftJoinAndSelect('translations.language', 'translationLanguage')
       .select([
         'nomination.id',
+        'nomination.priority',
         'textContent.id',
         'translations.translation',
         'translationLanguage.code',
       ])
+      .orderBy({
+        'nomination.priority': 'ASC',
+      })
       .getMany();
 
     return this.translationService.mapTranslations(nominations);

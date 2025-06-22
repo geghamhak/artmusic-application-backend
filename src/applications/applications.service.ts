@@ -29,7 +29,6 @@ import { ApplicationCompositionService } from '../application-composition/applic
 import { Festival } from '../festivals/entities/festival.entity';
 import { getOverallScore } from '../utils/getOverallScore';
 import { getAverageScore } from '../utils/getAverageScore';
-import { EmailQueueService } from '../email-queue/email-queue.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -406,9 +405,7 @@ export class ApplicationsService {
     const overallScore: number = getOverallScore(scores);
     const averageScore: number = getAverageScore(overallScore, scores);
     const scoringSystem: ScoringSystem =
-      await this.scoringSystemService.determinePlaceByScore(
-        averageScore,
-      );
+      await this.scoringSystemService.determinePlaceByScore(averageScore);
     application.place = { id: scoringSystem.id } as ScoringSystem;
     application.totalScore = overallScore;
     return this.applicationRepository.update({ id }, application);

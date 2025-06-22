@@ -31,6 +31,7 @@ export class TranslationsService {
       });
       mappedTranslations.push({
         id: translationToMap.id,
+        priority: translationToMap.priority,
         translations: translations,
       });
     });

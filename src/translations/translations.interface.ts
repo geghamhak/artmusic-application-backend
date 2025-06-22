@@ -7,6 +7,7 @@ interface TranslationsItem {
 
 export interface TranslationToMap {
   id: number;
+  priority: number;
   name: {
     translations: TranslationsItem[];
   };
