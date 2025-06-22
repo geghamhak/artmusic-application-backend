@@ -3,7 +3,6 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -23,11 +22,11 @@ export class Nomination {
   @JoinColumn()
   name: TextContent;
 
+  @Column({ type: 'smallint' })
+  priority: number;
+
   @OneToMany(() => SubNomination, (subNomination) => subNomination.nomination)
   subNominations: SubNomination[];
-
-  @ManyToOne(() => FestivalType, (festivalType) => festivalType.nominations)
-  festivalType: FestivalType;
 
   @OneToMany(() => Application, (application) => application.festival)
   applications: Application[];

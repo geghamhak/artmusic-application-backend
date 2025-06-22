@@ -25,11 +25,10 @@ export class ScoringSystemService {
     private scoringSystemRepository: Repository<ScoringSystem>,
   ) {}
 
-  async determinePlaceByScore(score: number, festivalType: FestivalType) {
+  async determinePlaceByScore(score: number) {
     return await this.scoringSystemRepository.findOneBy({
       minAmount: MoreThanOrEqual(score),
       maxAmount: MoreThanOrEqual(score),
-      festivalType: festivalType,
     });
   }
 

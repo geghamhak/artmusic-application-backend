@@ -10,6 +10,7 @@ const Nominations = [
   {
     name: 'Ստեղնային նվագարաններ',
     originalLanguage: 'am',
+    priority: 1,
     translations: [
       {
         name: 'Keyboards',
@@ -24,6 +25,7 @@ const Nominations = [
       {
         name: 'Դաշնամուր',
         originalLanguage: 'am',
+        priority: 1,
         translations: [
           {
             name: 'Piano',
@@ -36,22 +38,9 @@ const Nominations = [
         ],
       },
       {
-        name: 'Ակորդեոն',
-        originalLanguage: 'am',
-        translations: [
-          {
-            name: 'Accordion',
-            languageCode: 'en',
-          },
-          {
-            name: 'Аккордеон',
-            languageCode: 'ru',
-          },
-        ],
-      },
-      {
         name: 'Սինթեզատոր',
         originalLanguage: 'am',
+        priority: 2,
         translations: [
           {
             name: 'Synthesizer',
@@ -68,6 +57,7 @@ const Nominations = [
   {
     name: 'Լարային դասական նվագարաններ',
     originalLanguage: 'am',
+    priority: 2,
     translations: [
       {
         name: 'Classic Strings',
@@ -82,6 +72,7 @@ const Nominations = [
       {
         name: 'Ջութակ',
         originalLanguage: 'am',
+        priority: 1,
         translations: [
           {
             name: 'Violin',
@@ -96,6 +87,7 @@ const Nominations = [
       {
         name: 'Ալտ',
         originalLanguage: 'am',
+        priority: 2,
         translations: [
           {
             name: 'Viola',
@@ -110,6 +102,7 @@ const Nominations = [
       {
         name: 'Թավջութակ',
         originalLanguage: 'am',
+        priority: 3,
         translations: [
           {
             name: 'Cello',
@@ -124,6 +117,7 @@ const Nominations = [
       {
         name: 'Կոնտրաբաս',
         originalLanguage: 'am',
+        priority: 4,
         translations: [
           {
             name: 'Contrabass',
@@ -138,6 +132,7 @@ const Nominations = [
       {
         name: 'Տավիղ',
         originalLanguage: 'am',
+        priority: 5,
         translations: [
           {
             name: 'Harp',
@@ -152,6 +147,7 @@ const Nominations = [
       {
         name: 'Կիթառ',
         originalLanguage: 'am',
+        priority: 6,
         translations: [
           {
             name: 'Guitar',
@@ -168,6 +164,7 @@ const Nominations = [
   {
     name: 'Փողային նվագարաններ',
     originalLanguage: 'am',
+    priority: 3,
     translations: [
       {
         name: 'Classic Brass',
@@ -182,6 +179,7 @@ const Nominations = [
       {
         name: 'Ֆլեյտա',
         originalLanguage: 'am',
+        priority: 1,
         translations: [
           {
             name: 'Flute',
@@ -196,6 +194,7 @@ const Nominations = [
       {
         name: 'Պիկոլո-ֆլեյտա',
         originalLanguage: 'am',
+        priority: 2,
         translations: [
           {
             name: 'Flute piccolo',
@@ -210,6 +209,7 @@ const Nominations = [
       {
         name: 'Բլոկ-ֆլեյտա',
         originalLanguage: 'am',
+        priority: 3,
         translations: [
           {
             name: 'Block flute',
@@ -224,6 +224,7 @@ const Nominations = [
       {
         name: 'Հոբոյ',
         originalLanguage: 'am',
+        priority: 4,
         translations: [
           {
             name: 'Oboe',
@@ -238,6 +239,7 @@ const Nominations = [
       {
         name: 'Կլարնետ',
         originalLanguage: 'am',
+        priority: 5,
         translations: [
           {
             name: 'Clarinet',
@@ -252,6 +254,7 @@ const Nominations = [
       {
         name: 'Ֆագոտ',
         originalLanguage: 'am',
+        priority: 6,
         translations: [
           {
             name: 'Bassoon',
@@ -266,6 +269,7 @@ const Nominations = [
       {
         name: 'Սակսոֆոն',
         originalLanguage: 'am',
+        priority: 7,
         translations: [
           {
             name: 'Saxophone',
@@ -280,6 +284,7 @@ const Nominations = [
       {
         name: 'Բյուգելհորն',
         originalLanguage: 'am',
+        priority: 8,
         translations: [
           {
             name: 'Bugle',
@@ -294,6 +299,7 @@ const Nominations = [
       {
         name: 'Շեփոր',
         originalLanguage: 'am',
+        priority: 9,
         translations: [
           {
             name: 'Trumpet',
@@ -308,6 +314,7 @@ const Nominations = [
       {
         name: 'Տրոմբոն',
         originalLanguage: 'am',
+        priority: 10,
         translations: [
           {
             name: 'Trombone',
@@ -322,6 +329,7 @@ const Nominations = [
       {
         name: 'Գալարափող',
         originalLanguage: 'am',
+        priority: 11,
         translations: [
           {
             name: 'French horn',
@@ -336,6 +344,7 @@ const Nominations = [
       {
         name: 'Տենոր',
         originalLanguage: 'am',
+        priority: 12,
         translations: [
           {
             name: 'Tenor',
@@ -350,6 +359,7 @@ const Nominations = [
       {
         name: 'Բարիտոն',
         originalLanguage: 'am',
+        priority: 13,
         translations: [
           {
             name: 'Baritone',
@@ -364,6 +374,7 @@ const Nominations = [
       {
         name: 'Տուբա',
         originalLanguage: 'am',
+        priority: 14,
         translations: [
           {
             name: 'Tuba',
@@ -380,6 +391,7 @@ const Nominations = [
   {
     name: 'Հարվածային նվագարաններ',
     originalLanguage: 'am',
+    priority: 4,
     translations: [
       {
         name: 'Percussion',
@@ -394,6 +406,7 @@ const Nominations = [
       {
         name: 'Քսիլոֆոն / Մարիմբա / Վիբրաֆոն / Գլոկ',
         originalLanguage: 'am',
+        priority: 1,
         translations: [
           {
             name: 'Xylophone / Marimba / Vibraphone / Glock',
@@ -408,6 +421,7 @@ const Nominations = [
       {
         name: 'Հարվածային նվագարանների հավաքածու / Մեծ թմբուկ / Փոքր թմբուկ / Ծնծղա / այլ',
         originalLanguage: 'am',
+        priority: 2,
         translations: [
           {
             name: 'Drum Kit / Bass Drum / Snare Drum / Cymbal / others',
@@ -424,6 +438,7 @@ const Nominations = [
   {
     name: 'Ազգային նվագարաններ',
     originalLanguage: 'am',
+    priority: 5,
     translations: [
       {
         name: 'National orchestras',
@@ -438,6 +453,7 @@ const Nominations = [
       {
         name: 'Քանոն',
         originalLanguage: 'am',
+        priority: 1,
         translations: [
           {
             name: 'Qanon',
@@ -452,6 +468,7 @@ const Nominations = [
       {
         name: 'Սանթուր',
         originalLanguage: 'am',
+        priority: 2,
         translations: [
           {
             name: 'Santur',
@@ -466,6 +483,7 @@ const Nominations = [
       {
         name: 'Քամանչա',
         originalLanguage: 'am',
+        priority: 3,
         translations: [
           {
             name: 'Qamancha',
@@ -478,8 +496,24 @@ const Nominations = [
         ],
       },
       {
+        name: 'Ակորդեոն',
+        originalLanguage: 'am',
+        priority: 4,
+        translations: [
+          {
+            name: 'Accordion',
+            languageCode: 'en',
+          },
+          {
+            name: 'Аккордеон',
+            languageCode: 'ru',
+          },
+        ],
+      },
+      {
         name: 'Քամանի / Բամբիռ',
         originalLanguage: 'am',
+        priority: 5,
         translations: [
           {
             name: 'Qamani / Bambir',
@@ -494,6 +528,7 @@ const Nominations = [
       {
         name: 'Թառ',
         originalLanguage: 'am',
+        priority: 6,
         translations: [
           {
             name: 'Tar',
@@ -508,6 +543,7 @@ const Nominations = [
       {
         name: 'Սազ',
         originalLanguage: 'am',
+        priority: 7,
         translations: [
           {
             name: 'Saz',
@@ -522,6 +558,7 @@ const Nominations = [
       {
         name: 'Ուդ',
         originalLanguage: 'am',
+        priority: 8,
         translations: [
           {
             name: 'Ud',
@@ -536,6 +573,7 @@ const Nominations = [
       {
         name: 'Շվի',
         originalLanguage: 'am',
+        priority: 9,
         translations: [
           {
             name: 'Shvi',
@@ -550,6 +588,7 @@ const Nominations = [
       {
         name: 'Սրինգ',
         originalLanguage: 'am',
+        priority: 10,
         translations: [
           {
             name: 'Sring',
@@ -564,6 +603,7 @@ const Nominations = [
       {
         name: 'Դուդուկ',
         originalLanguage: 'am',
+        priority: 11,
         translations: [
           {
             name: 'Duduk',
@@ -578,6 +618,7 @@ const Nominations = [
       {
         name: 'Պկու',
         originalLanguage: 'am',
+        priority: 12,
         translations: [
           {
             name: 'Pku',
@@ -592,6 +633,7 @@ const Nominations = [
       {
         name: 'Զուրնա',
         originalLanguage: 'am',
+        priority: 13,
         translations: [
           {
             name: 'Zurna',
@@ -606,6 +648,7 @@ const Nominations = [
       {
         name: 'Պարկապզուկ',
         originalLanguage: 'am',
+        priority: 14,
         translations: [
           {
             name: 'Parkapzuk',
@@ -620,6 +663,7 @@ const Nominations = [
       {
         name: 'Շրթհարմոն',
         originalLanguage: 'am',
+        priority: 15,
         translations: [
           {
             name: 'Harmonica',
@@ -634,6 +678,7 @@ const Nominations = [
       {
         name: 'Դհոլ / Զարբ / Դափ',
         originalLanguage: 'am',
+        priority: 16,
         translations: [
           {
             name: 'Dhol / Zarb / Dap',
@@ -648,6 +693,7 @@ const Nominations = [
       {
         name: 'Կախոն /Բուբեն',
         originalLanguage: 'am',
+        priority: 17,
         translations: [
           {
             name: 'Cajon / Tambourine',
@@ -662,6 +708,7 @@ const Nominations = [
       {
         name: 'Կանկլես',
         originalLanguage: 'am',
+        priority: 18,
         translations: [
           {
             name: 'Kankles',
@@ -676,6 +723,7 @@ const Nominations = [
       {
         name: 'այլ',
         originalLanguage: 'am',
+        priority: 19,
         translations: [
           {
             name: 'others',
@@ -692,6 +740,7 @@ const Nominations = [
   {
     name: 'Վոկալ',
     originalLanguage: 'am',
+    priority: 6,
     translations: [
       {
         name: 'Vocals',
@@ -706,6 +755,7 @@ const Nominations = [
       {
         name: 'Ակադեմիայան, էստրադային և ջազային երգեցողություն կենդանի նվագակցությամբ',
         originalLanguage: 'am',
+        priority: 1,
         translations: [
           {
             name: 'Academic, pop and jazz singing with live accompaniment',
@@ -720,6 +770,7 @@ const Nominations = [
       {
         name: 'Էստրադային և ջազային երգեցողություն մինուսային հնչյունագրով',
         originalLanguage: 'am',
+        priority: 2,
         translations: [
           {
             name: 'Pop and jazz singing by audio track',
@@ -734,6 +785,7 @@ const Nominations = [
       {
         name: 'Ժողովրդական, աշուղական և հայրենասիրական երգ կենդանի նվագակցությամբ',
         originalLanguage: 'am',
+        priority: 3,
         translations: [
           {
             name: 'Folk, ashugh and patriotic songs with live accompaniment',
@@ -748,6 +800,7 @@ const Nominations = [
       {
         name: 'Ժողովրդական, աշուղական և հայրենասիրական մինուսային հնչյունագրով',
         originalLanguage: 'am',
+        priority: 4,
         translations: [
           {
             name: 'Folk, ashugh and patriotic songs by audio track',
@@ -762,6 +815,7 @@ const Nominations = [
       {
         name: 'Հոգևոր երգ կենդանի նվագակցությամբ',
         originalLanguage: 'am',
+        priority: 5,
         translations: [
           {
             name: 'Spiritual song with live accompaniment',
@@ -776,6 +830,7 @@ const Nominations = [
       {
         name: 'Հոգևոր երգ մինուսային հնչյունագրով',
         originalLanguage: 'am',
+        priority: 6,
         translations: [
           {
             name: 'Spiritual song by audio track',
@@ -790,6 +845,7 @@ const Nominations = [
       {
         name: 'Հեղինակային երգ կենդանի նվագակցությամբ',
         originalLanguage: 'am',
+        priority: 7,
         translations: [
           {
             name: "Author's song with live accompaniment",
@@ -804,6 +860,7 @@ const Nominations = [
       {
         name: 'Հեղինակային երգ մինուսային հնչյունագրով',
         originalLanguage: 'am',
+        priority: 8,
         translations: [
           {
             name: "Author's song by audio track",
@@ -818,6 +875,7 @@ const Nominations = [
       {
         name: 'Ռոմանս կենդանի նվագակցությամբ',
         originalLanguage: 'am',
+        priority: 9,
         translations: [
           {
             name: 'Романс под живой аккомпанимент',
@@ -832,6 +890,7 @@ const Nominations = [
       {
         name: 'Ռոմանս մինուսային հնչյունագրով',
         originalLanguage: 'am',
+        priority: 10,
         translations: [
           {
             name: 'Romance by audio track',
@@ -848,6 +907,7 @@ const Nominations = [
   {
     name: 'Երաժշտական համույթներ (խմբեր)',
     originalLanguage: 'am',
+    priority: 7,
     translations: [
       {
         name: 'Musical ensembles (groups)',
@@ -862,6 +922,7 @@ const Nominations = [
       {
         name: 'Դասական նվագարանների համույթ (առանց խմբավարի)',
         originalLanguage: 'am',
+        priority: 1,
         translations: [
           {
             name: 'Ensemble of classical instruments (without conductor)',
@@ -876,6 +937,7 @@ const Nominations = [
       {
         name: 'Դասական նվագարանների նվագախումբ (խմբավարով)',
         originalLanguage: 'am',
+        priority: 2,
         translations: [
           {
             name: 'Orchestra of classical instruments (without conductor)',
@@ -890,6 +952,7 @@ const Nominations = [
       {
         name: 'Ազգային նվագարանների համույթ (առանց խմբավարի)',
         originalLanguage: 'am',
+        priority: 3,
         translations: [
           {
             name: 'Ensemble of folk instruments (without conductor)',
@@ -904,6 +967,7 @@ const Nominations = [
       {
         name: 'Ազգային նվագարանների համույթ (խմբավարով)',
         originalLanguage: 'am',
+        priority: 4,
         translations: [
           {
             name: 'Orchestra of folk instruments (without conductor)',
@@ -918,6 +982,7 @@ const Nominations = [
       {
         name: 'Ջազ-բենդ (խմբավարով)',
         originalLanguage: 'am',
+        priority: 5,
         translations: [
           {
             name: 'Jazz band',
@@ -932,6 +997,7 @@ const Nominations = [
       {
         name: 'Խառը համույթ (առանց խմբավարի)',
         originalLanguage: 'am',
+        priority: 6,
         translations: [
           {
             name: 'Mixed ensemble',
@@ -946,6 +1012,7 @@ const Nominations = [
       {
         name: 'Վոկալ համույթ կենդանի նվագակցությամբ (առանց խմբավարի)',
         originalLanguage: 'am',
+        priority: 7,
         translations: [
           {
             name: 'Vocal ensemble',
@@ -960,6 +1027,7 @@ const Nominations = [
       {
         name: 'Երգչախումբ (խմբավարով)',
         originalLanguage: 'am',
+        priority: 8,
         translations: [
           {
             name: 'Choir',
@@ -976,6 +1044,7 @@ const Nominations = [
   {
     name: 'Թատերական արվեստ',
     originalLanguage: 'am',
+    priority: 8,
     translations: [
       {
         name: 'Theater art',
@@ -990,6 +1059,7 @@ const Nominations = [
       {
         name: 'Ասմունք',
         originalLanguage: 'am',
+        priority: 1,
         translations: [
           {
             name: 'Declamation',
@@ -1004,6 +1074,7 @@ const Nominations = [
       {
         name: 'Թատերական էտյուդ',
         originalLanguage: 'am',
+        priority: 2,
         translations: [
           {
             name: 'Theatrical sketch',
@@ -1018,6 +1089,7 @@ const Nominations = [
       {
         name: 'Թատերական ներկայացում',
         originalLanguage: 'am',
+        priority: 3,
         translations: [
           {
             name: 'Theatrical performance',
@@ -1032,6 +1104,7 @@ const Nominations = [
       {
         name: 'Մյուզիքլ',
         originalLanguage: 'am',
+        priority: 4,
         translations: [
           {
             name: 'Musical',
@@ -1048,6 +1121,7 @@ const Nominations = [
   {
     name: 'Պարարվեստ',
     originalLanguage: 'am',
+    priority: 9,
     translations: [
       {
         name: 'Dance art',
@@ -1062,6 +1136,7 @@ const Nominations = [
       {
         name: 'Դասական մենապար',
         originalLanguage: 'am',
+        priority: 1,
         translations: [
           {
             name: 'Classic solo dance',
@@ -1076,6 +1151,7 @@ const Nominations = [
       {
         name: 'Ժողովրդական մենապար',
         originalLanguage: 'am',
+        priority: 2,
         translations: [
           {
             name: 'National solo dance',
@@ -1090,6 +1166,7 @@ const Nominations = [
       {
         name: 'Սպորտային մենապար',
         originalLanguage: 'am',
+        priority: 3,
         translations: [
           {
             name: 'Sports solo dance',
@@ -1104,6 +1181,7 @@ const Nominations = [
       {
         name: 'Ժամանակակից մենապար',
         originalLanguage: 'am',
+        priority: 4,
         translations: [
           {
             name: 'Modern solo dancer',
@@ -1118,6 +1196,7 @@ const Nominations = [
       {
         name: 'Հիփ-հոփ / սթրիթ դանս մենապար',
         originalLanguage: 'am',
+        priority: 5,
         translations: [
           {
             name: 'Hip-hop / Street dance solo dance',
@@ -1132,6 +1211,7 @@ const Nominations = [
       {
         name: 'Դասական պարային համույթ',
         originalLanguage: 'am',
+        priority: 6,
         translations: [
           {
             name: 'Classical dance ensemble',
@@ -1146,6 +1226,7 @@ const Nominations = [
       {
         name: 'Ժողովրդական պարային համույթ',
         originalLanguage: 'am',
+        priority: 7,
         translations: [
           {
             name: 'National dance ensemble',
@@ -1160,6 +1241,7 @@ const Nominations = [
       {
         name: 'Ազգագրական պարային համույթ',
         originalLanguage: 'am',
+        priority: 8,
         translations: [
           {
             name: 'Folklore dance ensemble',
@@ -1174,6 +1256,7 @@ const Nominations = [
       {
         name: 'Սպորտային պարային համույթ',
         originalLanguage: 'am',
+        priority: 9,
         translations: [
           {
             name: 'Sports dance ensemble',
@@ -1188,6 +1271,7 @@ const Nominations = [
       {
         name: 'Ժամանակակից պարային համույթ',
         originalLanguage: 'am',
+        priority: 10,
         translations: [
           {
             name: 'Modern dance ensemble',
@@ -1202,6 +1286,7 @@ const Nominations = [
       {
         name: 'Հիփ-հոփ / սթրիթ դանս պարային համույթ',
         originalLanguage: 'am',
+        priority: 11,
         translations: [
           {
             name: 'Hip-hop / Street dance Ensemble',
@@ -1218,6 +1303,7 @@ const Nominations = [
   {
     name: 'Գեղարվեստ',
     originalLanguage: 'am',
+    priority: 10,
     key: 'PAINTING',
     translations: [
       {
@@ -1233,6 +1319,7 @@ const Nominations = [
       {
         name: 'Գեղանկար թղթի վրա',
         originalLanguage: 'am',
+        priority: 1,
         translations: [
           {
             name: 'Painting on paper',
@@ -1247,6 +1334,7 @@ const Nominations = [
       {
         name: 'Գեղանկար կտավի վրա',
         originalLanguage: 'am',
+        priority: 2,
         translations: [
           {
             name: 'Canvas work',
@@ -1261,6 +1349,7 @@ const Nominations = [
       {
         name: 'Գծանկար',
         originalLanguage: 'am',
+        priority: 3,
         translations: [
           {
             name: 'Drawing',
@@ -1275,6 +1364,7 @@ const Nominations = [
       {
         name: 'Գրաֆիկա',
         originalLanguage: 'am',
+        priority: 4,
         translations: [
           {
             name: 'Graphic',
@@ -1289,6 +1379,7 @@ const Nominations = [
       {
         name: 'Գրիզալ',
         originalLanguage: 'am',
+        priority: 5,
         translations: [
           {
             name: 'Grisaille',
@@ -1303,6 +1394,7 @@ const Nominations = [
       {
         name: 'Գրիֆոնաժ',
         originalLanguage: 'am',
+        priority: 6,
         translations: [
           {
             name: 'Griffon',
@@ -1317,6 +1409,7 @@ const Nominations = [
       {
         name: 'Դեկորատիվ նկար',
         originalLanguage: 'am',
+        priority: 7,
         translations: [
           {
             name: 'Decorative painting',
@@ -1331,6 +1424,7 @@ const Nominations = [
       {
         name: 'Մանրանկար',
         originalLanguage: 'am',
+        priority: 8,
         translations: [
           {
             name: 'Miniature',
@@ -1345,6 +1439,7 @@ const Nominations = [
       {
         name: 'Խմբակային նկարչական աշխատանք',
         originalLanguage: 'am',
+        priority: 9,
         translations: [
           {
             name: 'Group painting',
@@ -1359,6 +1454,7 @@ const Nominations = [
       {
         name: 'Պաստել',
         originalLanguage: 'am',
+        priority: 10,
         translations: [
           {
             name: 'Pastel',
@@ -1373,6 +1469,7 @@ const Nominations = [
       {
         name: 'Պուանտիլիզմ',
         originalLanguage: 'am',
+        priority: 11,
         translations: [
           {
             name: 'Pointillism',
@@ -1387,6 +1484,7 @@ const Nominations = [
       {
         name: 'այլ',
         originalLanguage: 'am',
+        priority: 12,
         translations: [
           {
             name: 'other',
@@ -1403,6 +1501,7 @@ const Nominations = [
   {
     name: 'Դեկորատիվ-կիրառական արվեստ',
     originalLanguage: 'am',
+    priority: 11,
     key: 'CRAFT',
     translations: [
       {
@@ -1418,6 +1517,7 @@ const Nominations = [
       {
         name: 'Դեկորատիվ-կիրառական արվեստ',
         originalLanguage: 'am',
+        priority: 1,
         translations: [
           {
             name: 'Decorative art',
@@ -1466,6 +1566,7 @@ export default class NominationSeeder implements Seeder {
         );
         const newNomination = await nominationRepository.save({
           name: { id: newNominationTextContent.id } as TextContent,
+          priority: nomination.priority,
           key: nomination.key ?? 'KEY',
         });
         await translationRepository.save({
@@ -1514,6 +1615,7 @@ export default class NominationSeeder implements Seeder {
               id: newSubNominationTextContent.id,
             } as TextContent,
             nomination: { id: newNomination.id } as Nomination,
+            priority: subNomination.priority,
           });
         });
       } catch (e) {

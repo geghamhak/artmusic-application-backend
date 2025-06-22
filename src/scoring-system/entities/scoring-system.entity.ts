@@ -31,9 +31,6 @@ export class ScoringSystem {
   @OneToMany(() => Application, (application) => application.place)
   applications: Application[];
 
-  @ManyToOne(() => FestivalType, (festivalType) => festivalType.nominations)
-  festivalType: FestivalType;
-
   @CreateDateColumn()
   createdAt: string;
 

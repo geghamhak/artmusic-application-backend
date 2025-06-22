@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
@@ -21,6 +22,9 @@ export class SubNomination {
   @OneToOne(() => TextContent)
   @JoinColumn()
   name: TextContent;
+
+  @Column({ type: 'smallint' })
+  priority: number;
 
   @ManyToOne(() => Nomination, (nomination) => nomination.subNominations)
   nomination: Nomination;

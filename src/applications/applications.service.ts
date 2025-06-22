@@ -408,7 +408,6 @@ export class ApplicationsService {
     const scoringSystem: ScoringSystem =
       await this.scoringSystemService.determinePlaceByScore(
         averageScore,
-        application.festival.type,
       );
     application.place = { id: scoringSystem.id } as ScoringSystem;
     application.totalScore = overallScore;

@@ -31,7 +31,7 @@ export class Festival {
   @JoinColumn()
   bannerDescription: TextContent;
 
-  @ManyToOne(() => FestivalType, (festivalType) => festivalType.nominations)
+  @ManyToOne(() => FestivalType, (festivalType) => festivalType.festivals)
   type: FestivalType;
 
   @OneToMany(() => Application, (application) => application.festival, {
