@@ -1,34 +1,30 @@
-import { CreateApplicationDto } from './dto/create-application.dto';
-import { Application } from './entities/application.entity';
-import { ParticipantVideoLinksService } from '../participant-video-links/participant-video-links.service';
-import {
-  ParticipantsService,
-  ParticipantType,
-} from '../participants/participants.service';
-import { ParticipantRecordingsService } from '../participant-recordings/participant-recordings.service';
-import { ParticipantDocumentsService } from '../participant-documents/participant-documents.service';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Country } from '../countries/entities/country.entity';
-import { Repository, SelectQueryBuilder, UpdateResult } from 'typeorm';
-import {
-  BadRequestException,
-  forwardRef,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
-import { School } from '../schools/entities/school.entity';
-import { Region } from '../regions/entities/region.entity';
-import { ScoringSystemService } from '../scoring-system/scoring-system.service';
-import { UpdateApplicationDto } from './dto/update-application.dto';
-import { SubNomination } from '../sub-nominations/entities/sub-nomination.entity';
-import { ScoringSystem } from '../scoring-system/entities/scoring-system.entity';
-import { ApplicationScoreService } from '../application-score/application-score.service';
-import { FestivalsService } from '../festivals/festivals.service';
-import { CreateApplicationScoreDto } from '../application-score/dto/create-application-score.dto';
-import { ApplicationCompositionService } from '../application-composition/application-composition.service';
-import { Festival } from '../festivals/entities/festival.entity';
-import { getOverallScore } from '../utils/getOverallScore';
-import { getAverageScore } from '../utils/getAverageScore';
+import {CreateApplicationDto} from './dto/create-application.dto';
+import {Application} from './entities/application.entity';
+import {ParticipantVideoLinksService} from '../participant-video-links/participant-video-links.service';
+import {ParticipantsService, ParticipantType,} from '../participants/participants.service';
+import {ParticipantRecordingsService} from '../participant-recordings/participant-recordings.service';
+import {ParticipantDocumentsService} from '../participant-documents/participant-documents.service';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Country} from '../countries/entities/country.entity';
+import {Repository, SelectQueryBuilder} from 'typeorm';
+import {BadRequestException, forwardRef, Inject, Injectable,} from '@nestjs/common';
+import {School} from '../schools/entities/school.entity';
+import {Region} from '../regions/entities/region.entity';
+import {CentralizedPlaces, ScoringSystemService} from '../scoring-system/scoring-system.service';
+import {UpdateApplicationDto} from './dto/update-application.dto';
+import {SubNomination} from '../sub-nominations/entities/sub-nomination.entity';
+import {ApplicationScoreService} from '../application-score/application-score.service';
+import {FestivalsService} from '../festivals/festivals.service';
+import {CreateApplicationScoreDto} from '../application-score/dto/create-application-score.dto';
+import {ApplicationCompositionService} from '../application-composition/application-composition.service';
+import {Festival} from '../festivals/entities/festival.entity';
+import {getOverallScore} from '../utils/getOverallScore';
+import {getAverageScore} from '../utils/getAverageScore';
+import {SubNominationsService} from '../sub-nominations/sub-nominations.service';
+import {NominationsService} from '../nominations/nominations.service';
+import {Nomination} from '../nominations/entities/nomination.entity';
+import {CountriesService} from '../countries/countries.service';
+import {SchoolsService} from '../schools/schools.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -44,15 +40,18 @@ export class ApplicationsService {
     private scoringSystemService: ScoringSystemService,
     private applicationScoreService: ApplicationScoreService,
     private applicationCompositionService: ApplicationCompositionService,
+    private subNominationService: SubNominationsService,
+    private nominationService: NominationsService,
+    private countryService: CountriesService,
+    private schoolService: SchoolsService,
   ) {}
   async create(createApplicationDto: CreateApplicationDto) {
     try {
-      const application = new Application();
       const {
         isFree,
+        countryId,
         leaderFirstName,
         participants,
-        countryId,
         leaderLastName,
         participantType,
         subNominationId,
@@ -79,6 +78,7 @@ export class ApplicationsService {
         festivalId,
         languageCode,
       );
+      const application = new Application();
       application.isFree = !!isFree;
       application.leaderFirstName = leaderFirstName;
       application.leaderLastName = leaderLastName;
@@ -89,6 +89,7 @@ export class ApplicationsService {
       application.participantDocuments =
         await this.participantDocumentsService.saveMany(uploadedImages);
       application.subNomination = { id: subNominationId } as SubNomination;
+
       application.country = { id: countryId } as Country;
       application.compositions =
         await this.applicationCompositionService.saveMany(
@@ -148,6 +149,105 @@ export class ApplicationsService {
     }
   }
 
+  async createFromSchedule(
+    createApplicationDto: Partial<CreateApplicationDto>,
+  ) {
+    try {
+      const {
+        leaderFirstName,
+        country,
+        participants,
+        leaderLastName,
+        participantType,
+        quantity,
+        region,
+        school,
+        uploadedAudio,
+        totalDuration,
+        festivalId,
+        applicationCompositions,
+        languageCode,
+        subNomination,
+        nomination,
+        scores,
+      } = createApplicationDto;
+      const festival = await this.festivalService.findOne(festivalId);
+      await this.checkIfApplicationExists(
+        createApplicationDto,
+        festivalId,
+        languageCode,
+      );
+      const application = new Application();
+      application.leaderFirstName = leaderFirstName;
+      application.leaderLastName = leaderLastName;
+      application.participantType = participantType;
+      const applicationSubNomination =
+        await this.subNominationService.findByName(subNomination, languageCode);
+      if (applicationSubNomination) {
+        application.subNomination = {
+          id: applicationSubNomination.id,
+        } as SubNomination;
+      } else {
+        const applicationNomination = await this.nominationService.findByName(
+          nomination,
+          languageCode,
+        );
+        application.nomination = { id: applicationNomination.id } as Nomination;
+      }
+      const applicationCountry = await this.countryService.findByName(
+        country,
+        languageCode,
+      );
+      application.country = { id: applicationCountry.id } as Country;
+      application.compositions =
+        await this.applicationCompositionService.saveMany(
+          applicationCompositions,
+        );
+      application.festival = { id: festival.id } as Festival;
+
+      if (createApplicationDto.quantity) {
+        application.quantity = quantity;
+      }
+
+      if (totalDuration) {
+        application.totalDuration = totalDuration;
+      }
+
+      if (participants && participants.length > 0) {
+        application.participants = await this.participantsService.saveMany(
+          participants,
+          festivalId,
+          languageCode,
+        );
+      }
+
+      if (uploadedAudio && uploadedAudio.length > 0) {
+        application.participantRecordings =
+          await this.participantRecordingsService.saveMany(uploadedAudio);
+      }
+
+      const applicationSchool = await this.schoolService.findByName(
+        school,
+        languageCode,
+      );
+
+      if (applicationSchool) {
+        application.school = { id: applicationSchool.id } as School;
+        application.region = { id: applicationSchool.region.id } as Region;
+      } else {
+        application.schoolName = school;
+        application.regionName = region;
+      }
+      await this.addApplicationScore(
+        { scores } as CreateApplicationScoreDto,
+        application,
+      );
+      await this.applicationRepository.save(application);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   checkIfFestivalIsExpired(festival: Festival) {
     if (!festival) {
       throw new BadRequestException('The festival is not found');
@@ -160,7 +260,7 @@ export class ApplicationsService {
   }
 
   async checkIfApplicationExists(
-    createApplicationDto: CreateApplicationDto,
+    createApplicationDto: Partial<CreateApplicationDto>,
     festivalId: number,
     languageCode: string,
   ) {
@@ -186,7 +286,7 @@ export class ApplicationsService {
   }
 
   async checkApplicationByLeader(
-    createApplicationDto: CreateApplicationDto,
+    createApplicationDto: Partial<CreateApplicationDto>,
   ): Promise<boolean> {
     const participantType = createApplicationDto.isOrchestra
       ? ParticipantType.ORCHESTRA
@@ -215,7 +315,7 @@ export class ApplicationsService {
   }
 
   async checkApplicationByParticipants(
-    createApplicationDto: CreateApplicationDto,
+    createApplicationDto: Partial<CreateApplicationDto>,
     festivalId: number,
     languageCode: string,
   ): Promise<boolean> {
@@ -268,7 +368,7 @@ export class ApplicationsService {
   async findActiveApplicationsByParticipantId(
     id: number,
     festivalId: number,
-    createApplicationDto: CreateApplicationDto,
+    createApplicationDto: Partial<CreateApplicationDto>,
   ): Promise<Application[]> {
     return await this.applicationRepository
       .createQueryBuilder('application')
@@ -398,16 +498,15 @@ export class ApplicationsService {
 
   async addApplicationScore(
     createApplicationScoreDto: CreateApplicationScoreDto,
-  ): Promise<UpdateResult> {
-    await this.applicationScoreService.create(createApplicationScoreDto);
-    const { scores, applicationId: id } = createApplicationScoreDto;
-    const application: Application = await this.findOne(id);
+    application: Application,
+  ): Promise<Application> {
+    await this.applicationScoreService.create(createApplicationScoreDto, application.id);
+    const { scores } = createApplicationScoreDto;
     const overallScore: number = getOverallScore(scores);
     const averageScore: number = getAverageScore(overallScore, scores);
-    const scoringSystem: ScoringSystem =
-      await this.scoringSystemService.determinePlaceByScore(averageScore);
-    application.place = { id: scoringSystem.id } as ScoringSystem;
+    application.place = this.scoringSystemService.determinePlaceByCentralizedSystem(averageScore);
     application.totalScore = overallScore;
-    return this.applicationRepository.update({ id }, application);
+    application.averageScore = averageScore;
+    return await this.applicationRepository.save(application);
   }
 }

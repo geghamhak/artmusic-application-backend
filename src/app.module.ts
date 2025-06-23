@@ -31,7 +31,6 @@ import { ParticipantVideoLink } from './participant-video-links/entities/partici
 import { Participant } from './participants/entities/participant.entity';
 import { Region } from './regions/entities/region.entity';
 import { School } from './schools/entities/school.entity';
-import { ScoringSystem } from './scoring-system/entities/scoring-system.entity';
 import { SubNomination } from './sub-nominations/entities/sub-nomination.entity';
 import { Translation } from './translations/entities/translation.entity';
 import { Language } from './translations/entities/language.entity';
@@ -90,7 +89,6 @@ import { EmailQueue } from './email-queue/entities/email-queue.entity';
             Participant,
             Region,
             School,
-            ScoringSystem,
             SubNomination,
             Translation,
             Language,

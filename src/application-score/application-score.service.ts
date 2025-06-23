@@ -11,8 +11,11 @@ export class ApplicationScoreService {
     @InjectRepository(ApplicationScore)
     private applicationScoreRepository: Repository<ApplicationScore>,
   ) {}
-  async create(createApplicationScoreDto: CreateApplicationScoreDto) {
-    const { scores, applicationId } = createApplicationScoreDto;
+  async create(
+    createApplicationScoreDto: CreateApplicationScoreDto,
+    applicationId: number,
+  ): Promise<void> {
+    const { scores } = createApplicationScoreDto;
     for (const scoreToAdd of scores) {
       const applicationScore = new ApplicationScore();
       applicationScore.score = scoreToAdd;

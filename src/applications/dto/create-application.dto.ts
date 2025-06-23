@@ -7,6 +7,7 @@ import { ParticipantType } from '../../participants/participants.service';
 
 export class CreateApplicationDto {
   countryId: number;
+  country?: string;
   languageCode: string;
   festivalId: number;
   applicationCompositions: ApplicationComposition[];
@@ -19,12 +20,16 @@ export class CreateApplicationDto {
   participantType: ParticipantType;
   participants?: CreateParticipantDto[];
   subNominationId: number;
+  subNomination?: string;
+  nomination?: string;
   phoneNumber: string;
   quantity?: number;
   isOrchestra?: boolean;
   schoolId?: number;
+  school?: string;
   schoolName?: string;
   regionId?: number;
+  region?: string;
   regionName?: string;
   @IsFiles()
   @HasMimeType(['image/jpeg', 'image/png'], { each: true })
@@ -34,4 +39,5 @@ export class CreateApplicationDto {
   @HasMimeType(['audio/mpeg', 'audio/mp3'], { each: true })
   uploadedAudio?: FileSystemStoredFile[];
   videoLinks?: string[];
+  scores?: number[];
 }

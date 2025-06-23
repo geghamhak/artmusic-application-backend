@@ -6,7 +6,7 @@ import { Response } from 'express';
 export class ExcelController {
   constructor(private readonly excelService: ExcelService) {}
 
-  @Get('applications/:festivalId')
+  @Get('festivals/:festivalId/applications')
   async exportApplications(@Res() res: Response, @Param() festivalId: number) {
     return res
       .set('Content-Disposition', `attachment; filename=applications.xlsx`)

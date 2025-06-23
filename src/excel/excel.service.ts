@@ -113,9 +113,7 @@ export class ExcelService {
       const workbook = new ExcelJS.Workbook();
       const fileData = await workbook.xlsx.readFile(existingSchedule.path);
       const worksheets = fileData.worksheets;
-      worksheets[1].eachRow((row) => {
-
-      });
+      worksheets[1].eachRow((row) => {});
     } catch (error) {
       console.log(error);
       throw error;

@@ -40,4 +40,20 @@ export class CountriesService {
   findOne(id: number) {
     return this.countryRepository.findOneBy({ id });
   }
+
+  async findByName(country: string, languageCode: string) {
+    return await this.countryRepository
+      .createQueryBuilder('country')
+      .leftJoinAndSelect('country.name', 'textContent')
+      .leftJoinAndSelect('textContent.translations', 'translations')
+      .leftJoinAndSelect('translations.language', 'translationLanguage')
+      .where('translationLanguage.translation = :country', {
+        country,
+      })
+      .andWhere('translationLanguage.code = :languageCode', {
+        languageCode,
+      })
+      .select(['country.id'])
+      .getOne();
+  }
 }

@@ -18,8 +18,9 @@ import { School } from '../../schools/entities/school.entity';
 import { Region } from '../../regions/entities/region.entity';
 import { SubNomination } from '../../sub-nominations/entities/sub-nomination.entity';
 import { ApplicationScore } from '../../application-score/entities/application-score.entity';
-import { ScoringSystem } from '../../scoring-system/entities/scoring-system.entity';
 import { ApplicationComposition } from '../../application-composition/entities/application-composition.entity';
+import { IsOptional } from 'class-validator';
+import { Nomination } from '../../nominations/entities/nomination.entity';
 
 @Entity()
 export class Application {
@@ -71,8 +72,8 @@ export class Application {
   @Column({ type: 'float', nullable: true })
   averageScore: number;
 
-  @ManyToOne(() => ScoringSystem, (scoringSystem) => scoringSystem.applications)
-  place?: ScoringSystem;
+  @Column({ type: 'varchar', length: '50', nullable: true })
+  place?: string;
 
   @Column({ type: 'date', nullable: true })
   performanceDate: string;
@@ -88,6 +89,10 @@ export class Application {
 
   @ManyToOne(() => SubNomination, (subNomination) => subNomination.applications)
   subNomination: SubNomination;
+
+  @ManyToOne(() => Nomination, (nomination) => nomination.applications)
+  @IsOptional()
+  nomination: Nomination;
 
   @OneToMany(
     () => ApplicationScore,

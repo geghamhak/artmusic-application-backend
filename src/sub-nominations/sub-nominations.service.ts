@@ -61,4 +61,20 @@ export class SubNominationsService {
   remove(id: number) {
     return this.subNominationRepository.delete(id);
   }
+
+  async findByName(subNomination: string, languageCode: string) {
+    return await this.subNominationRepository
+      .createQueryBuilder('sub_nomination')
+      .leftJoinAndSelect('sub_nomination.name', 'textContent')
+      .leftJoinAndSelect('textContent.translations', 'translations')
+      .leftJoinAndSelect('translations.language', 'translationLanguage')
+      .where('translationLanguage.translation = :subNomination', {
+        subNomination,
+      })
+      .andWhere('translationLanguage.code = :languageCode', {
+        languageCode,
+      })
+      .select(['sub_nomination.id'])
+      .getOne();
+  }
 }

@@ -76,7 +76,39 @@ export class HomePageService {
         'infoLanguage.code',
       ])
       .getOne();
-
+    if (!homePage) {
+      return {
+        title: [
+          {
+            languageCode: 'en',
+            translation: '',
+          },
+          {
+            languageCode: 'am',
+            translation: '',
+          },
+          {
+            languageCode: 'ru',
+            translation: '',
+          },
+        ],
+        information: [
+          {
+            languageCode: 'en',
+            translation: '',
+          },
+          {
+            languageCode: 'am',
+            translation: '',
+          },
+          {
+            languageCode: 'ru',
+            translation: '',
+          },
+        ],
+        images: [],
+      };
+    }
     const title = homePage?.title.translations.map((i) => ({
       languageCode: i.language.code,
       translation: i.translation,

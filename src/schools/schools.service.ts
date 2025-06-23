@@ -35,4 +35,21 @@ export class SchoolsService {
   findOne(id: number) {
     return this.schoolRepository.findOneBy({ id });
   }
+
+  async findByName(school: string, languageCode: string) {
+    return await this.schoolRepository
+      .createQueryBuilder('school')
+      .leftJoinAndSelect('school.name', 'textContent')
+      .leftJoinAndSelect('school.region', 'region')
+      .leftJoinAndSelect('textContent.translations', 'translations')
+      .leftJoinAndSelect('translations.language', 'translationLanguage')
+      .where('translationLanguage.translation = :school', {
+        school,
+      })
+      .andWhere('translationLanguage.code = :languageCode', {
+        languageCode,
+      })
+      .select(['school.id', 'region.id'])
+      .getOne();
+  }
 }

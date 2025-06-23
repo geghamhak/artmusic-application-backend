@@ -10,7 +10,6 @@ import {
 } from 'typeorm';
 import { TextContent } from '../../translations/entities/textContent.entity';
 import { Festival } from '../../festivals/entities/festival.entity';
-import { ScoringSystem } from '../../scoring-system/entities/scoring-system.entity';
 
 @Entity()
 export class FestivalType {

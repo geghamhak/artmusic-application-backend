@@ -12,7 +12,7 @@ import { TranslationsModule } from '../translations/translations.module';
     TypeOrmModule.forFeature([Nomination, Language]),
     TranslationsModule,
   ],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, NominationsService],
   controllers: [NominationsController],
   providers: [NominationsService],
 })

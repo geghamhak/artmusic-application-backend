@@ -45,4 +45,23 @@ export class NominationsService {
   remove(id: number) {
     return this.nominationRepository.delete(id);
   }
+
+  async findByName(
+    nomination: string,
+    languageCode: string,
+  ): Promise<Nomination> {
+    return await this.nominationRepository
+      .createQueryBuilder('nomination')
+      .leftJoinAndSelect('nomination.name', 'textContent')
+      .leftJoinAndSelect('textContent.translations', 'translations')
+      .leftJoinAndSelect('translations.language', 'translationLanguage')
+      .where('translationLanguage.translation = :nomination', {
+        nomination,
+      })
+      .andWhere('translationLanguage.code = :languageCode', {
+        languageCode,
+      })
+      .select(['nomination.id'])
+      .getOne();
+  }
 }

@@ -17,7 +17,6 @@ import { ParticipantVideoLink } from '../participant-video-links/entities/partic
 import { Participant } from '../participants/entities/participant.entity';
 import { Region } from '../regions/entities/region.entity';
 import { School } from '../schools/entities/school.entity';
-import { ScoringSystem } from '../scoring-system/entities/scoring-system.entity';
 import { SubNomination } from '../sub-nominations/entities/sub-nomination.entity';
 import NominationSeeder from './seeds/Nomination.seeder';
 import { ApplicationScore } from '../application-score/entities/application-score.entity';
@@ -54,7 +53,6 @@ const options: DataSourceOptions & SeederOptions = {
     Participant,
     Region,
     School,
-    ScoringSystem,
     SubNomination,
     Translation,
     Language,
