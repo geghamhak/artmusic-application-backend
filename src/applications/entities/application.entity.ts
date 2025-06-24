@@ -19,7 +19,6 @@ import { Region } from '../../regions/entities/region.entity';
 import { SubNomination } from '../../sub-nominations/entities/sub-nomination.entity';
 import { ApplicationScore } from '../../application-score/entities/application-score.entity';
 import { ApplicationComposition } from '../../application-composition/entities/application-composition.entity';
-import { IsOptional } from 'class-validator';
 import { Nomination } from '../../nominations/entities/nomination.entity';
 
 @Entity()
@@ -90,8 +89,9 @@ export class Application {
   @ManyToOne(() => SubNomination, (subNomination) => subNomination.applications)
   subNomination: SubNomination;
 
-  @ManyToOne(() => Nomination, (nomination) => nomination.applications)
-  @IsOptional()
+  @ManyToOne(() => Nomination, (nomination) => nomination.applications, {
+    nullable: true,
+  })
   nomination: Nomination;
 
   @OneToMany(

@@ -1,9 +1,9 @@
 import {
-    CreateDateColumn,
-    Entity,
-    ManyToMany, ManyToOne,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Festival } from '../../festivals/entities/festival.entity';
 import { Jury } from '../../juries/entities/jury.entity';

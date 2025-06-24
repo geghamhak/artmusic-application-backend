@@ -3,7 +3,6 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -15,7 +14,6 @@ import { TextContent } from '../../translations/entities/textContent.entity';
 import { Application } from '../../applications/entities/application.entity';
 import { FestivalImage } from '../../festival-images/entities/festival-image.entity';
 import { FestivalJury } from '../../festival-jury/entities/festival-jury.entity';
-import {IsOptional} from "class-validator";
 
 @Entity()
 export class SubNomination {
@@ -41,9 +39,10 @@ export class SubNomination {
   )
   festivalImages: FestivalImage[];
 
-  @OneToMany(() => FestivalJury, (festivalJury) => festivalJury.subNomination)
-  @IsOptional()
-  festivalJuries: FestivalJury[];
+  @OneToMany(() => FestivalJury, (festivalJury) => festivalJury.subNomination, {
+    nullable: true,
+  })
+  festivalJuries?: FestivalJury[];
 
   @CreateDateColumn()
   createdAt: string;

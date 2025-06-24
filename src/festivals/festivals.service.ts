@@ -17,6 +17,7 @@ import { FestivalImagesService } from '../festival-images/festival-images.servic
 import { DmsService } from '../dms/dms.service';
 import { FileSystemStoredFile } from 'nestjs-form-data';
 import { ExcelService } from '../excel/excel.service';
+import { formatStringToDate } from 'src/utils/formatStringToDate';
 
 export enum FestivalsEnum {
   ARTMUSIC = 'artmusic',
@@ -26,6 +27,8 @@ export enum FestivalsEnum {
   ART_PIANO = 'art_piano',
   KHACHATUR_AVETISYAN = 'khachatur_avetisyan',
   FOREIGN = 'foreign',
+  ART_DANCE = 'ART_DANCE',
+  EGHEGAN_POGH = 'EGHEGAN_POGH',
 }
 @Injectable()
 export class FestivalsService {
@@ -174,19 +177,26 @@ export class FestivalsService {
     let festivalId: number;
     try {
       const { applicationStartDate, applicationEndDate } = createFestivalDto;
-      const startDate = new Date(applicationStartDate);
-      startDate.setSeconds(0, 0);
-      startDate.toISOString();
-      const endDate = new Date(applicationEndDate);
-      endDate.setSeconds(0, 0);
-      endDate.toISOString();
       const festivalType = await this.festivalTypeService.getByKey(
         createFestivalDto.type,
       );
-      await this.checkIfFestivalExists(startDate, endDate, festivalType);
       const newFestival = new Festival();
-      newFestival.applicationStartDate = startDate;
-      newFestival.applicationEndDate = endDate;
+      let applicationStartDateFormatted: Date;
+      let applicationEndDateFormatted: Date;
+
+      if (applicationStartDate && applicationEndDate) {
+        applicationStartDateFormatted =
+          formatStringToDate(applicationStartDate);
+        applicationEndDateFormatted = formatStringToDate(applicationEndDate);
+        await this.checkIfFestivalExists(
+          applicationStartDateFormatted,
+          applicationEndDateFormatted,
+          festivalType,
+        );
+        newFestival.applicationStartDate = applicationStartDateFormatted;
+        newFestival.applicationEndDate = applicationEndDateFormatted;
+      }
+
       const {
         title,
         description,
@@ -194,7 +204,10 @@ export class FestivalsService {
         banner,
         termsAndConditions,
         gallery,
+        festivalStartDate,
+        festivalEndDate,
       } = createFestivalDto;
+
       newFestival.type = { id: festivalType.id } as FestivalType;
       newFestival.title = await this.textContentService.addTranslations(title);
       newFestival.description =
@@ -203,6 +216,10 @@ export class FestivalsService {
         await this.textContentService.addTranslations(bannerDescription);
       const festival = await this.festivalRepository.save(newFestival);
       festivalId = festival.id;
+      if (festivalStartDate && festivalEndDate) {
+        newFestival.festivalStartDate = formatStringToDate(festivalStartDate);
+        newFestival.festivalEndDate = formatStringToDate(festivalEndDate);
+      }
       if (createFestivalDto.existingSchedule) {
         await this.addApplicationsFromSchedule(
           createFestivalDto.existingSchedule,
@@ -238,77 +255,113 @@ export class FestivalsService {
         where: { id },
         relations: ['title', 'description', 'bannerDescription'],
       });
-      const {
-        title,
-        description,
-        bannerDescription,
-        applicationStartDate,
-        applicationEndDate,
-        banner,
-        bannerDeleted,
-        termsAndConditions,
-        gallery,
-        galleryDeleted,
-      } = updateFestivalDto;
-
-      if (title?.length) {
-        await this.textContentService.updateTranslations(festival.title, title);
-      }
-
-      if (description?.length) {
-        await this.textContentService.updateTranslations(
-          festival.description,
-          description,
-        );
-      }
-
-      if (bannerDescription?.length) {
-        await this.textContentService.updateTranslations(
-          festival.bannerDescription,
-          bannerDescription,
-        );
-      }
-
-      if (applicationStartDate?.length) {
-        await this.festivalRepository.update(festival.id, {
-          applicationStartDate,
-        });
-      }
-
-      if (applicationEndDate?.length) {
-        await this.festivalRepository.update(festival.id, {
-          applicationEndDate,
-        });
-      }
-
-      if (bannerDeleted?.length && banner) {
-        await this.dmsService.deleteFile(bannerDeleted[0] as unknown as string);
-        await this.dmsService.uploadSingleFile({
-          file: banner,
-          entity: 'festivals',
-          entityId: festival.id,
-          type: 'banner',
-        });
-      }
-
-      if (termsAndConditions) {
-        await this.dmsService.uploadSingleFile({
-          file: termsAndConditions,
-          entity: 'festivals',
-          entityId: festival.id,
-          type: 'termsAndConditions',
-        });
-      }
-
-      if (galleryDeleted?.length) {
-        await this.festivalImagesService.remove(festival.id, galleryDeleted);
-      }
-
-      if (gallery) {
-        await this.festivalImagesService.add(gallery);
-      }
+      await this.updateFestivalTextData(festival, updateFestivalDto);
+      await this.updateFestivalDates(festival, updateFestivalDto);
+      await this.updateFestivalImageData(festival, updateFestivalDto);
     } catch (error) {
       throw error;
+    }
+  }
+
+  async updateFestivalTextData(
+    festival: Festival,
+    updateFestivalDto: UpdateFestivalDto,
+  ) {
+    const { title, description, bannerDescription } = updateFestivalDto;
+    if (title?.length) {
+      await this.textContentService.updateTranslations(festival.title, title);
+    }
+
+    if (description?.length) {
+      await this.textContentService.updateTranslations(
+        festival.description,
+        description,
+      );
+    }
+
+    if (bannerDescription?.length) {
+      await this.textContentService.updateTranslations(
+        festival.bannerDescription,
+        bannerDescription,
+      );
+    }
+  }
+
+  async updateFestivalDates(
+    festival: Festival,
+    updateFestivalDto: UpdateFestivalDto,
+  ) {
+    const {
+      applicationStartDate,
+      applicationEndDate,
+      festivalEndDate,
+      festivalStartDate,
+    } = updateFestivalDto;
+
+    let updateRequired = false;
+
+    if (applicationStartDate?.length) {
+      festival.applicationStartDate = formatStringToDate(applicationStartDate);
+      updateRequired = true;
+    }
+
+    if (applicationEndDate?.length) {
+      festival.applicationEndDate = formatStringToDate(applicationEndDate);
+      updateRequired = true;
+    }
+
+    if (festivalStartDate?.length) {
+      festival.festivalStartDate = formatStringToDate(festivalStartDate);
+      updateRequired = true;
+    }
+
+    if (festivalEndDate?.length) {
+      festival.festivalEndDate = formatStringToDate(festivalEndDate);
+      updateRequired = true;
+    }
+
+    if (updateRequired) {
+      await this.festivalRepository.save(festival);
+    }
+  }
+
+  async updateFestivalImageData(
+    festival: Festival,
+    updateFestivalDto: UpdateFestivalDto,
+  ) {
+    const {
+      banner,
+      bannerDeleted,
+      termsAndConditions,
+      gallery,
+      galleryDeleted,
+    } = updateFestivalDto;
+
+    if (bannerDeleted?.length && banner) {
+      await this.dmsService.deleteFile(bannerDeleted[0] as unknown as string);
+      await this.dmsService.uploadSingleFile({
+        file: banner,
+        entity: 'festivals',
+        entityId: festival.id,
+        type: 'banner',
+      });
+    }
+
+    if (termsAndConditions) {
+      await this.dmsService.uploadSingleFile({
+        file: termsAndConditions,
+        entity: 'festivals',
+        entityId: festival.id,
+        type: 'termsAndConditions',
+      });
+    }
+
+    if (galleryDeleted?.length) {
+      await this.festivalImagesService.remove(festival.id, galleryDeleted);
+    }
+
+    if (gallery) {
+      await this.festivalImagesService.add(gallery);
     }
   }
 
@@ -336,7 +389,6 @@ export class FestivalsService {
       })
       .getOne();
 
-    console.log(existingFestival);
     if (existingFestival) {
       throw new BadRequestException('Festival already exists');
     }

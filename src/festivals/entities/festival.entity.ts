@@ -3,7 +3,6 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -14,8 +13,8 @@ import { TextContent } from '../../translations/entities/textContent.entity';
 import { FestivalType } from '../../festival-types/entities/festival-type.entity';
 import { Application } from '../../applications/entities/application.entity';
 import { FestivalImage } from '../../festival-images/entities/festival-image.entity';
-import { Jury } from '../../juries/entities/jury.entity';
 import { FestivalJury } from '../../festival-jury/entities/festival-jury.entity';
+import { IsOptional } from 'class-validator';
 
 @Entity()
 export class Festival {
@@ -55,6 +54,12 @@ export class Festival {
 
   @Column({ type: 'date' })
   applicationEndDate: Date;
+
+  @Column({ type: 'date', nullable: true })
+  festivalStartDate?: Date;
+
+  @Column({ type: 'date', nullable: true })
+  festivalEndDate?: Date;
 
   @CreateDateColumn()
   createdAt: string;
