@@ -10,7 +10,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Festival } from './entities/festival.entity';
 import { TextContentService } from '../translations/text-content.service';
-import { FestivalTypesService } from '../festival-types/festival-types.service';
+import {
+  FestivalTypesEnum,
+  FestivalTypesService,
+} from '../festival-types/festival-types.service';
 import { FestivalType } from '../festival-types/entities/festival-type.entity';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
 import { FestivalImagesService } from '../festival-images/festival-images.service';
@@ -18,18 +21,11 @@ import { DmsService } from '../dms/dms.service';
 import { FileSystemStoredFile } from 'nestjs-form-data';
 import { ExcelService } from '../excel/excel.service';
 import { formatStringToDate } from 'src/utils/formatStringToDate';
+import {
+  FestivalConfigService,
+  ShouldUpdateFestival,
+} from '../festival-config/festival-config.service';
 
-export enum FestivalsEnum {
-  ARTMUSIC = 'artmusic',
-  MELODY = 'melody',
-  NEW_HANDS = 'new_hands',
-  LYRICS = 'lyrics',
-  ART_PIANO = 'art_piano',
-  KHACHATUR_AVETISYAN = 'khachatur_avetisyan',
-  FOREIGN = 'foreign',
-  ART_DANCE = 'ART_DANCE',
-  EGHEGAN_POGH = 'EGHEGAN_POGH',
-}
 @Injectable()
 export class FestivalsService {
   constructor(
@@ -41,6 +37,7 @@ export class FestivalsService {
     @Inject(forwardRef(() => FestivalImagesService))
     private festivalImagesService: FestivalImagesService,
     private excelService: ExcelService,
+    private festivalConfigService: FestivalConfigService,
   ) {}
 
   findAll() {
@@ -51,6 +48,7 @@ export class FestivalsService {
     const festival = await this.festivalRepository
       .createQueryBuilder('festival')
       .leftJoinAndSelect('festival.title', 'title')
+      .leftJoinAndSelect('festival.type', 'festivalType')
       .leftJoinAndSelect('title.translations', 'titleTranslations')
       .leftJoinAndSelect('titleTranslations.language', 'titleLanguage')
 
@@ -64,12 +62,14 @@ export class FestivalsService {
       .leftJoinAndSelect('festival.bannerDescription', 'bannerDescription')
       .leftJoinAndSelect('bannerDescription.translations', 'bannerTranslations')
       .leftJoinAndSelect('bannerTranslations.language', 'bannerLanguage')
+      .leftJoinAndSelect('festival.config', 'config')
 
       .where('festival.id = :id', { id })
       .select([
         'festival.id',
         'festival.applicationStartDate',
         'festival.applicationEndDate',
+        'festivalType.key',
 
         'title.id',
         'titleTranslations.id',
@@ -85,6 +85,9 @@ export class FestivalsService {
         'bannerTranslations.id',
         'bannerTranslations.translation',
         'bannerLanguage.code',
+        'config.secondComposition',
+        'config.thirdComposition',
+        'config.isOnline',
       ])
       .getOne();
 
@@ -100,6 +103,11 @@ export class FestivalsService {
     );
     const gallery = await this.dmsService.getPreSignedUrls(
       `festivals/${id}/gallery/`,
+    );
+
+    const config = this.festivalConfigService.mapFestivalConfigs(
+      festival.config,
+      festival.type.key as FestivalTypesEnum,
     );
 
     return {
@@ -121,27 +129,34 @@ export class FestivalsService {
       banner,
       termsAndConditions,
       gallery,
+      config,
     } as unknown as Festival;
   }
 
-  async findActiveByName(festivalName: FestivalsEnum): Promise<Festival> {
+  async findActiveByName(festivalName: FestivalTypesEnum) {
     const currentDate = new Date();
     currentDate.toISOString();
     const activeFestival = await this.festivalRepository
       .createQueryBuilder('festival')
       .leftJoinAndSelect('festival.type', 'festivalType')
+      .leftJoinAndSelect('festival.config', 'config')
       .where('festival.applicationStartDate <= :currentDate', { currentDate })
       .andWhere('festival.applicationEndDate >= :currentDate', { currentDate })
       .andWhere('festivalType.key= :key', { key: festivalName })
       .select()
       .getOne();
+
     if (!activeFestival) {
       throw new NotFoundException('The festival is not active');
     }
-    return activeFestival;
+    const config = this.festivalConfigService.mapFestivalConfigs(
+        activeFestival.config,
+        activeFestival.type.key as FestivalTypesEnum,
+    );
+    return { ...activeFestival, config };
   }
 
-  async findByType(festivalName: FestivalsEnum): Promise<Festival[]> {
+  async findByType(festivalName: FestivalTypesEnum): Promise<Festival[]> {
     const festivalsData = await this.festivalRepository
       .createQueryBuilder('festival')
       .leftJoinAndSelect('festival.title', 'textContent')
@@ -174,6 +189,7 @@ export class FestivalsService {
   }
 
   async create(createFestivalDto: CreateFestivalDto) {
+    console.log(createFestivalDto);
     let festivalId: number;
     try {
       const { applicationStartDate, applicationEndDate } = createFestivalDto;
@@ -206,6 +222,7 @@ export class FestivalsService {
         gallery,
         festivalStartDate,
         festivalEndDate,
+        festivalConfig,
       } = createFestivalDto;
 
       newFestival.type = { id: festivalType.id } as FestivalType;
@@ -214,18 +231,23 @@ export class FestivalsService {
         await this.textContentService.addTranslations(description);
       newFestival.bannerDescription =
         await this.textContentService.addTranslations(bannerDescription);
-      const festival = await this.festivalRepository.save(newFestival);
-      festivalId = festival.id;
       if (festivalStartDate && festivalEndDate) {
         newFestival.festivalStartDate = formatStringToDate(festivalStartDate);
         newFestival.festivalEndDate = formatStringToDate(festivalEndDate);
       }
+      if (festivalConfig) {
+        newFestival.config =
+          await this.festivalConfigService.create(festivalConfig);
+      }
+      const festival = await this.festivalRepository.save(newFestival);
+      festivalId = festival.id;
       if (createFestivalDto.existingSchedule) {
         await this.addApplicationsFromSchedule(
           createFestivalDto.existingSchedule,
           festival.id,
         );
       }
+
       await this.dmsService.uploadSingleFile({
         file: banner,
         entity: 'festivals',
@@ -253,9 +275,10 @@ export class FestivalsService {
     try {
       const festival = await this.festivalRepository.findOne({
         where: { id },
-        relations: ['title', 'description', 'bannerDescription'],
+        relations: ['title', 'description', 'bannerDescription', 'config'],
       });
       await this.updateFestivalTextData(festival, updateFestivalDto);
+      await this.updateFestivalConfig(festival, updateFestivalDto);
       await this.updateFestivalDates(festival, updateFestivalDto);
       await this.updateFestivalImageData(festival, updateFestivalDto);
     } catch (error) {
@@ -284,6 +307,27 @@ export class FestivalsService {
         festival.bannerDescription,
         bannerDescription,
       );
+    }
+  }
+  async updateFestivalConfig(
+    festival: Festival,
+    updateFestivalDto: UpdateFestivalDto,
+  ) {
+    const { festivalConfig } = updateFestivalDto;
+
+    if (!festivalConfig) {
+      return;
+    }
+    const {
+      shouldUpdate,
+      festivalConfig: updatedConfig,
+    }: ShouldUpdateFestival = await this.festivalConfigService.update(
+      festival,
+      festivalConfig,
+    );
+    if (shouldUpdate) {
+      festival.config = updatedConfig;
+      await this.festivalRepository.save(festival);
     }
   }
 

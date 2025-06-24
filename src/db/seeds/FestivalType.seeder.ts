@@ -4,11 +4,11 @@ import { TextContent } from '../../translations/entities/textContent.entity';
 import { Language } from '../../translations/entities/language.entity';
 import { Translation } from '../../translations/entities/translation.entity';
 import { FestivalType } from '../../festival-types/entities/festival-type.entity';
-import { FestivalsEnum } from '../../festivals/festivals.service';
+import { FestivalTypesEnum } from '../../festival-types/festival-types.service';
 
 const FestivalTypes = [
   {
-    key: FestivalsEnum.ARTMUSIC,
+    key: FestivalTypesEnum.ARTMUSIC,
     translations: [
       {
         languageCode: 'en',
@@ -25,7 +25,7 @@ const FestivalTypes = [
     ],
   },
   {
-    key: FestivalsEnum.NEW_HANDS,
+    key: FestivalTypesEnum.NEW_HANDS,
     translations: [
       {
         languageCode: 'en',
@@ -42,7 +42,7 @@ const FestivalTypes = [
     ],
   },
   {
-    key: FestivalsEnum.MELODY,
+    key: FestivalTypesEnum.MELODY,
     translations: [
       {
         languageCode: 'en',
@@ -59,7 +59,7 @@ const FestivalTypes = [
     ],
   },
   {
-    key: FestivalsEnum.LYRICS,
+    key: FestivalTypesEnum.LYRICS,
     translations: [
       {
         languageCode: 'en',
@@ -76,7 +76,7 @@ const FestivalTypes = [
     ],
   },
   {
-    key: FestivalsEnum.KHACHATUR_AVETISYAN,
+    key: FestivalTypesEnum.KHACHATUR_AVETISYAN,
     translations: [
       {
         languageCode: 'en',
@@ -93,7 +93,7 @@ const FestivalTypes = [
     ],
   },
   {
-    key: FestivalsEnum.ART_PIANO,
+    key: FestivalTypesEnum.ART_PIANO,
     translations: [
       {
         languageCode: 'en',
@@ -110,7 +110,7 @@ const FestivalTypes = [
     ],
   },
   {
-    key: FestivalsEnum.FOREIGN,
+    key: FestivalTypesEnum.FOREIGN,
     translations: [
       {
         languageCode: 'en',
@@ -123,6 +123,40 @@ const FestivalTypes = [
       {
         languageCode: 'am',
         translation: 'Արտերկրյա',
+      },
+    ],
+  },
+  {
+    key: FestivalTypesEnum.ART_DANCE,
+    translations: [
+      {
+        languageCode: 'en',
+        translation: 'Art Dance',
+      },
+      {
+        languageCode: 'ru',
+        translation: 'Арт Дэнс',
+      },
+      {
+        languageCode: 'am',
+        translation: 'Արտ Դենս',
+      },
+    ],
+  },
+  {
+    key: FestivalTypesEnum.EGHEGAN_POGH,
+    translations: [
+      {
+        languageCode: 'en',
+        translation: 'Eghegan Pogh',
+      },
+      {
+        languageCode: 'ru',
+        translation: 'Егеган Пог',
+      },
+      {
+        languageCode: 'am',
+        translation: 'Եղեգան Փող',
       },
     ],
   },

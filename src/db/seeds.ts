@@ -34,6 +34,7 @@ import { Staff } from '../staff/entities/staff.entity';
 import { Jury } from '../juries/entities/jury.entity';
 import { EmailQueue } from '../email-queue/entities/email-queue.entity';
 import { FestivalJury } from '../festival-jury/entities/festival-jury.entity';
+import { FestivalConfig } from '../festival-config/entities/festival-config.entity';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql' as const,
@@ -69,6 +70,7 @@ const options: DataSourceOptions & SeederOptions = {
     Jury,
     EmailQueue,
     FestivalJury,
+    FestivalConfig,
   ],
   seeds: [
     LanguageSeeder,

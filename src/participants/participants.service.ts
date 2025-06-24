@@ -77,16 +77,15 @@ export class ParticipantsService {
   ): Promise<Participant> {
     const { firstName, lastName, birthYear, fatherName } = participant;
     return await this.participantRepository
-      .createQueryBuilder('participants')
+      .createQueryBuilder('participant')
       .leftJoinAndSelect('participant.applications', 'application')
-      .leftJoinAndSelect('application.festivalId', 'festival.id')
-      .leftJoinAndSelect('application.festivalId', 'festival.id')
+      .leftJoinAndSelect('application.festival', 'festival')
       .leftJoinAndSelect('participant.firstName', 'firstNameTextContent')
       .leftJoinAndSelect(
         'firstNameTextContent.translations',
         'firstNameTranslations',
       )
-      .leftJoinAndSelect('participant.lastname', 'lastNameTextContent')
+      .leftJoinAndSelect('participant.lastName', 'lastNameTextContent')
       .leftJoinAndSelect(
         'lastNameTextContent.translations',
         'lastNameTranslations',
@@ -96,24 +95,15 @@ export class ParticipantsService {
         'fatherNameTextContent.translations',
         'fatherNameTranslations',
       )
-      .where('application.festivalId = :festivalId', { festivalId })
-      .andWhere('participants.birthYear = :birthYear', { birthYear })
-      .andWhere('firstNameTranslations.languageCode = :languageCode', {
-        languageCode,
-      })
-      .andWhere('firstNameTranslations.translation = :firstname', { firstName })
-      .andWhere('lastNameTranslations.languageCode = :languageCode', {
-        languageCode,
-      })
+      .where('festival.id = :festivalId', { festivalId })
+      .andWhere('participant.birthYear = :birthYear', { birthYear })
+      .andWhere('firstNameTranslations.translation = :firstName', { firstName })
       .andWhere('lastNameTranslations.translation = :lastName', { lastName })
-      .andWhere('fatherNameTranslations.languageCode = :languageCode', {
-        languageCode,
-      })
       .andWhere('fatherNameTranslations.translation = :fatherName', {
         fatherName,
       })
       .select([
-        'participants.id',
+        'participant.id',
         'firstNameTranslations.translation',
         'lastNameTranslations.translation',
         'fatherNameTranslations.translation',

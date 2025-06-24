@@ -1,7 +1,9 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
-import { FestivalTypesService } from './festival-types.service';
+import {
+  FestivalTypesEnum,
+  FestivalTypesService,
+} from './festival-types.service';
 import { CreateFestivalTypeDto } from './dto/create-festival-type.dto';
-import { FestivalsEnum } from '../festivals/festivals.service';
 
 @Controller('festival-types')
 export class FestivalTypesController {
@@ -19,7 +21,7 @@ export class FestivalTypesController {
 
   @Get(':name')
   getByName(@Param('name') name: string) {
-    return this.festivalTypesService.getByKey(name as FestivalsEnum);
+    return this.festivalTypesService.getByKey(name as FestivalTypesEnum);
   }
 
   @Delete(':id')

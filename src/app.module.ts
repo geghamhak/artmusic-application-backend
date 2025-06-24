@@ -64,6 +64,8 @@ import * as AWS from '@aws-sdk/client-sqs';
 import { EmailQueue } from './email-queue/entities/email-queue.entity';
 import { FestivalJuryModule } from './festival-jury/festival-jury.module';
 import { FestivalJury } from './festival-jury/entities/festival-jury.entity';
+import { FestivalConfigModule } from './festival-config/festival-config.module';
+import { FestivalConfig } from './festival-config/entities/festival-config.entity';
 
 @Module({
   imports: [
@@ -106,6 +108,7 @@ import { FestivalJury } from './festival-jury/entities/festival-jury.entity';
             Jury,
             EmailQueue,
             FestivalJury,
+            FestivalConfig,
           ],
           synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
@@ -158,6 +161,7 @@ import { FestivalJury } from './festival-jury/entities/festival-jury.entity';
     JuriesModule,
     EmailQueueModule,
     FestivalJuryModule,
+    FestivalConfigModule,
   ],
   providers: [
     CountriesService,

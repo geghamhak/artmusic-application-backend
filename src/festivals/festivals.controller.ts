@@ -7,10 +7,11 @@ import {
   Delete,
   Patch,
 } from '@nestjs/common';
-import { FestivalsEnum, FestivalsService } from './festivals.service';
 import { CreateFestivalDto } from './dto/create-festival.dto';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
 import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
+import { FestivalsService } from './festivals.service';
+import { FestivalTypesEnum } from '../festival-types/festival-types.service';
 
 @Controller('festivals')
 export class FestivalsController {
@@ -33,12 +34,12 @@ export class FestivalsController {
   }
 
   @Get('/:name/active')
-  findActiveByName(@Param('name') name: FestivalsEnum) {
+  findActiveByName(@Param('name') name: FestivalTypesEnum) {
     return this.festivalsService.findActiveByName(name);
   }
 
   @Get('/type/:type')
-  findByName(@Param('type') type: FestivalsEnum) {
+  findByName(@Param('type') type: FestivalTypesEnum) {
     return this.festivalsService.findByType(type);
   }
 

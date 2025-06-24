@@ -9,6 +9,7 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
 import { DmsModule } from 'src/dms/dms.module';
 import { FestivalImagesModule } from '../festival-images/festival-images.module';
 import { ExcelModule } from '../excel/excel.module';
+import { FestivalConfigModule } from '../festival-config/festival-config.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ExcelModule } from '../excel/excel.module';
     DmsModule,
     forwardRef(() => FestivalImagesModule),
     ExcelModule,
+    FestivalConfigModule,
   ],
   exports: [TypeOrmModule, FestivalsService],
   controllers: [FestivalsController],

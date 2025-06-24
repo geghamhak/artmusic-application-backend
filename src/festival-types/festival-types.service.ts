@@ -3,9 +3,20 @@ import { CreateFestivalTypeDto } from './dto/create-festival-type.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FestivalType } from './entities/festival-type.entity';
-import { FestivalsEnum } from '../festivals/festivals.service';
 import { Festival } from '../festivals/entities/festival.entity';
 import { TextContentService } from '../translations/text-content.service';
+
+export enum FestivalTypesEnum {
+  ARTMUSIC = 'artmusic',
+  MELODY = 'melody',
+  NEW_HANDS = 'new_hands',
+  LYRICS = 'lyrics',
+  ART_PIANO = 'art_piano',
+  KHACHATUR_AVETISYAN = 'khachatur_avetisyan',
+  FOREIGN = 'foreign',
+  ART_DANCE = 'art_dance',
+  EGHEGAN_POGH = 'eghegan_pogh',
+}
 
 @Injectable()
 export class FestivalTypesService {
@@ -15,7 +26,7 @@ export class FestivalTypesService {
     private textContentService: TextContentService,
   ) {}
 
-  async getByKey(festivalName: FestivalsEnum): Promise<FestivalType> {
+  async getByKey(festivalName: FestivalTypesEnum): Promise<FestivalType> {
     return await this.festivalTypeRepository
       .createQueryBuilder('festivalType')
       .where('festivalType.key= :festivalName', { festivalName })
@@ -26,7 +37,9 @@ export class FestivalTypesService {
   async create(createFestivalTypeDto: CreateFestivalTypeDto) {
     try {
       const { name } = createFestivalTypeDto;
-      await this.checkIfFestivalExists(name[0].translation as FestivalsEnum);
+      await this.checkIfFestivalExists(
+        name[0].translation as FestivalTypesEnum,
+      );
       const newFestivalType = new Festival();
       newFestivalType.title =
         await this.textContentService.addTranslations(name);
@@ -36,8 +49,8 @@ export class FestivalTypesService {
     }
   }
 
-  private async checkIfFestivalExists(name: FestivalsEnum) {
-    const existingFestival = await this.getByKey(name as FestivalsEnum);
+  private async checkIfFestivalExists(name: FestivalTypesEnum) {
+    const existingFestival = await this.getByKey(name as FestivalTypesEnum);
     if (existingFestival) {
       return new BadRequestException(
         `The festival with name '${name}' already exists`,
@@ -46,12 +59,11 @@ export class FestivalTypesService {
   }
 
   async findAllKeys() {
-    const festival_types = await this.festivalTypeRepository
+    const festivalTypes = await this.festivalTypeRepository
       .createQueryBuilder('festival_type')
       .select(['festival_type.key'])
       .getMany();
-    const festivalTypes = festival_types.map((i) => i.key);
-    return { festivalTypes };
+    return { festivalTypes: festivalTypes.map((i) => i.key) };
   }
 
   remove(id: number) {

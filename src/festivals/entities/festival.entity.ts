@@ -15,6 +15,7 @@ import { Application } from '../../applications/entities/application.entity';
 import { FestivalImage } from '../../festival-images/entities/festival-image.entity';
 import { FestivalJury } from '../../festival-jury/entities/festival-jury.entity';
 import { IsOptional } from 'class-validator';
+import { FestivalConfig } from '../../festival-config/entities/festival-config.entity';
 
 @Entity()
 export class Festival {
@@ -32,6 +33,10 @@ export class Festival {
   @OneToOne(() => TextContent, { onDelete: 'CASCADE' })
   @JoinColumn()
   bannerDescription: TextContent;
+
+  @OneToOne(() => FestivalConfig, (festivalConfig) => festivalConfig.festival)
+  @JoinColumn()
+  config: FestivalConfig;
 
   @ManyToOne(() => FestivalType, (festivalType) => festivalType.festivals)
   type: FestivalType;

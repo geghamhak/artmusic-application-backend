@@ -1,12 +1,13 @@
 import { IsOptional } from 'class-validator';
 import { CreateTextContentDto } from '../../translations/dto/create-text-content.dto';
-import { FestivalsEnum } from '../festivals.service';
 import { HasMimeType, IsFile } from 'nestjs-form-data';
 import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
 import { CreateFestivalImageDto } from '../../festival-images/dto/create-festival-image.dto';
+import { CreateFestivalConfigDto } from '../../festival-config/dto/create-festival-config.dto';
+import { FestivalTypesEnum } from '../../festival-types/festival-types.service';
 
 export class CreateFestivalDto {
-  type: FestivalsEnum;
+  type: FestivalTypesEnum;
   title: CreateTextContentDto[];
   description: CreateTextContentDto[];
   @IsFile()
@@ -16,6 +17,7 @@ export class CreateFestivalDto {
   @HasMimeType(['text/plain', 'application/pdf'])
   termsAndConditions: FileSystemStoredFile;
   bannerDescription: CreateTextContentDto[];
+  festivalConfig?: CreateFestivalConfigDto;
   applicationEndDate?: string;
   applicationStartDate?: string;
   festivalEndDate?: string;
