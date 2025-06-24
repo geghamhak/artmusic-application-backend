@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -10,8 +11,8 @@ import {
 } from 'typeorm';
 import { TextContent } from '../../translations/entities/textContent.entity';
 import { SubNomination } from '../../sub-nominations/entities/sub-nomination.entity';
-import { FestivalType } from '../../festival-types/entities/festival-type.entity';
 import { Application } from '../../applications/entities/application.entity';
+import { FestivalJury } from '../../festival-jury/entities/festival-jury.entity';
 
 @Entity()
 export class Nomination {
@@ -30,6 +31,9 @@ export class Nomination {
 
   @OneToMany(() => Application, (application) => application.festival)
   applications: Application[];
+
+  @OneToMany(() => FestivalJury, (festivalJury) => festivalJury.nomination)
+  festivalJuries: FestivalJury[];
 
   @Column({ type: 'varchar', length: '255', nullable: true })
   key?: string;

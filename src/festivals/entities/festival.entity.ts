@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -13,6 +14,8 @@ import { TextContent } from '../../translations/entities/textContent.entity';
 import { FestivalType } from '../../festival-types/entities/festival-type.entity';
 import { Application } from '../../applications/entities/application.entity';
 import { FestivalImage } from '../../festival-images/entities/festival-image.entity';
+import { Jury } from '../../juries/entities/jury.entity';
+import { FestivalJury } from '../../festival-jury/entities/festival-jury.entity';
 
 @Entity()
 export class Festival {
@@ -43,6 +46,9 @@ export class Festival {
     cascade: ['remove'],
   })
   festivalImages: FestivalImage[];
+
+  @OneToMany(() => FestivalJury, (festivalJury) => festivalJury.festival)
+  festivalJuries: FestivalJury[];
 
   @Column({ type: 'date' })
   applicationStartDate: Date;

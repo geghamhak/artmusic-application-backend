@@ -1,30 +1,41 @@
-import {CreateApplicationDto} from './dto/create-application.dto';
-import {Application} from './entities/application.entity';
-import {ParticipantVideoLinksService} from '../participant-video-links/participant-video-links.service';
-import {ParticipantsService, ParticipantType,} from '../participants/participants.service';
-import {ParticipantRecordingsService} from '../participant-recordings/participant-recordings.service';
-import {ParticipantDocumentsService} from '../participant-documents/participant-documents.service';
-import {InjectRepository} from '@nestjs/typeorm';
-import {Country} from '../countries/entities/country.entity';
-import {Repository, SelectQueryBuilder} from 'typeorm';
-import {BadRequestException, forwardRef, Inject, Injectable,} from '@nestjs/common';
-import {School} from '../schools/entities/school.entity';
-import {Region} from '../regions/entities/region.entity';
-import {CentralizedPlaces, ScoringSystemService} from '../scoring-system/scoring-system.service';
-import {UpdateApplicationDto} from './dto/update-application.dto';
-import {SubNomination} from '../sub-nominations/entities/sub-nomination.entity';
-import {ApplicationScoreService} from '../application-score/application-score.service';
-import {FestivalsService} from '../festivals/festivals.service';
-import {CreateApplicationScoreDto} from '../application-score/dto/create-application-score.dto';
-import {ApplicationCompositionService} from '../application-composition/application-composition.service';
-import {Festival} from '../festivals/entities/festival.entity';
-import {getOverallScore} from '../utils/getOverallScore';
-import {getAverageScore} from '../utils/getAverageScore';
-import {SubNominationsService} from '../sub-nominations/sub-nominations.service';
-import {NominationsService} from '../nominations/nominations.service';
-import {Nomination} from '../nominations/entities/nomination.entity';
-import {CountriesService} from '../countries/countries.service';
-import {SchoolsService} from '../schools/schools.service';
+import { CreateApplicationDto } from './dto/create-application.dto';
+import { Application } from './entities/application.entity';
+import { ParticipantVideoLinksService } from '../participant-video-links/participant-video-links.service';
+import {
+  ParticipantsService,
+  ParticipantType,
+} from '../participants/participants.service';
+import { ParticipantRecordingsService } from '../participant-recordings/participant-recordings.service';
+import { ParticipantDocumentsService } from '../participant-documents/participant-documents.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Country } from '../countries/entities/country.entity';
+import { Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
+import { School } from '../schools/entities/school.entity';
+import { Region } from '../regions/entities/region.entity';
+import {
+  CentralizedPlaces,
+  ScoringSystemService,
+} from '../scoring-system/scoring-system.service';
+import { UpdateApplicationDto } from './dto/update-application.dto';
+import { SubNomination } from '../sub-nominations/entities/sub-nomination.entity';
+import { ApplicationScoreService } from '../application-score/application-score.service';
+import { FestivalsService } from '../festivals/festivals.service';
+import { CreateApplicationScoreDto } from '../application-score/dto/create-application-score.dto';
+import { ApplicationCompositionService } from '../application-composition/application-composition.service';
+import { Festival } from '../festivals/entities/festival.entity';
+import { getOverallScore } from '../utils/getOverallScore';
+import { getAverageScore } from '../utils/getAverageScore';
+import { SubNominationsService } from '../sub-nominations/sub-nominations.service';
+import { NominationsService } from '../nominations/nominations.service';
+import { Nomination } from '../nominations/entities/nomination.entity';
+import { CountriesService } from '../countries/countries.service';
+import { SchoolsService } from '../schools/schools.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -500,11 +511,15 @@ export class ApplicationsService {
     createApplicationScoreDto: CreateApplicationScoreDto,
     application: Application,
   ): Promise<Application> {
-    await this.applicationScoreService.create(createApplicationScoreDto, application.id);
+    await this.applicationScoreService.create(
+      createApplicationScoreDto,
+      application.id,
+    );
     const { scores } = createApplicationScoreDto;
     const overallScore: number = getOverallScore(scores);
     const averageScore: number = getAverageScore(overallScore, scores);
-    application.place = this.scoringSystemService.determinePlaceByCentralizedSystem(averageScore);
+    application.place =
+      this.scoringSystemService.determinePlaceByCentralizedSystem(averageScore);
     application.totalScore = overallScore;
     application.averageScore = averageScore;
     return await this.applicationRepository.save(application);

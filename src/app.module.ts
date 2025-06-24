@@ -62,6 +62,8 @@ import { EmailQueueModule } from './email-queue/email-queue.module';
 import { SqsModule } from '@ssut/nestjs-sqs';
 import * as AWS from '@aws-sdk/client-sqs';
 import { EmailQueue } from './email-queue/entities/email-queue.entity';
+import { FestivalJuryModule } from './festival-jury/festival-jury.module';
+import { FestivalJury } from './festival-jury/entities/festival-jury.entity';
 
 @Module({
   imports: [
@@ -103,6 +105,7 @@ import { EmailQueue } from './email-queue/entities/email-queue.entity';
             Staff,
             Jury,
             EmailQueue,
+            FestivalJury,
           ],
           synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
@@ -154,6 +157,7 @@ import { EmailQueue } from './email-queue/entities/email-queue.entity';
     FestivalImagesModule,
     JuriesModule,
     EmailQueueModule,
+    FestivalJuryModule,
   ],
   providers: [
     CountriesService,

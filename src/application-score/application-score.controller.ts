@@ -9,7 +9,13 @@ export class ApplicationScoreController {
   ) {}
 
   @Post()
-  create(@Body() createApplicationScoreDto: CreateApplicationScoreDto, applicationId: number) {
-    return this.applicationScoreService.create(createApplicationScoreDto, applicationId);
+  create(
+    @Body() createApplicationScoreDto: CreateApplicationScoreDto,
+    applicationId: number,
+  ) {
+    return this.applicationScoreService.create(
+      createApplicationScoreDto,
+      applicationId,
+    );
   }
 }

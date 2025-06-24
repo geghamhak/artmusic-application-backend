@@ -33,6 +33,7 @@ import { FestivalImage } from '../festival-images/entities/festival-image.entity
 import { Staff } from '../staff/entities/staff.entity';
 import { Jury } from '../juries/entities/jury.entity';
 import { EmailQueue } from '../email-queue/entities/email-queue.entity';
+import { FestivalJury } from '../festival-jury/entities/festival-jury.entity';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql' as const,
@@ -67,6 +68,7 @@ const options: DataSourceOptions & SeederOptions = {
     StaffPage,
     Jury,
     EmailQueue,
+    FestivalJury,
   ],
   seeds: [
     LanguageSeeder,
