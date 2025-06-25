@@ -43,7 +43,7 @@ export class SchoolsService {
       .leftJoinAndSelect('school.region', 'region')
       .leftJoinAndSelect('textContent.translations', 'translations')
       .leftJoinAndSelect('translations.language', 'translationLanguage')
-      .where('translationLanguage.translation = :school', {
+      .where('translations.translation = :school', {
         school,
       })
       .andWhere('translationLanguage.code = :languageCode', {

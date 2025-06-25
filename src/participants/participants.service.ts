@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Participant } from './entities/participant.entity';
 import { TextContentService } from '../translations/text-content.service';
 
-export enum ParticipantType {
+export enum ParticipantTypeEnum {
   SOLO = 'SOLO',
   DUO = 'DUO',
   TRIO = 'TRIO',
@@ -13,6 +13,12 @@ export enum ParticipantType {
   ORCHESTRA = 'ORCHESTRA',
   ENSEMBLE = 'ENSEMBLE',
 }
+
+export const ParticipantTypeMap = new Map<number, ParticipantTypeEnum>();
+ParticipantTypeMap.set(1, ParticipantTypeEnum.SOLO);
+ParticipantTypeMap.set(2, ParticipantTypeEnum.DUO);
+ParticipantTypeMap.set(3, ParticipantTypeEnum.TRIO);
+ParticipantTypeMap.set(4, ParticipantTypeEnum.QUARTET);
 
 @Injectable()
 export class ParticipantsService {
@@ -32,7 +38,6 @@ export class ParticipantsService {
           const existingParticipant = await this.getByFullData(
             createParticipant,
             festivalId,
-            languageCode,
           );
           if (existingParticipant) {
             return existingParticipant;
@@ -73,7 +78,6 @@ export class ParticipantsService {
   async getByFullData(
     participant: CreateParticipantDto,
     festivalId: number,
-    languageCode: string,
   ): Promise<Participant> {
     const { firstName, lastName, birthYear, fatherName } = participant;
     return await this.participantRepository

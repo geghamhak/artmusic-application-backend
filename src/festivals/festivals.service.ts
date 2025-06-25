@@ -20,7 +20,7 @@ import { FestivalImagesService } from '../festival-images/festival-images.servic
 import { DmsService } from '../dms/dms.service';
 import { FileSystemStoredFile } from 'nestjs-form-data';
 import { ExcelService } from '../excel/excel.service';
-import { formatStringToDate } from 'src/utils/formatStringToDate';
+import { formatStringToDate } from 'src/utils/stringUtils';
 import {
   FestivalConfigService,
   ShouldUpdateFestival,
@@ -150,8 +150,8 @@ export class FestivalsService {
       throw new NotFoundException('The festival is not active');
     }
     const config = this.festivalConfigService.mapFestivalConfigs(
-        activeFestival.config,
-        activeFestival.type.key as FestivalTypesEnum,
+      activeFestival.config,
+      activeFestival.type.key as FestivalTypesEnum,
     );
     return { ...activeFestival, config };
   }
@@ -189,7 +189,6 @@ export class FestivalsService {
   }
 
   async create(createFestivalDto: CreateFestivalDto) {
-    console.log(createFestivalDto);
     let festivalId: number;
     try {
       const { applicationStartDate, applicationEndDate } = createFestivalDto;
@@ -410,7 +409,7 @@ export class FestivalsService {
   }
 
   remove(id: number) {
-    return this.festivalRepository.delete(id);
+    return this.removeFestivalInfo(id);
   }
 
   async checkIfFestivalExists(
@@ -445,6 +444,7 @@ export class FestivalsService {
         .createQueryBuilder('festival')
         .leftJoinAndSelect('festival.title', 'titleTextContent')
         .leftJoinAndSelect('festival.description', 'descriptionTextContent')
+        .leftJoinAndSelect('festival.applications', 'applications')
         .leftJoinAndSelect(
           'festival.bannerDescription',
           'bannerDescriptionTextContent',
@@ -458,11 +458,9 @@ export class FestivalsService {
         ])
         .getOne();
 
-      console.log(festival);
       const { title, description, bannerDescription } = festival;
 
-      console.log(title, description, bannerDescription);
-      await this.festivalRepository.delete(id);
+      await this.festivalRepository.remove(festival);
       await this.textContentService.deleteByIds([
         title.id,
         description.id,
@@ -478,7 +476,6 @@ export class FestivalsService {
     festivalId: number,
   ) {
     try {
-      console.log(existingSchedule.mimetype);
       await this.excelService.addApplicationsFromSchedule(
         existingSchedule,
         festivalId,

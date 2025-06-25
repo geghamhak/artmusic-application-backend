@@ -3,7 +3,7 @@ import { Application } from './entities/application.entity';
 import { ParticipantVideoLinksService } from '../participant-video-links/participant-video-links.service';
 import {
   ParticipantsService,
-  ParticipantType,
+  ParticipantTypeEnum,
 } from '../participants/participants.service';
 import { ParticipantRecordingsService } from '../participant-recordings/participant-recordings.service';
 import { ParticipantDocumentsService } from '../participant-documents/participant-documents.service';
@@ -19,7 +19,6 @@ import {
 import { School } from '../schools/entities/school.entity';
 import { Region } from '../regions/entities/region.entity';
 import {
-  CentralizedPlaces,
   ScoringSystemService,
 } from '../scoring-system/scoring-system.service';
 import { UpdateApplicationDto } from './dto/update-application.dto';
@@ -160,13 +159,13 @@ export class ApplicationsService {
     }
   }
 
-  async createFromSchedule(
+  async addFromSchedule(
     createApplicationDto: Partial<CreateApplicationDto>,
+    festivalId: number,
   ) {
     try {
       const {
         leaderFirstName,
-        country,
         participants,
         leaderLastName,
         participantType,
@@ -175,12 +174,13 @@ export class ApplicationsService {
         school,
         uploadedAudio,
         totalDuration,
-        festivalId,
         applicationCompositions,
         languageCode,
         subNomination,
         nomination,
-        scores,
+        overallScore,
+        averageScore,
+        isFree,
       } = createApplicationDto;
       const festival = await this.festivalService.findOne(festivalId);
       await this.checkIfApplicationExists(
@@ -198,6 +198,9 @@ export class ApplicationsService {
         application.subNomination = {
           id: applicationSubNomination.id,
         } as SubNomination;
+        application.nomination = {
+          id: applicationSubNomination.nomination.id,
+        } as Nomination;
       } else {
         const applicationNomination = await this.nominationService.findByName(
           nomination,
@@ -205,11 +208,6 @@ export class ApplicationsService {
         );
         application.nomination = { id: applicationNomination.id } as Nomination;
       }
-      const applicationCountry = await this.countryService.findByName(
-        country,
-        languageCode,
-      );
-      application.country = { id: applicationCountry.id } as Country;
       application.compositions =
         await this.applicationCompositionService.saveMany(
           applicationCompositions,
@@ -245,14 +243,20 @@ export class ApplicationsService {
       if (applicationSchool) {
         application.school = { id: applicationSchool.id } as School;
         application.region = { id: applicationSchool.region.id } as Region;
+        const applicationCountry = await this.countryService.findByName(
+          'Armenia',
+          'en',
+        );
+        application.country = { id: applicationCountry.id } as Country;
       } else {
         application.schoolName = school;
         application.regionName = region;
       }
-      await this.addApplicationScore(
-        { scores } as CreateApplicationScoreDto,
-        application,
-      );
+      application.isFree = !!isFree;
+      application.isOnline = false;
+      console.log(averageScore);
+      console.log(overallScore);
+      await this.addOverallScore(overallScore, averageScore, application);
       await this.applicationRepository.save(application);
     } catch (error) {
       throw error;
@@ -277,8 +281,8 @@ export class ApplicationsService {
   ) {
     let shouldRejectApplication: boolean;
     if (
-      [ParticipantType.ENSEMBLE, ParticipantType.ORCHESTRA].includes(
-        createApplicationDto.participantType as ParticipantType,
+      [ParticipantTypeEnum.ENSEMBLE, ParticipantTypeEnum.ORCHESTRA].includes(
+        createApplicationDto.participantType as ParticipantTypeEnum,
       )
     ) {
       shouldRejectApplication =
@@ -300,8 +304,8 @@ export class ApplicationsService {
     createApplicationDto: Partial<CreateApplicationDto>,
   ): Promise<boolean> {
     const participantType = createApplicationDto.isOrchestra
-      ? ParticipantType.ORCHESTRA
-      : ParticipantType.ENSEMBLE;
+      ? ParticipantTypeEnum.ORCHESTRA
+      : ParticipantTypeEnum.ENSEMBLE;
     const existingApplication = await this.applicationRepository
       .createQueryBuilder('application')
       .leftJoinAndSelect('application.subNomination', 'subNomination')
@@ -334,7 +338,6 @@ export class ApplicationsService {
     const existingParticipant = await this.participantsService.getByFullData(
       createApplicationDto.participants[0],
       festivalId,
-      languageCode,
     );
 
     if (!existingParticipant) {
@@ -352,7 +355,7 @@ export class ApplicationsService {
     participantApplications.map(async (participantApplication) => {
       if (
         participantApplication.participantType.toUpperCase() ===
-        ParticipantType.SOLO
+        ParticipantTypeEnum.SOLO
       ) {
         shouldRejectApplication = true;
         return;
@@ -505,6 +508,18 @@ export class ApplicationsService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async addOverallScore(
+    overallScore: number,
+    averageScore: number,
+    application: Application,
+  ) {
+    application.totalScore = overallScore;
+    application.averageScore = averageScore;
+    application.place =
+      this.scoringSystemService.determinePlaceByCentralizedSystem(averageScore);
+    return await this.applicationRepository.save(application);
   }
 
   async addApplicationScore(

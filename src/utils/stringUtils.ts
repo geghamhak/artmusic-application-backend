@@ -14,3 +14,7 @@ export const formatStringToDate = (
   }
   return startDate;
 };
+
+export const removeNonNumberChars = (string: string | number)=>  {
+  return string.toString().replace(/[^0-9.-]/g, '');
+}

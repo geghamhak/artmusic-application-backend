@@ -2,23 +2,24 @@ import { CreateParticipantDto } from '../../participants/dto/create-participant.
 import { HasMimeType, IsFiles } from 'nestjs-form-data';
 import { IsOptional } from 'class-validator';
 import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
-import { ApplicationComposition } from '../../application-composition/entities/application-composition.entity';
-import { ParticipantType } from '../../participants/participants.service';
+import { ParticipantTypeEnum } from '../../participants/participants.service';
+import { CreateApplicationCompositionDto } from '../../application-composition/dto/create-application-composition.dto';
 
 export class CreateApplicationDto {
   countryId: number;
-  country?: string;
   languageCode: string;
   festivalId: number;
-  applicationCompositions: ApplicationComposition[];
+  applicationCompositions: CreateApplicationCompositionDto[];
   totalDuration?: string;
   email: string;
   isFree: boolean;
   isOnline: boolean;
   leaderFirstName: string;
   leaderLastName: string;
-  participantType: ParticipantType;
+  participantType: ParticipantTypeEnum;
   participants?: CreateParticipantDto[];
+  code?: string;
+  country?: string;
   subNominationId: number;
   subNomination?: string;
   nomination?: string;
@@ -39,5 +40,6 @@ export class CreateApplicationDto {
   @HasMimeType(['audio/mpeg', 'audio/mp3'], { each: true })
   uploadedAudio?: FileSystemStoredFile[];
   videoLinks?: string[];
-  scores?: number[];
+  overallScore?: number;
+  averageScore?: number;
 }

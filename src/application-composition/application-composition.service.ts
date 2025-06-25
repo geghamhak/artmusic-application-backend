@@ -30,6 +30,7 @@ export class ApplicationCompositionService {
 
       return await Promise.all(allCompositions);
     } catch (error) {
+      console.error(error);
       throw new Error('Unable to create compositions');
     }
   }

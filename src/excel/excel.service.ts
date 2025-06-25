@@ -1,8 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import * as ExcelJS from 'exceljs';
+import * as xlsx from 'xlsx';
 import { ApplicationsService } from '../applications/applications.service';
 import { Application } from '../applications/entities/application.entity';
 import { FileSystemStoredFile } from 'nestjs-form-data';
+import * as fs from 'node:fs';
+import { CreateApplicationDto } from '../applications/dto/create-application.dto';
+import {
+  ParticipantTypeEnum,
+  ParticipantTypeMap,
+} from '../participants/participants.service';
+import {removeNonNumberChars} from "../utils/stringUtils";
 
 @Injectable()
 export class ExcelService {
@@ -110,10 +118,58 @@ export class ExcelService {
     festivalId: number,
   ) {
     try {
-      const workbook = new ExcelJS.Workbook();
-      const fileData = await workbook.xlsx.readFile(existingSchedule.path);
-      const worksheets = fileData.worksheets;
-      worksheets[1].eachRow((row) => {});
+      const workbook = xlsx.read(fs.readFileSync(existingSchedule.path), {
+        type: 'buffer',
+      });
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const sheetData = xlsx.utils.sheet_to_json(worksheet);
+      const applications: Partial<CreateApplicationDto>[] = [];
+      sheetData.map((row) => {
+        const participant = row['PARTICIPANT'].split(' ');
+        const leader = row['LEADER'].split(' ');
+        const isFree = leader.length === 0;
+
+        applications.push({
+          code: row['CODE'],
+          subNomination: row['NOMINATION'],
+          school: row['SCHOOL'],
+          participantType:
+            ParticipantTypeMap.get(row['QUANTITY']) ??
+            ParticipantTypeEnum.ENSEMBLE,
+          participants: [
+            {
+              lastName: participant[0],
+              firstName: participant[1],
+              ...(participant[2] && {
+                fatherName: participant[2],
+              }),
+              birthYear: row['YEAR'],
+            },
+          ],
+          applicationCompositions: [
+            {
+              title: row['COMPOSITION 1'],
+            },
+            {
+              title: row['COMPOSITION 2'],
+            },
+          ],
+          ...(leader.length && {
+            leaderLastName: leader[0],
+            leaderFirstName: leader[1],
+          }),
+          languageCode: 'am',
+          overallScore: row['OVERALL'],
+          averageScore: +removeNonNumberChars(row['AVERAGE']),
+          quantity: row['QUANTITY'],
+          isFree,
+        });
+      });
+      console.log(applications);
+      for (const application of applications) {
+        await this.applicationService.addFromSchedule(application, festivalId);
+      }
     } catch (error) {
       console.log(error);
       throw error;

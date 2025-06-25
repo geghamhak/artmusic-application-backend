@@ -31,9 +31,7 @@ export class Participant {
   @Column({ type: 'int' })
   birthYear: number;
 
-  @ManyToMany(() => Application, (application) => application.participants, {
-    cascade: true,
-  })
+  @ManyToMany(() => Application, (application) => application.participants)
   @JoinTable()
   applications: Application[];
 

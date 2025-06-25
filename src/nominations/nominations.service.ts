@@ -55,7 +55,7 @@ export class NominationsService {
       .leftJoinAndSelect('nomination.name', 'textContent')
       .leftJoinAndSelect('textContent.translations', 'translations')
       .leftJoinAndSelect('translations.language', 'translationLanguage')
-      .where('translationLanguage.translation = :nomination', {
+      .where('translations.translation = :nomination', {
         nomination,
       })
       .andWhere('translationLanguage.code = :languageCode', {

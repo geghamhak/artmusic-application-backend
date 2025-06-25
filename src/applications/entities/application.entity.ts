@@ -38,10 +38,10 @@ export class Application {
   @Column({ type: 'varchar', length: '255', nullable: true })
   totalDuration?: string;
 
-  @Column({ type: 'varchar', length: '255' })
+  @Column({ type: 'varchar', length: '255', nullable: true })
   email: string;
 
-  @Column({ type: 'varchar', length: '255' })
+  @Column({ type: 'varchar', length: '255', nullable: true })
   phoneNumber: string;
 
   @Column({ type: 'int', nullable: true })
@@ -80,7 +80,9 @@ export class Application {
   @Column({ type: 'varchar', length: '50', nullable: true })
   performanceTime: string;
 
-  @ManyToOne(() => Festival, (festival) => festival.applications)
+  @ManyToOne(() => Festival, (festival) => festival.applications, {
+    onDelete: 'CASCADE',
+  })
   festival: Festival;
 
   @ManyToOne(() => Country, (country) => country.applications)
@@ -111,7 +113,10 @@ export class Application {
   @Column({ type: 'varchar', length: '255' })
   participantType: string;
 
-  @ManyToMany(() => Participant, (participant) => participant.applications)
+  @ManyToMany(() => Participant, (participant) => participant.applications, {
+    cascade: ['remove'],
+    onDelete: 'CASCADE',
+  })
   participants: Participant[];
 
   @OneToMany(

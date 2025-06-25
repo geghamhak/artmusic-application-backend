@@ -66,15 +66,16 @@ export class SubNominationsService {
     return await this.subNominationRepository
       .createQueryBuilder('sub_nomination')
       .leftJoinAndSelect('sub_nomination.name', 'textContent')
+      .leftJoinAndSelect('sub_nomination.nomination', 'nomination')
       .leftJoinAndSelect('textContent.translations', 'translations')
       .leftJoinAndSelect('translations.language', 'translationLanguage')
-      .where('translationLanguage.translation = :subNomination', {
+      .where('translations.translation = :subNomination', {
         subNomination,
       })
       .andWhere('translationLanguage.code = :languageCode', {
         languageCode,
       })
-      .select(['sub_nomination.id'])
+      .select(['sub_nomination.id', 'nomination.id'])
       .getOne();
   }
 }
