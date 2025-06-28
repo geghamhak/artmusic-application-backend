@@ -25,6 +25,11 @@ import {
   FestivalConfigService,
   ShouldUpdateFestival,
 } from '../festival-config/festival-config.service';
+import {
+  CentralizedPlaces,
+  CentralizedScoringPattern,
+  CreateScoringItem,
+} from '../scoring-system/scoring-system.service';
 
 @Injectable()
 export class FestivalsService {
@@ -222,6 +227,7 @@ export class FestivalsService {
         festivalStartDate,
         festivalEndDate,
         festivalConfig,
+        scoringPattern,
       } = createFestivalDto;
 
       newFestival.type = { id: festivalType.id } as FestivalType;
@@ -238,6 +244,7 @@ export class FestivalsService {
         newFestival.config =
           await this.festivalConfigService.create(festivalConfig);
       }
+      this.setFestivalScoringPattern(newFestival, scoringPattern);
       const festival = await this.festivalRepository.save(newFestival);
       festivalId = festival.id;
       if (createFestivalDto.existingSchedule) {
@@ -268,6 +275,26 @@ export class FestivalsService {
       }
       throw error;
     }
+  }
+
+  setFestivalScoringPattern(
+    newFestival: Festival,
+    scoringPattern?: CreateScoringItem[],
+  ) {
+    let festivalScoringPattern: Map<CentralizedPlaces, number[]>;
+    if (!scoringPattern) {
+      festivalScoringPattern = CentralizedScoringPattern;
+    } else {
+      festivalScoringPattern = new Map();
+      scoringPattern.forEach((scoringItem) => {
+        festivalScoringPattern.set(scoringItem.place, [
+          scoringItem.minRange,
+          scoringItem.maxRange,
+        ]);
+      });
+    }
+
+    newFestival.scorePattern = JSON.stringify(festivalScoringPattern);
   }
 
   async update(id: number, updateFestivalDto: UpdateFestivalDto) {

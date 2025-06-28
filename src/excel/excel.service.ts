@@ -10,7 +10,7 @@ import {
   ParticipantTypeEnum,
   ParticipantTypeMap,
 } from '../participants/participants.service';
-import {removeNonNumberChars} from "../utils/stringUtils";
+import { removeNonNumberChars } from '../utils/stringUtils';
 
 @Injectable()
 export class ExcelService {

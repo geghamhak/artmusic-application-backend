@@ -14,7 +14,6 @@ import { FestivalType } from '../../festival-types/entities/festival-type.entity
 import { Application } from '../../applications/entities/application.entity';
 import { FestivalImage } from '../../festival-images/entities/festival-image.entity';
 import { FestivalJury } from '../../festival-jury/entities/festival-jury.entity';
-import { IsOptional } from 'class-validator';
 import { FestivalConfig } from '../../festival-config/entities/festival-config.entity';
 
 @Entity()
@@ -37,6 +36,9 @@ export class Festival {
   @OneToOne(() => FestivalConfig, (festivalConfig) => festivalConfig.festival)
   @JoinColumn()
   config: FestivalConfig;
+
+  @Column({ type: 'json' })
+  scorePattern: string;
 
   @ManyToOne(() => FestivalType, (festivalType) => festivalType.festivals)
   type: FestivalType;

@@ -5,6 +5,7 @@ import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/File
 import { CreateFestivalImageDto } from '../../festival-images/dto/create-festival-image.dto';
 import { CreateFestivalConfigDto } from '../../festival-config/dto/create-festival-config.dto';
 import { FestivalTypesEnum } from '../../festival-types/festival-types.service';
+import { CreateScoringItem } from '../../scoring-system/scoring-system.service';
 
 export class CreateFestivalDto {
   type: FestivalTypesEnum;
@@ -30,4 +31,5 @@ export class CreateFestivalDto {
   // @HasMimeType(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/octet-stream'], { each: true })
   @IsOptional()
   existingSchedule?: FileSystemStoredFile;
+  scoringPattern?: CreateScoringItem[];
 }

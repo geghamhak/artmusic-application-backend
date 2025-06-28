@@ -18,9 +18,7 @@ import {
 } from '@nestjs/common';
 import { School } from '../schools/entities/school.entity';
 import { Region } from '../regions/entities/region.entity';
-import {
-  ScoringSystemService,
-} from '../scoring-system/scoring-system.service';
+import { ScoringSystemService } from '../scoring-system/scoring-system.service';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { SubNomination } from '../sub-nominations/entities/sub-nomination.entity';
 import { ApplicationScoreService } from '../application-score/application-score.service';

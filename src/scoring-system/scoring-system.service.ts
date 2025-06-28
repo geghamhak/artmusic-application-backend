@@ -7,12 +7,18 @@ export enum CentralizedPlaces {
   THIRD = 'THIRD',
   DIPLOMA = 'DIPLOMA',
 }
-const centralizedScoreRanges = new Map();
-centralizedScoreRanges.set([10.1, 10.1], CentralizedPlaces.GRAND);
-centralizedScoreRanges.set([9.1, 10], CentralizedPlaces.FIRST);
-centralizedScoreRanges.set([8.1, 9], CentralizedPlaces.SECOND);
-centralizedScoreRanges.set([7.1, 8], CentralizedPlaces.THIRD);
-centralizedScoreRanges.set([6.1, 7], CentralizedPlaces.DIPLOMA);
+export const CentralizedScoringPattern = new Map<CentralizedPlaces, number[]>();
+CentralizedScoringPattern.set(CentralizedPlaces.GRAND, [10.1, 10.1]);
+CentralizedScoringPattern.set(CentralizedPlaces.FIRST, [9.1, 10]);
+CentralizedScoringPattern.set(CentralizedPlaces.SECOND, [8.1, 9]);
+CentralizedScoringPattern.set(CentralizedPlaces.THIRD, [7.1, 8]);
+CentralizedScoringPattern.set(CentralizedPlaces.DIPLOMA, [6.1, 7]);
+
+export interface CreateScoringItem {
+  minRange: number;
+  maxRange: number;
+  place: CentralizedPlaces;
+}
 
 @Injectable()
 export class ScoringSystemService {
@@ -21,13 +27,13 @@ export class ScoringSystemService {
   determinePlaceByCentralizedSystem(score: number): CentralizedPlaces {
     let centralizedPlace: CentralizedPlaces;
 
-    centralizedScoreRanges.forEach(
+    CentralizedScoringPattern.forEach(
       (centralizedScoreValue, centralizedScoreKey) => {
         if (
-          score >= centralizedScoreKey[0] &&
-          score <= centralizedScoreKey[1]
+          score >= centralizedScoreValue[0] &&
+          score <= centralizedScoreValue[1]
         ) {
-          centralizedPlace = centralizedScoreValue;
+          centralizedPlace = centralizedScoreKey;
         }
       },
     );
