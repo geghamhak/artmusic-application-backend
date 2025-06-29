@@ -66,15 +66,14 @@ export class FestivalConfigService {
     festivalType: FestivalTypesEnum,
   ) {
     const globalConfigByType = FestivalsGlobalConfig[festivalType];
-    const { secondComposition, thirdComposition, isOnline } = festivalConfig;
-    if (festivalConfig.secondComposition) {
-      globalConfigByType.secondComposition = secondComposition;
+    if (festivalConfig?.secondComposition) {
+      globalConfigByType.secondComposition = festivalConfig?.secondComposition;
     }
-    if (festivalConfig.thirdComposition) {
-      globalConfigByType.thirdComposition = thirdComposition;
+    if (festivalConfig?.thirdComposition) {
+      globalConfigByType.thirdComposition = festivalConfig?.thirdComposition;
     }
-    if (festivalConfig.isOnline) {
-      globalConfigByType.isOnline = isOnline;
+    if (festivalConfig?.isOnline) {
+      globalConfigByType.isOnline = festivalConfig?.isOnline;
     }
 
     return globalConfigByType;
