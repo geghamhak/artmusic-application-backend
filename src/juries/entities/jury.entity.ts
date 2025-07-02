@@ -17,7 +17,7 @@ export class Jury {
 
   @OneToOne(() => TextContent)
   @JoinColumn()
-  title: TextContent;
+  name: TextContent;
 
   @OneToOne(() => TextContent)
   @JoinColumn()

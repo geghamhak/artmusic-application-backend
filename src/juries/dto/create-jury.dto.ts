@@ -3,7 +3,7 @@ import { HasMimeType, IsFile } from 'nestjs-form-data';
 import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
 
 export class CreateJuryDto {
-  title: CreateTextContentDto[];
+  name: CreateTextContentDto[];
   description: CreateTextContentDto[];
   @IsFile()
   @HasMimeType(['image/jpeg', 'image/png'])

@@ -68,6 +68,9 @@ export class HeaderService {
         'translationLanguage.code',
       ])
       .getOne();
+    if (!header) {
+      return;
+    }
     const bannerTitle = header.bannerTitle.translations.map((i) => ({
       languageCode: i.language.code,
       translation: i.translation,

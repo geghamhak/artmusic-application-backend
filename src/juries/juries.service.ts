@@ -17,9 +17,9 @@ export class JuriesService {
   ) {}
   async create(createJuryDto: CreateJuryDto) {
     try {
-      const { title, description, image } = createJuryDto;
+      const { name, description, image } = createJuryDto;
       const newJury = new Jury();
-      newJury.title = await this.textContentService.addTranslations(title);
+      newJury.name = await this.textContentService.addTranslations(name);
       newJury.description =
         await this.textContentService.addTranslations(description);
 
@@ -35,20 +35,16 @@ export class JuriesService {
     }
   }
 
-  async findAll() {
-    return await this.juryRepository.find();
-  }
-
   async update(id: number, updateJuryDto: UpdateJuryDto) {
     try {
       const jury = await this.juryRepository.findOne({
         where: { id },
-        relations: ['title', 'description'],
+        relations: ['name', 'description'],
       });
 
-      const { title, description, imageDeleted, image } = updateJuryDto;
-      if (title?.length) {
-        await this.textContentService.updateTranslations(jury.title, title);
+      const { name, description, imageDeleted, image } = updateJuryDto;
+      if (name?.length) {
+        await this.textContentService.updateTranslations(jury.name, name);
       }
 
       if (description?.length) {
@@ -70,6 +66,58 @@ export class JuriesService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async findAll() {
+    const juries = await this.juryRepository
+      .createQueryBuilder('jury')
+      .leftJoinAndSelect('jury.name', 'nameTextContent')
+      .leftJoinAndSelect('nameTextContent.translations', 'nameTranslations')
+      .leftJoinAndSelect('nameTranslations.language', 'nameLanguage')
+      .leftJoinAndSelect('jury.description', 'descriptionTextContent')
+      .leftJoinAndSelect(
+        'descriptionTextContent.translations',
+        'descriptionTranslations',
+      )
+        .leftJoinAndSelect(
+            'descriptionTranslations.language',
+            'descriptionLanguage',
+        )
+      .select([
+        'jury.id',
+        'nameTextContent.id',
+        'descriptionTextContent.id',
+        'nameTranslations.translation',
+        'descriptionTranslations.translation',
+        'nameLanguage.code',
+        'descriptionLanguage.code',
+      ])
+      .getMany();
+
+    if (juries && !juries.length) {
+      return [];
+    }
+
+    const images = await this.dmsService.getPreSignedUrls('juries/');
+
+    return juries.map((jury) => {
+      return {
+        id: jury.id,
+        image: images.find((image) => image.key.includes(`juries/${jury.id}/`)),
+        name: {
+          translations: jury.name.translations.map((translation) => ({
+            languageCode: translation.language.code,
+            translation: translation.translation,
+          })),
+        },
+        description: {
+          translations: jury.description.translations.map((translation) => ({
+            languageCode: translation.language.code,
+            translation: translation.translation,
+          })),
+        },
+      }
+    });
   }
 
   async remove(id: number, key: string) {

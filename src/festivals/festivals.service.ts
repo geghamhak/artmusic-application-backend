@@ -178,7 +178,9 @@ export class FestivalsService {
       ])
       .getMany();
 
-    if (festivalsData && !festivalsData.length) return [];
+    if (festivalsData && !festivalsData.length) {
+      return [];
+    }
 
     return festivalsData.map((festival) => {
       return {
