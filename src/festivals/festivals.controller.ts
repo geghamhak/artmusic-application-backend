@@ -33,9 +33,9 @@ export class FestivalsController {
     return this.festivalsService.findOne(+id);
   }
 
-  @Get('/:name/active')
-  findActiveByName(@Param('name') name: FestivalTypesEnum) {
-    return this.festivalsService.findActiveByName(name);
+  @Get('/:key/active')
+  findActiveByName(@Param('key') key: FestivalTypesEnum) {
+    return this.festivalsService.findActiveByKey(key);
   }
 
   @Get('/type/:type')

@@ -22,7 +22,7 @@ export class Staff {
   @JoinColumn()
   description: TextContent;
 
-  @Column({ type: "boolean" })
+  @Column({ type: 'boolean' })
   isActive: boolean;
 
   @CreateDateColumn()

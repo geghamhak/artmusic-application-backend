@@ -39,29 +39,29 @@ export class StaffService {
 
   async findAll() {
     const staff = await this.staffRepository
-        .createQueryBuilder('staff')
-        .leftJoinAndSelect('staff.name', 'nameTextContent')
-        .leftJoinAndSelect('nameTextContent.translations', 'nameTranslations')
-        .leftJoinAndSelect('nameTranslations.language', 'nameLanguage')
-        .leftJoinAndSelect('staff.description', 'descriptionTextContent')
-        .leftJoinAndSelect(
-            'descriptionTextContent.translations',
-            'descriptionTranslations',
-        )
-        .leftJoinAndSelect(
-            'descriptionTranslations.language',
-            'descriptionLanguage',
-        )
-        .select([
-          'staff.id',
-          'nameTextContent.id',
-          'descriptionTextContent.id',
-          'nameTranslations.translation',
-          'descriptionTranslations.translation',
-          'nameLanguage.code',
-          'descriptionLanguage.code',
-        ])
-        .getMany();
+      .createQueryBuilder('staff')
+      .leftJoinAndSelect('staff.name', 'nameTextContent')
+      .leftJoinAndSelect('nameTextContent.translations', 'nameTranslations')
+      .leftJoinAndSelect('nameTranslations.language', 'nameLanguage')
+      .leftJoinAndSelect('staff.description', 'descriptionTextContent')
+      .leftJoinAndSelect(
+        'descriptionTextContent.translations',
+        'descriptionTranslations',
+      )
+      .leftJoinAndSelect(
+        'descriptionTranslations.language',
+        'descriptionLanguage',
+      )
+      .select([
+        'staff.id',
+        'nameTextContent.id',
+        'descriptionTextContent.id',
+        'nameTranslations.translation',
+        'descriptionTranslations.translation',
+        'nameLanguage.code',
+        'descriptionLanguage.code',
+      ])
+      .getMany();
 
     if (staff && !staff.length) {
       return [];
@@ -72,7 +72,9 @@ export class StaffService {
     return staff.map((staffMember) => {
       return {
         id: staffMember.id,
-        image: images.find((image) => image.key.includes(`staff/${staffMember.id}/`)),
+        image: images.find((image) =>
+          image.key.includes(`staff/${staffMember.id}/`),
+        ),
         name: {
           translations: staffMember.name.translations.map((translation) => ({
             languageCode: translation.language.code,
@@ -80,19 +82,22 @@ export class StaffService {
           })),
         },
         description: {
-          translations: staffMember.description.translations.map((translation) => ({
-            languageCode: translation.language.code,
-            translation: translation.translation,
-          })),
+          translations: staffMember.description.translations.map(
+            (translation) => ({
+              languageCode: translation.language.code,
+              translation: translation.translation,
+            }),
+          ),
         },
-      }
+      };
     });
   }
 
   async update(id: number, updateStaffDto: UpdateStaffDto) {
     try {
       const staffMember = await this.staffRepository.findOneBy({ id });
-      const { name, description, image, imageDeleted, isActive } = updateStaffDto;
+      const { name, description, image, imageDeleted, isActive } =
+        updateStaffDto;
       if (name) {
         await this.textContentService.updateTranslations(
           staffMember.name,
@@ -106,7 +111,7 @@ export class StaffService {
         );
       }
 
-      if(isActive) {
+      if (isActive) {
         staffMember.isActive = !!isActive;
       }
 

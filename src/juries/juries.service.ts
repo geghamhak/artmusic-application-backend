@@ -79,10 +79,10 @@ export class JuriesService {
         'descriptionTextContent.translations',
         'descriptionTranslations',
       )
-        .leftJoinAndSelect(
-            'descriptionTranslations.language',
-            'descriptionLanguage',
-        )
+      .leftJoinAndSelect(
+        'descriptionTranslations.language',
+        'descriptionLanguage',
+      )
       .select([
         'jury.id',
         'nameTextContent.id',
@@ -116,7 +116,7 @@ export class JuriesService {
             translation: translation.translation,
           })),
         },
-      }
+      };
     });
   }
 

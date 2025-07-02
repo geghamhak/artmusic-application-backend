@@ -63,7 +63,6 @@ export class FestivalsService {
         'descriptionTranslations.language',
         'descriptionLanguage',
       )
-
       .leftJoinAndSelect('festival.bannerDescription', 'bannerDescription')
       .leftJoinAndSelect('bannerDescription.translations', 'bannerTranslations')
       .leftJoinAndSelect('bannerTranslations.language', 'bannerLanguage')
@@ -75,17 +74,15 @@ export class FestivalsService {
         'festival.applicationStartDate',
         'festival.applicationEndDate',
         'festivalType.key',
-
+        'festival.scorePattern',
         'title.id',
         'titleTranslations.id',
         'titleTranslations.translation',
         'titleLanguage.code',
-
         'description.id',
         'descriptionTranslations.id',
         'descriptionTranslations.translation',
         'descriptionLanguage.code',
-
         'bannerDescription.id',
         'bannerTranslations.id',
         'bannerTranslations.translation',
@@ -100,20 +97,8 @@ export class FestivalsService {
       throw new NotFoundException(`Festival with id ${id} not found`);
     }
 
-    const banner = await this.dmsService.getPreSignedUrls(
-      `festivals/${id}/banner/`,
-    );
-    const termsAndConditions = await this.dmsService.getPreSignedUrls(
-      `festivals/${id}/termsAndConditions/`,
-    );
-    const gallery = await this.dmsService.getPreSignedUrls(
-      `festivals/${id}/gallery/`,
-    );
-
-    const config = this.festivalConfigService.mapFestivalConfigs(
-      festival.config,
-      festival.type.key as FestivalTypesEnum,
-    );
+    const { banner, termsAndConditions, gallery } =
+      await this.retrieveFestivalDocs(id);
 
     return {
       id: festival.id,
@@ -134,11 +119,27 @@ export class FestivalsService {
       banner,
       termsAndConditions,
       gallery,
-      config,
+      config: this.festivalConfigService.mapFestivalConfigs(
+        festival.config,
+        festival.type.key as FestivalTypesEnum,
+      ),
+      scorePattern: Object.keys(festival.scorePattern).length
+        ? festival.scorePattern
+        : CentralizedScoringPattern,
     } as unknown as Festival;
   }
 
-  async findActiveByName(festivalName: FestivalTypesEnum) {
+  async retrieveFestivalDocs(id: number) {
+    const [banner, termsAndConditions, gallery] = await Promise.all([
+      this.dmsService.getPreSignedUrls(`festivals/${id}/banner/`),
+      this.dmsService.getPreSignedUrls(`festivals/${id}/termsAndConditions/`),
+      this.dmsService.getPreSignedUrls(`festivals/${id}/gallery/`),
+    ]);
+
+    return { banner, termsAndConditions, gallery };
+  }
+
+  async findActiveByKey(festivalName: FestivalTypesEnum) {
     const currentDate = new Date();
     currentDate.toISOString();
     const activeFestival = await this.festivalRepository
@@ -153,6 +154,10 @@ export class FestivalsService {
 
     if (!activeFestival) {
       throw new NotFoundException('The festival is not active');
+    }
+
+    if (!Object.keys(activeFestival.scorePattern).length) {
+      activeFestival.scorePattern = JSON.stringify(CentralizedScoringPattern);
     }
     const config = this.festivalConfigService.mapFestivalConfigs(
       activeFestival.config,
@@ -283,16 +288,16 @@ export class FestivalsService {
     newFestival: Festival,
     scoringPattern?: CreateScoringItem[],
   ) {
-    let festivalScoringPattern: Map<CentralizedPlaces, number[]>;
+    let festivalScoringPattern: {};
     if (!scoringPattern) {
       festivalScoringPattern = CentralizedScoringPattern;
     } else {
-      festivalScoringPattern = new Map();
+      festivalScoringPattern = {};
       scoringPattern.forEach((scoringItem) => {
-        festivalScoringPattern.set(scoringItem.place, [
+        festivalScoringPattern[scoringItem.place as CentralizedPlaces] = [
           scoringItem.minRange,
           scoringItem.maxRange,
-        ]);
+        ];
       });
     }
 

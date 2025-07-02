@@ -7,12 +7,12 @@ export enum CentralizedPlaces {
   THIRD = 'THIRD',
   DIPLOMA = 'DIPLOMA',
 }
-export const CentralizedScoringPattern = new Map<CentralizedPlaces, number[]>();
-CentralizedScoringPattern.set(CentralizedPlaces.GRAND, [10.1, 10.1]);
-CentralizedScoringPattern.set(CentralizedPlaces.FIRST, [9.1, 10]);
-CentralizedScoringPattern.set(CentralizedPlaces.SECOND, [8.1, 9]);
-CentralizedScoringPattern.set(CentralizedPlaces.THIRD, [7.1, 8]);
-CentralizedScoringPattern.set(CentralizedPlaces.DIPLOMA, [6.1, 7]);
+export const CentralizedScoringPattern = {
+  FIRST: [9.1, 10],
+  SECOND: [8.1, 9],
+  THIRD: [7.1, 8],
+  DIPLOMA: [6.1, 7],
+};
 
 export interface CreateScoringItem {
   minRange: number;
@@ -26,17 +26,14 @@ export class ScoringSystemService {
 
   determinePlaceByCentralizedSystem(score: number): CentralizedPlaces {
     let centralizedPlace: CentralizedPlaces;
-
-    CentralizedScoringPattern.forEach(
-      (centralizedScoreValue, centralizedScoreKey) => {
-        if (
-          score >= centralizedScoreValue[0] &&
-          score <= centralizedScoreValue[1]
-        ) {
-          centralizedPlace = centralizedScoreKey;
-        }
-      },
-    );
+    for (const key in CentralizedScoringPattern) {
+      if (
+        score >= CentralizedScoringPattern[key][0] &&
+        score <= CentralizedScoringPattern[key][1]
+      ) {
+        centralizedPlace = CentralizedScoringPattern[key];
+      }
+    }
 
     return centralizedPlace;
   }

@@ -10,7 +10,7 @@ import {
 import { JuriesService } from './juries.service';
 import { CreateJuryDto } from './dto/create-jury.dto';
 import { UpdateJuryDto } from './dto/update-jury.dto';
-import {FileSystemStoredFile, FormDataRequest} from "nestjs-form-data";
+import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
 
 @Controller('juries')
 export class JuriesController {
