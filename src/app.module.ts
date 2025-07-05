@@ -66,6 +66,9 @@ import { FestivalJuryModule } from './festival-jury/festival-jury.module';
 import { FestivalJury } from './festival-jury/entities/festival-jury.entity';
 import { FestivalConfigModule } from './festival-config/festival-config.module';
 import { FestivalConfig } from './festival-config/entities/festival-config.entity';
+import { AuthService } from './auth/auth.service';
+import { AuthModule } from './auth/auth.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -162,6 +165,8 @@ import { FestivalConfig } from './festival-config/entities/festival-config.entit
     EmailQueueModule,
     FestivalJuryModule,
     FestivalConfigModule,
+    AuthModule,
+    AdminModule,
   ],
   providers: [
     CountriesService,
@@ -171,6 +176,7 @@ import { FestivalConfig } from './festival-config/entities/festival-config.entit
     ParticipantDocumentsService,
     ScoringSystemService,
     TranslationsService,
+    AuthService,
   ],
 })
 export class AppModule {}

@@ -6,7 +6,7 @@ import { CreateFestivalImageDto } from '../../festival-images/dto/create-festiva
 import { CreateFestivalConfigDto } from '../../festival-config/dto/create-festival-config.dto';
 import { FestivalTypesEnum } from '../../festival-types/festival-types.service';
 import { CreateScoringItem } from '../../scoring-system/scoring-system.service';
-import {IFestivalJuries} from "../festivals.service";
+import { IFestivalJuries } from '../festivals.service';
 
 export class CreateFestivalDto {
   type: FestivalTypesEnum;
