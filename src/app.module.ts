@@ -176,7 +176,6 @@ import { AdminModule } from './admin/admin.module';
     ParticipantDocumentsService,
     ScoringSystemService,
     TranslationsService,
-    AuthService,
   ],
 })
 export class AppModule {}

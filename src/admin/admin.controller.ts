@@ -22,12 +22,12 @@ export class AdminController {
 
   @Get()
   findAll() {
-    return this.adminService.findAll();
+    // return this.adminService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.adminService.findOne(+id);
+    return this.adminService.findOne(id);
   }
 
   @Patch(':id')
