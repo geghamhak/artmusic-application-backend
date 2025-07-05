@@ -252,8 +252,6 @@ export class ApplicationsService {
       }
       application.isFree = !!isFree;
       application.isOnline = false;
-      console.log(averageScore);
-      console.log(overallScore);
       await this.addOverallScore(overallScore, averageScore, application);
       await this.applicationRepository.save(application);
     } catch (error) {

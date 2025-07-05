@@ -10,6 +10,7 @@ import { DmsModule } from 'src/dms/dms.module';
 import { FestivalImagesModule } from '../festival-images/festival-images.module';
 import { ExcelModule } from '../excel/excel.module';
 import { FestivalConfigModule } from '../festival-config/festival-config.module';
+import { FestivalQueriesService } from './festival.queries.service';
 
 @Module({
   imports: [
@@ -22,8 +23,8 @@ import { FestivalConfigModule } from '../festival-config/festival-config.module'
     ExcelModule,
     FestivalConfigModule,
   ],
-  exports: [TypeOrmModule, FestivalsService],
+  exports: [TypeOrmModule, FestivalsService, FestivalQueriesService],
   controllers: [FestivalsController],
-  providers: [FestivalsService],
+  providers: [FestivalsService, FestivalQueriesService],
 })
 export class FestivalsModule {}

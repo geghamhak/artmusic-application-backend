@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   forwardRef,
   Inject,
   Injectable,
@@ -30,6 +29,15 @@ import {
   CentralizedScoringPattern,
   CreateScoringItem,
 } from '../scoring-system/scoring-system.service';
+import { FestivalQueriesService } from './festival.queries.service';
+import { FestivalsGlobalConfig } from '../festival-config/types';
+
+export interface IFestivalJuries {
+  festivalId: number;
+  nominationId?: number;
+  subNominationI?: number;
+  juriesIds: number[];
+}
 
 @Injectable()
 export class FestivalsService {
@@ -43,6 +51,7 @@ export class FestivalsService {
     private festivalImagesService: FestivalImagesService,
     private excelService: ExcelService,
     private festivalConfigService: FestivalConfigService,
+    private festivalQueriesService: FestivalQueriesService,
   ) {}
 
   findAll() {
@@ -50,48 +59,7 @@ export class FestivalsService {
   }
 
   async findOne(id: number) {
-    const festival = await this.festivalRepository
-      .createQueryBuilder('festival')
-      .leftJoinAndSelect('festival.title', 'title')
-      .leftJoinAndSelect('festival.type', 'festivalType')
-      .leftJoinAndSelect('title.translations', 'titleTranslations')
-      .leftJoinAndSelect('titleTranslations.language', 'titleLanguage')
-
-      .leftJoinAndSelect('festival.description', 'description')
-      .leftJoinAndSelect('description.translations', 'descriptionTranslations')
-      .leftJoinAndSelect(
-        'descriptionTranslations.language',
-        'descriptionLanguage',
-      )
-      .leftJoinAndSelect('festival.bannerDescription', 'bannerDescription')
-      .leftJoinAndSelect('bannerDescription.translations', 'bannerTranslations')
-      .leftJoinAndSelect('bannerTranslations.language', 'bannerLanguage')
-      .leftJoinAndSelect('festival.config', 'config')
-
-      .where('festival.id = :id', { id })
-      .select([
-        'festival.id',
-        'festival.applicationStartDate',
-        'festival.applicationEndDate',
-        'festivalType.key',
-        'festival.scorePattern',
-        'title.id',
-        'titleTranslations.id',
-        'titleTranslations.translation',
-        'titleLanguage.code',
-        'description.id',
-        'descriptionTranslations.id',
-        'descriptionTranslations.translation',
-        'descriptionLanguage.code',
-        'bannerDescription.id',
-        'bannerTranslations.id',
-        'bannerTranslations.translation',
-        'bannerLanguage.code',
-        'config.secondComposition',
-        'config.thirdComposition',
-        'config.isOnline',
-      ])
-      .getOne();
+    const festival = await this.festivalQueriesService.findOne(id);
 
     if (!festival) {
       throw new NotFoundException(`Festival with id ${id} not found`);
@@ -140,17 +108,8 @@ export class FestivalsService {
   }
 
   async findActiveByKey(festivalName: FestivalTypesEnum) {
-    const currentDate = new Date();
-    currentDate.toISOString();
-    const activeFestival = await this.festivalRepository
-      .createQueryBuilder('festival')
-      .leftJoinAndSelect('festival.type', 'festivalType')
-      .leftJoinAndSelect('festival.config', 'config')
-      .where('festival.applicationStartDate <= :currentDate', { currentDate })
-      .andWhere('festival.applicationEndDate >= :currentDate', { currentDate })
-      .andWhere('festivalType.key= :key', { key: festivalName })
-      .select()
-      .getOne();
+    const activeFestival =
+      await this.festivalQueriesService.findActiveByKey(festivalName);
 
     if (!activeFestival) {
       throw new NotFoundException('The festival is not active');
@@ -166,26 +125,9 @@ export class FestivalsService {
     return { ...activeFestival, config };
   }
 
-  async findByType(festivalName: FestivalTypesEnum): Promise<Festival[]> {
-    const festivalsData = await this.festivalRepository
-      .createQueryBuilder('festival')
-      .leftJoinAndSelect('festival.title', 'textContent')
-      .leftJoinAndSelect('textContent.translations', 'translations')
-      .leftJoinAndSelect('translations.language', 'language')
-      .innerJoin('festival.type', 'festivalType')
-      .where('festivalType.key = :key', { key: festivalName })
-      .select([
-        'festival.id',
-        'textContent.id',
-        'translations.id',
-        'translations.translation',
-        'language.code',
-      ])
-      .getMany();
-
-    if (festivalsData && !festivalsData.length) {
-      return [];
-    }
+  async findByType(festivalType: FestivalTypesEnum): Promise<Festival[]> {
+    const festivalsData =
+      await this.festivalQueriesService.findByType(festivalType);
 
     return festivalsData.map((festival) => {
       return {
@@ -215,7 +157,7 @@ export class FestivalsService {
         applicationStartDateFormatted =
           formatStringToDate(applicationStartDate);
         applicationEndDateFormatted = formatStringToDate(applicationEndDate);
-        await this.checkIfFestivalExists(
+        await this.festivalQueriesService.checkIfFestivalExists(
           applicationStartDateFormatted,
           applicationEndDateFormatted,
           festivalType,
@@ -446,51 +388,11 @@ export class FestivalsService {
     return this.removeFestivalInfo(id);
   }
 
-  async checkIfFestivalExists(
-    applicationStartDate: Date,
-    applicationEndDate: Date,
-    festivalType: FestivalType,
-  ) {
-    if (!festivalType) {
-      throw new BadRequestException(`Pleas provide correct festival type`);
-    }
-    const existingFestival = await this.festivalRepository
-      .createQueryBuilder('festival')
-      .leftJoinAndSelect('festival.type', 'festivalType')
-      .where('festivalType.id = :typeId', { typeId: festivalType.id })
-      .andWhere('festival.applicationStartDate = :startDate', {
-        startDate: applicationStartDate,
-      })
-      .andWhere('festival.applicationEndDate = :endDate', {
-        endDate: applicationEndDate,
-      })
-      .getOne();
-
-    if (existingFestival) {
-      throw new BadRequestException('Festival already exists');
-    }
-  }
-
   async removeFestivalInfo(id: number) {
     try {
       console.log(`Removing festival info for ${id}`);
-      const festival = await this.festivalRepository
-        .createQueryBuilder('festival')
-        .leftJoinAndSelect('festival.title', 'titleTextContent')
-        .leftJoinAndSelect('festival.description', 'descriptionTextContent')
-        .leftJoinAndSelect('festival.applications', 'applications')
-        .leftJoinAndSelect(
-          'festival.bannerDescription',
-          'bannerDescriptionTextContent',
-        )
-        .where('festival.id = :id', { id })
-        .select([
-          'festival.id',
-          'titleTextContent.id',
-          'descriptionTextContent.id',
-          'bannerDescriptionTextContent.id',
-        ])
-        .getOne();
+      const festival =
+        await this.festivalQueriesService.findFestivalToRemove(id);
 
       const { title, description, bannerDescription } = festival;
 
@@ -517,5 +419,12 @@ export class FestivalsService {
     } catch (error) {
       throw new Error('Unable to proceed .xlsx file');
     }
+  }
+
+  findConfigByType(type: FestivalTypesEnum) {
+    return {
+      config: FestivalsGlobalConfig[type],
+      scorePattern: CentralizedScoringPattern,
+    };
   }
 }

@@ -42,6 +42,10 @@ export class FestivalsController {
   findByName(@Param('type') type: FestivalTypesEnum) {
     return this.festivalsService.findByType(type);
   }
+  @Get('/:type/config')
+  findConfigByType(@Param('type') type: FestivalTypesEnum) {
+    return this.festivalsService.findConfigByType(type);
+  }
 
   @Patch(':id')
   @FormDataRequest({ storage: FileSystemStoredFile })
