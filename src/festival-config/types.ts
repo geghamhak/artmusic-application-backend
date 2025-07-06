@@ -16,6 +16,7 @@ export const FestivalsGlobalConfig: FestivalsConfig = {
   artmusic: {
     isOnline: true,
     secondComposition: true,
+    thirdComposition: false,
     compositionTotalDuration: 15,
     hasNomination: true,
     hasRole: true,
@@ -23,6 +24,7 @@ export const FestivalsGlobalConfig: FestivalsConfig = {
   melody: {
     isOnline: true,
     secondComposition: true,
+    thirdComposition: false,
     compositionTotalDuration: 15,
     hasNomination: true,
     hasRole: false,
@@ -30,6 +32,7 @@ export const FestivalsGlobalConfig: FestivalsConfig = {
   new_hands: {
     isOnline: false,
     secondComposition: false,
+    thirdComposition: false,
     compositionTotalDuration: 0,
     hasNomination: true,
     hasRole: false,
@@ -37,6 +40,7 @@ export const FestivalsGlobalConfig: FestivalsConfig = {
   lyrics: {
     isOnline: false,
     secondComposition: false,
+    thirdComposition: false,
     compositionTotalDuration: 15,
     hasNomination: false,
     hasRole: false,
@@ -44,6 +48,7 @@ export const FestivalsGlobalConfig: FestivalsConfig = {
   art_piano: {
     isOnline: false,
     secondComposition: true,
+    thirdComposition: false,
     compositionTotalDuration: 15,
     hasNomination: false,
     hasRole: false,
@@ -51,6 +56,7 @@ export const FestivalsGlobalConfig: FestivalsConfig = {
   khachatur_avetisyan: {
     isOnline: false,
     secondComposition: true,
+    thirdComposition: false,
     compositionTotalDuration: 15,
     hasNomination: true,
     hasRole: true,
@@ -58,6 +64,7 @@ export const FestivalsGlobalConfig: FestivalsConfig = {
   foreign: {
     isOnline: false,
     secondComposition: true,
+    thirdComposition: false,
     compositionTotalDuration: 15,
     hasNomination: true,
     hasRole: true,
@@ -65,6 +72,7 @@ export const FestivalsGlobalConfig: FestivalsConfig = {
   art_dance: {
     isOnline: false,
     secondComposition: true,
+    thirdComposition: false,
     compositionTotalDuration: 15,
     hasNomination: true,
     hasRole: true,
@@ -72,6 +80,7 @@ export const FestivalsGlobalConfig: FestivalsConfig = {
   eghegan_pogh: {
     isOnline: false,
     secondComposition: true,
+    thirdComposition: false,
     compositionTotalDuration: 15,
     hasNomination: true,
     hasRole: true,

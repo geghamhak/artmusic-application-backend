@@ -180,7 +180,6 @@ import { JwtModule } from '@nestjs/jwt';
     ParticipantDocumentsService,
     ScoringSystemService,
     TranslationsService,
-    AuthService,
   ],
 })
 export class AppModule {}
