@@ -35,14 +35,16 @@ import { Jury } from '../juries/entities/jury.entity';
 import { EmailQueue } from '../email-queue/entities/email-queue.entity';
 import { FestivalJury } from '../festival-jury/entities/festival-jury.entity';
 import { FestivalConfig } from '../festival-config/entities/festival-config.entity';
-
+import * as process from 'node:process';
+import { Admin } from '../admin/entities/admin.entity';
+import AdminSeeder from './seeds/Admin.seeder';
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql' as const,
-  host: 'localhost',
-  port: 3306,
-  username: 'root',
-  password: 'House2016$$',
-  database: 'artmusic',
+  host: process.env.DATABASE_HOST,
+  port: process.env.DATABASE_PORT as unknown as number,
+  username: process.env.DATABASE_USERNAME,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
   entities: [
     Application,
     Country,
@@ -71,6 +73,7 @@ const options: DataSourceOptions & SeederOptions = {
     EmailQueue,
     FestivalJury,
     FestivalConfig,
+    Admin,
   ],
   seeds: [
     LanguageSeeder,
@@ -79,6 +82,7 @@ const options: DataSourceOptions & SeederOptions = {
     SchoolSeeder,
     FestivalTypeSeeder,
     CountrySeeder,
+    AdminSeeder,
   ],
 };
 

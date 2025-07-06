@@ -69,6 +69,8 @@ import { FestivalConfig } from './festival-config/entities/festival-config.entit
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
+import { Admin } from './admin/entities/admin.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -112,6 +114,7 @@ import { AdminModule } from './admin/admin.module';
             EmailQueue,
             FestivalJury,
             FestivalConfig,
+            Admin,
           ],
           synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
@@ -167,6 +170,7 @@ import { AdminModule } from './admin/admin.module';
     FestivalConfigModule,
     AuthModule,
     AdminModule,
+    JwtModule,
   ],
   providers: [
     CountriesService,

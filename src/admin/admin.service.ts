@@ -1,8 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
+import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcryptjs';
 import { Repository } from 'typeorm';
 import { Admin } from './entities/admin.entity';
 
@@ -18,7 +17,7 @@ export class AdminService {
       const { username, password } = createAdminDto;
       const newAdmin = new Admin();
       newAdmin.username = username;
-      newAdmin.password = await this.hashPassword(password);
+      newAdmin.password = this.hashPassword(password);
 
       return await this.adminRepository.save(newAdmin);
     } catch (error) {
@@ -33,16 +32,20 @@ export class AdminService {
       .getOne();
   }
 
-  async hashPassword(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt(10);
-    return bcrypt.hash(password, salt);
+  hashPassword(password: string): string {
+    const salt = randomBytes(16).toString('hex');
+    const buf = scryptSync(password, salt, 64) as Buffer;
+    return `${buf.toString('hex')}.${salt}`;
   }
 
-  update(id: number, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
+  comparePassword(storedPassword: string, suppliedPassword: string): boolean {
+    const [hashedPassword, salt] = storedPassword.split('.');
+    const hashedPasswordBuf = Buffer.from(hashedPassword, 'hex');
+    const suppliedPasswordBuf = scryptSync(
+      suppliedPassword,
+      salt,
+      64,
+    ) as Buffer;
+    return timingSafeEqual(hashedPasswordBuf, suppliedPasswordBuf);
   }
 }
