@@ -19,8 +19,8 @@ export class FestivalQueriesService {
   async findOne(id: number) {
     const festival = await this.festivalRepository
       .createQueryBuilder('festival')
-      .leftJoinAndSelect('festival.title', 'title')
       .leftJoinAndSelect('festival.type', 'festivalType')
+      .leftJoinAndSelect('festival.title', 'title')
       .leftJoinAndSelect('title.translations', 'titleTranslations')
       .leftJoinAndSelect('titleTranslations.language', 'titleLanguage')
 

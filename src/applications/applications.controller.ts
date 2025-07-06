@@ -32,6 +32,13 @@ export class ApplicationsController {
     return this.applicationsService.findOne(+id);
   }
 
+  @Get('festival/:id')
+  findByFestivalId(@Param('id') festivalId: string) {
+    return this.applicationsService.findAndRearrangeDataForFestival(
+      +festivalId,
+    );
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

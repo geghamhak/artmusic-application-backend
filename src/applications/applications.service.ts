@@ -33,6 +33,35 @@ import { NominationsService } from '../nominations/nominations.service';
 import { Nomination } from '../nominations/entities/nomination.entity';
 import { CountriesService } from '../countries/countries.service';
 import { SchoolsService } from '../schools/schools.service';
+import { Translation } from '../translations/entities/translation.entity';
+import { ApplicationComposition } from '../application-composition/entities/application-composition.entity';
+
+export interface IFestivalApplications {
+  id: number;
+  code: number;
+  country: Translation[];
+  subNomination: Translation[];
+  nomination: Translation[];
+  region: Translation[] | string;
+  school: Translation[] | string;
+  isFree: boolean;
+  isOnline: boolean;
+  leaderFirstName: string;
+  leaderLastName: string;
+  quantity: number;
+  performanceDate: string;
+  performanceTime: string;
+  participantType: string;
+  compositions: ApplicationComposition[];
+  participants: {
+    firstName: Translation[];
+    lastName: Translation[];
+    fatherName: Translation[];
+  }[];
+  email: string;
+  phoneNumber: string;
+  totalDuration: string;
+}
 
 @Injectable()
 export class ApplicationsService {
@@ -449,18 +478,10 @@ export class ApplicationsService {
       .leftJoinAndSelect('school.region', 'region')
       .leftJoinAndSelect('region.name', 'regionTextContent')
       .leftJoinAndSelect('regionTextContent.translations', 'regionTranslations')
-      .leftJoinAndSelect(
-        'regionTranslations.language',
-        'regionTranslationsLanguage',
-      )
       .leftJoinAndSelect('country.name', 'countryTextContent')
       .leftJoinAndSelect(
         'countryTextContent.translations',
         'countryTranslations',
-      )
-      .leftJoinAndSelect(
-        'countryTranslations.language',
-        'countryTranslationsLanguage',
       )
       .leftJoinAndSelect('subNomination.nomination', 'nomination')
       .leftJoinAndSelect('nomination.name', 'nominationTextContent')
@@ -468,9 +489,20 @@ export class ApplicationsService {
         'nominationTextContent.translations',
         'nominationTranslations',
       )
+      .leftJoinAndSelect('participants.firstName', 'firstNameTextContent')
       .leftJoinAndSelect(
-        'nominationTranslations.language',
-        'nominationTranslationsLanguage',
+        'firstNameTextContent.translations',
+        'firstNameTranslations',
+      )
+      .leftJoinAndSelect('participants.lastName', 'lastNameTextContent')
+      .leftJoinAndSelect(
+        'lastNameTextContent.translations',
+        'lastNameTranslations',
+      )
+      .leftJoinAndSelect('participants.fatherName', 'fatherNameTextContent')
+      .leftJoinAndSelect(
+        'fatherNameTextContent.translations',
+        'fatherNameTranslations',
       )
       .where('festival.id= :festivalId', { festivalId })
       .orderBy('nomination.id')
@@ -534,5 +566,49 @@ export class ApplicationsService {
     application.totalScore = overallScore;
     application.averageScore = averageScore;
     return await this.applicationRepository.save(application);
+  }
+
+  async findAndRearrangeDataForFestival(
+    festivalId: number,
+  ): Promise<IFestivalApplications[]> {
+    const applications = await this.findByFestivalId(festivalId);
+    return applications.map((application) => {
+      return {
+        id: application.id,
+        code: application.code,
+        country: application.country.name.translations,
+        subNomination: application.subNomination.name.translations,
+        nomination: application.subNomination.nomination.name.translations,
+        region: application.school.region
+          ? application.school.region.name.translations
+          : application.regionName,
+        school: application.school
+          ? application.school.name.translations
+          : application.schoolName,
+        isFree: application.isFree,
+        isOnline: application.isOnline,
+        leaderFirstName: application.leaderFirstName,
+        leaderLastName: application.leaderLastName,
+        quantity: application.quantity,
+        performanceDate: application.performanceDate,
+        performanceTime: application.performanceTime,
+        participantType: application.participantType,
+        compositions: application.compositions,
+        participants: application.participants
+          ? application.participants.map((participant) => {
+              return {
+                firstName: participant.firstName.translations,
+                lastName: participant.lastName.translations,
+                ...(participant.fatherName && {
+                  fatherName: participant.fatherName.translations,
+                }),
+              };
+            })
+          : [],
+        email: application.email,
+        phoneNumber: application.phoneNumber,
+        totalDuration: application.totalDuration,
+      };
+    });
   }
 }
