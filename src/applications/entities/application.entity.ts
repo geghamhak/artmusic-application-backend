@@ -29,11 +29,11 @@ export class Application {
   @Column({ type: 'int', nullable: true })
   code: number;
 
-  @Column({ type: 'tinyint' })
-  isFree: boolean;
+  @Column({ type: 'tinyint', default: 0 })
+  isFree: number;
 
-  @Column({ type: 'tinyint' })
-  isOnline: boolean;
+  @Column({ type: 'tinyint', default: 0 })
+  isOnline: number;
 
   @Column({ type: 'varchar', length: '255', nullable: true })
   totalDuration?: string;

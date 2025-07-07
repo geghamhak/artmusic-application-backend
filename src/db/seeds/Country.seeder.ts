@@ -4,7 +4,7 @@ import { TextContent } from '../../translations/entities/textContent.entity';
 import { Language } from '../../translations/entities/language.entity';
 import { Translation } from '../../translations/entities/translation.entity';
 import { Country } from '../../countries/entities/country.entity';
-import { getCodeList, getData } from 'country-list';
+import { getData } from 'country-list';
 
 export default class CountrySeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<void> {

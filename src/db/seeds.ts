@@ -38,6 +38,8 @@ import { FestivalConfig } from '../festival-config/entities/festival-config.enti
 import * as process from 'node:process';
 import { Admin } from '../admin/entities/admin.entity';
 import AdminSeeder from './seeds/Admin.seeder';
+import JurySeeder from './seeds/Jury.seeder';
+
 const options: DataSourceOptions & SeederOptions = {
   type: 'mysql' as const,
   host: process.env.DATABASE_HOST,
@@ -74,6 +76,7 @@ const options: DataSourceOptions & SeederOptions = {
     FestivalJury,
     FestivalConfig,
     Admin,
+    Jury,
   ],
   seeds: [
     LanguageSeeder,
@@ -83,6 +86,7 @@ const options: DataSourceOptions & SeederOptions = {
     FestivalTypeSeeder,
     CountrySeeder,
     AdminSeeder,
+    JurySeeder,
   ],
 };
 

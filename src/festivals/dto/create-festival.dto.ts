@@ -19,7 +19,7 @@ export class CreateFestivalDto {
   @HasMimeType(['text/plain', 'application/pdf'])
   termsAndConditions: FileSystemStoredFile;
   bannerDescription: CreateTextContentDto[];
-  festivalConfig?: CreateFestivalConfigDto;
+  config?: CreateFestivalConfigDto;
   applicationEndDate?: string;
   applicationStartDate?: string;
   festivalEndDate?: string;

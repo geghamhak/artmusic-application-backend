@@ -44,8 +44,8 @@ export interface IFestivalApplications {
   nomination: Translation[];
   region: Translation[] | string;
   school: Translation[] | string;
-  isFree: boolean;
-  isOnline: boolean;
+  isFree: number;
+  isOnline: number;
   leaderFirstName: string;
   leaderLastName: string;
   quantity: number;
@@ -116,11 +116,11 @@ export class ApplicationsService {
         languageCode,
       );
       const application = new Application();
-      application.isFree = !!isFree;
+      application.isFree = JSON.parse(isFree) === true ? 1 : 0;
       application.leaderFirstName = leaderFirstName;
       application.leaderLastName = leaderLastName;
       application.participantType = participantType;
-      application.isOnline = !!isOnline;
+      application.isOnline = JSON.parse(isOnline) === true ? 1 : 0;
       application.email = email;
       application.phoneNumber = phoneNumber;
       application.participantDocuments =
@@ -279,8 +279,8 @@ export class ApplicationsService {
         application.schoolName = school;
         application.regionName = region;
       }
-      application.isFree = !!isFree;
-      application.isOnline = false;
+      application.isFree = JSON.parse(isFree) === true ? 1 : 0;
+      application.isOnline = 0;
       await this.addOverallScore(overallScore, averageScore, application);
       await this.applicationRepository.save(application);
     } catch (error) {

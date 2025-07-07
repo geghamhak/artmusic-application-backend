@@ -128,7 +128,7 @@ export class ExcelService {
       sheetData.map((row) => {
         const participant = row['PARTICIPANT'].split(' ');
         const leader = row['LEADER'].split(' ');
-        const isFree = leader.length === 0;
+        const isFree = leader.length === 0 ? 'true' : 'false';
 
         applications.push({
           code: row['CODE'],

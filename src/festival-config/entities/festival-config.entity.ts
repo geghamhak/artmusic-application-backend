@@ -13,14 +13,14 @@ export class FestivalConfig {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'boolean', nullable: true })
-  secondComposition: boolean;
+  @Column({ type: 'tinyint', nullable: true, default: 0 })
+  secondComposition: number;
 
-  @Column({ type: 'boolean', nullable: true })
-  thirdComposition: boolean;
+  @Column({ type: 'tinyint', nullable: true, default: 0 })
+  thirdComposition: number;
 
-  @Column({ type: 'boolean', nullable: true })
-  isOnline: boolean;
+  @Column({ type: 'tinyint', nullable: true, default: 0 })
+  isOnline: number;
 
   @OneToOne(() => Festival, (festival) => festival.config, {
     onDelete: 'CASCADE',

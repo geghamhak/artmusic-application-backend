@@ -1570,8 +1570,8 @@ export default class NominationSeeder implements Seeder {
     const translationRepository = dataSource.getRepository(Translation);
 
     const languageIds = [
-      { code: 'am', id: 2 },
-      { code: 'en', id: 1 },
+      { code: 'am', id: 1 },
+      { code: 'en', id: 2 },
       { code: 'ru', id: 3 },
     ];
 

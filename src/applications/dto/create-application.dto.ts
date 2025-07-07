@@ -12,8 +12,8 @@ export class CreateApplicationDto {
   applicationCompositions: CreateApplicationCompositionDto[];
   totalDuration?: string;
   email: string;
-  isFree: boolean;
-  isOnline: boolean;
+  isFree: string;
+  isOnline: string;
   leaderFirstName: string;
   leaderLastName: string;
   participantType: ParticipantTypeEnum;

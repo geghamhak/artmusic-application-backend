@@ -14,7 +14,7 @@ export class Translation {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: '255' })
+  @Column({ type: 'longtext' })
   translation: string;
 
   @ManyToOne(() => Language, (language) => language.translations)

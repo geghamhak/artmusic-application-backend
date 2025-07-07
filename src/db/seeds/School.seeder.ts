@@ -527,7 +527,7 @@ export default class SchoolSeeder implements Seeder {
         });
         await translationRepository.save({
           translation: school.name,
-          language: { id: 2 } as Language,
+          language: { id: 1 } as Language,
           textContent: { id: newSchoolTextContent.id } as TextContent,
         });
       } catch (error) {

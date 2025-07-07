@@ -100,10 +100,12 @@ export class JuriesService {
 
     const images = await this.dmsService.getPreSignedUrls('juries/');
 
+    console.log(images);
+
     return juries.map((jury) => {
       return {
         id: jury.id,
-        image: images.find((image) => image.key.includes(`juries/${jury.id}/`)),
+        image: images.find((image) => image.key.includes(`juries/${jury.id}`)),
         name: {
           translations: jury.name.translations.map((translation) => ({
             languageCode: translation.language.code,

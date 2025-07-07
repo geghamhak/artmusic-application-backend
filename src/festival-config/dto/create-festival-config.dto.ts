@@ -1,5 +1,5 @@
 export class CreateFestivalConfigDto {
-  secondComposition?: boolean;
-  thirdComposition?: boolean;
-  isOnline?: boolean;
+  secondComposition?: string;
+  thirdComposition?: string;
+  isOnline?: string;
 }

@@ -59,7 +59,7 @@ export default class RegionSeeder implements Seeder {
         });
         await translationRepository.save({
           translation: region.name,
-          language: { id: 2 } as Language,
+          language: { id: 1 } as Language,
           textContent: { id: newRegionTextContent.id } as TextContent,
         });
       } catch (e) {

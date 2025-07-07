@@ -20,10 +20,7 @@ import { DmsService } from '../dms/dms.service';
 import { FileSystemStoredFile } from 'nestjs-form-data';
 import { ExcelService } from '../excel/excel.service';
 import { formatStringToDate } from 'src/utils/stringUtils';
-import {
-  FestivalConfigService,
-  ShouldUpdateFestival,
-} from '../festival-config/festival-config.service';
+import { FestivalConfigService } from '../festival-config/festival-config.service';
 import {
   CentralizedPlaces,
   CentralizedScoringPattern,
@@ -72,6 +69,8 @@ export class FestivalsService {
       id: festival.id,
       applicationStartDate: festival.applicationStartDate,
       applicationEndDate: festival.applicationEndDate,
+      festivalStartDate: festival.festivalStartDate,
+      festivalEndDate: festival.festivalEndDate,
       title: festival.title.translations.map((t) => ({
         translation: t.translation,
         languageCode: t.language.code,
@@ -175,7 +174,7 @@ export class FestivalsService {
         gallery,
         festivalStartDate,
         festivalEndDate,
-        festivalConfig,
+        config,
         scoringPattern,
       } = createFestivalDto;
 
@@ -189,9 +188,8 @@ export class FestivalsService {
         newFestival.festivalStartDate = formatStringToDate(festivalStartDate);
         newFestival.festivalEndDate = formatStringToDate(festivalEndDate);
       }
-      if (festivalConfig) {
-        newFestival.config =
-          await this.festivalConfigService.create(festivalConfig);
+      if (config) {
+        newFestival.config = await this.festivalConfigService.create(config);
       }
       this.setFestivalScoringPattern(newFestival, scoringPattern);
       const festival = await this.festivalRepository.save(newFestival);
@@ -256,6 +254,12 @@ export class FestivalsService {
       await this.updateFestivalConfig(festival, updateFestivalDto);
       await this.updateFestivalDates(festival, updateFestivalDto);
       await this.updateFestivalImageData(festival, updateFestivalDto);
+      if (updateFestivalDto.existingSchedule) {
+        await this.addApplicationsFromSchedule(
+          updateFestivalDto.existingSchedule,
+          festival.id,
+        );
+      }
     } catch (error) {
       throw error;
     }
@@ -288,22 +292,13 @@ export class FestivalsService {
     festival: Festival,
     updateFestivalDto: UpdateFestivalDto,
   ) {
-    const { festivalConfig } = updateFestivalDto;
-
-    if (!festivalConfig) {
+    const { config } = updateFestivalDto;
+    if (!config) {
       return;
     }
-    const {
-      shouldUpdate,
-      festivalConfig: updatedConfig,
-    }: ShouldUpdateFestival = await this.festivalConfigService.update(
-      festival,
-      festivalConfig,
-    );
-    if (shouldUpdate) {
-      festival.config = updatedConfig;
-      await this.festivalRepository.save(festival);
-    }
+
+    festival.config = await this.festivalConfigService.update(festival, config);
+    await this.festivalRepository.save(festival);
   }
 
   async updateFestivalDates(

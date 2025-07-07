@@ -8,10 +8,6 @@ import { Festival } from '../festivals/entities/festival.entity';
 import { FestivalsGlobalConfig } from './types';
 import { FestivalTypesEnum } from '../festival-types/festival-types.service';
 
-export interface ShouldUpdateFestival {
-  festivalConfig: FestivalConfig;
-  shouldUpdate: boolean;
-}
 @Injectable()
 export class FestivalConfigService {
   constructor(
@@ -21,59 +17,71 @@ export class FestivalConfigService {
   async create(
     createFestivalConfigDto: CreateFestivalConfigDto,
   ): Promise<FestivalConfig> {
-    return await this.festivalConfigRepository.save(createFestivalConfigDto);
+    const newFestivalConfig = new FestivalConfig();
+    const { secondComposition, thirdComposition, isOnline } =
+      createFestivalConfigDto;
+    if (secondComposition !== undefined) {
+      newFestivalConfig.secondComposition =
+        JSON.parse(secondComposition) === true ? 1 : 0;
+    }
+
+    if (thirdComposition !== undefined) {
+      newFestivalConfig.thirdComposition =
+        JSON.parse(thirdComposition) === true ? 1 : 0;
+    }
+
+    if (isOnline !== undefined) {
+      newFestivalConfig.isOnline = JSON.parse(isOnline) === true ? 1 : 0;
+    }
+    return await this.festivalConfigRepository.save(newFestivalConfig);
   }
 
   async update(
     festival: Festival,
     updateFestivalConfigDto: UpdateFestivalConfigDto,
-  ): Promise<ShouldUpdateFestival> {
+  ): Promise<FestivalConfig> {
     const festivalConfig = await this.festivalConfigRepository.findOneBy({
       id: festival.config.id,
     });
-    let shouldUpdate = false;
+
     const { secondComposition, thirdComposition, isOnline } =
       updateFestivalConfigDto;
-    if (
-      secondComposition &&
-      festivalConfig.secondComposition !== secondComposition
-    ) {
-      festivalConfig.secondComposition = secondComposition;
-      shouldUpdate = true;
+
+    if (secondComposition !== undefined) {
+      festivalConfig.secondComposition =
+        JSON.parse(secondComposition) === true ? 1 : 0;
     }
 
-    if (
-      thirdComposition &&
-      festivalConfig.thirdComposition !== thirdComposition
-    ) {
-      festivalConfig.thirdComposition = thirdComposition;
-      shouldUpdate = true;
+    if (thirdComposition !== undefined) {
+      festivalConfig.thirdComposition =
+        JSON.parse(thirdComposition) === true ? 1 : 0;
     }
 
-    if (isOnline && festivalConfig.isOnline !== isOnline) {
-      festivalConfig.isOnline = isOnline;
-      shouldUpdate = true;
-    }
-    if (shouldUpdate) {
-      await this.festivalConfigRepository.save(festivalConfig);
+    if (isOnline !== undefined) {
+      festivalConfig.isOnline = JSON.parse(isOnline) === true ? 1 : 0;
     }
 
-    return { festivalConfig, shouldUpdate };
+    await this.festivalConfigRepository.save(festivalConfig);
+
+    return festivalConfig;
   }
 
   mapFestivalConfigs(
     festivalConfig: FestivalConfig,
     festivalType: FestivalTypesEnum,
   ) {
+    console.log(festivalConfig);
     const globalConfigByType = FestivalsGlobalConfig[festivalType];
-    if (festivalConfig?.secondComposition) {
-      globalConfigByType.secondComposition = festivalConfig?.secondComposition;
+    if (festivalConfig?.secondComposition !== undefined) {
+      globalConfigByType.secondComposition =
+        festivalConfig?.secondComposition === 1;
     }
-    if (festivalConfig?.thirdComposition) {
-      globalConfigByType.thirdComposition = festivalConfig?.thirdComposition;
+    if (festivalConfig?.thirdComposition !== undefined) {
+      globalConfigByType.thirdComposition =
+        festivalConfig?.thirdComposition === 1;
     }
-    if (festivalConfig?.isOnline) {
-      globalConfigByType.isOnline = festivalConfig?.isOnline;
+    if (festivalConfig?.isOnline !== undefined) {
+      globalConfigByType.isOnline = festivalConfig?.isOnline === 1;
     }
 
     return globalConfigByType;

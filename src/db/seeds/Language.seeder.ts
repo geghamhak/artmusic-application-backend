@@ -4,12 +4,12 @@ import { Language } from '../../translations/entities/language.entity';
 
 const Languages = [
   {
-    name: 'English',
-    code: 'en',
-  },
-  {
     name: 'Armenian',
     code: 'am',
+  },
+  {
+    name: 'English',
+    code: 'en',
   },
   {
     name: 'Russian',
