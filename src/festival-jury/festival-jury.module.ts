@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { FestivalJuryService } from './festival-jury.service';
-import { FestivalJuryController } from './festival-jury.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FestivalJury } from './entities/festival-jury.entity';
+import { FestivalsJuryController } from './festivals-jury.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([FestivalJury])],
-  controllers: [FestivalJuryController],
+  controllers: [FestivalsJuryController],
   providers: [FestivalJuryService],
   exports: [FestivalJuryService],
 })

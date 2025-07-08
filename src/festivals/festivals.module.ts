@@ -11,6 +11,7 @@ import { FestivalImagesModule } from '../festival-images/festival-images.module'
 import { ExcelModule } from '../excel/excel.module';
 import { FestivalConfigModule } from '../festival-config/festival-config.module';
 import { FestivalQueriesService } from './festival.queries.service';
+import { FestivalJuryModule } from '../festival-jury/festival-jury.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { FestivalQueriesService } from './festival.queries.service';
     forwardRef(() => FestivalImagesModule),
     ExcelModule,
     FestivalConfigModule,
+    FestivalJuryModule,
   ],
   exports: [TypeOrmModule, FestivalsService, FestivalQueriesService],
   controllers: [FestivalsController],

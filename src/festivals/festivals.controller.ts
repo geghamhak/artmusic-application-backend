@@ -47,6 +47,11 @@ export class FestivalsController {
     return this.festivalsService.findConfigByType(type);
   }
 
+  @Get('/:id/juries')
+  findFestivalJuries(@Param('id') id: string) {
+    return this.festivalsService.findFestivalJuries(+id);
+  }
+
   @Patch(':id')
   @FormDataRequest({ storage: FileSystemStoredFile })
   update(

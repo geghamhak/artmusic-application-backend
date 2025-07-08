@@ -70,7 +70,6 @@ export class FestivalConfigService {
     festivalConfig: FestivalConfig,
     festivalType: FestivalTypesEnum,
   ) {
-    console.log(festivalConfig);
     const globalConfigByType = FestivalsGlobalConfig[festivalType];
     if (festivalConfig?.secondComposition !== undefined) {
       globalConfigByType.secondComposition =

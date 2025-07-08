@@ -1588,7 +1588,7 @@ export default class NominationSeeder implements Seeder {
         });
         await translationRepository.save({
           translation: nomination.name,
-          language: { id: 2 } as Language,
+          language: { id: 1 } as Language,
           textContent: { id: newNominationTextContent.id } as TextContent,
         });
 
@@ -1612,7 +1612,7 @@ export default class NominationSeeder implements Seeder {
 
           await translationRepository.save({
             translation: subNomination.name,
-            language: { id: 2 } as Language,
+            language: { id: 1 } as Language,
             textContent: { id: newSubNominationTextContent.id } as TextContent,
           });
 

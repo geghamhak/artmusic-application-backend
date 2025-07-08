@@ -28,12 +28,14 @@ import {
 } from '../scoring-system/scoring-system.service';
 import { FestivalQueriesService } from './festival.queries.service';
 import { FestivalsGlobalConfig } from '../festival-config/types';
+import { FestivalJuryService } from '../festival-jury/festival-jury.service';
 
 export interface IFestivalJuries {
   festivalId: number;
+  id?: number;
   nominationId?: number;
-  subNominationI?: number;
-  juriesIds: number[];
+  subNominationId?: number;
+  juryIds: number[];
 }
 
 @Injectable()
@@ -49,6 +51,7 @@ export class FestivalsService {
     private excelService: ExcelService,
     private festivalConfigService: FestivalConfigService,
     private festivalQueriesService: FestivalQueriesService,
+    private festivalJuriesService: FestivalJuryService,
   ) {}
 
   findAll() {
@@ -254,6 +257,7 @@ export class FestivalsService {
       await this.updateFestivalConfig(festival, updateFestivalDto);
       await this.updateFestivalDates(festival, updateFestivalDto);
       await this.updateFestivalImageData(festival, updateFestivalDto);
+      await this.updateFestivalJuries(festival, updateFestivalDto);
       if (updateFestivalDto.existingSchedule) {
         await this.addApplicationsFromSchedule(
           updateFestivalDto.existingSchedule,
@@ -288,6 +292,7 @@ export class FestivalsService {
       );
     }
   }
+
   async updateFestivalConfig(
     festival: Festival,
     updateFestivalDto: UpdateFestivalDto,
@@ -379,6 +384,22 @@ export class FestivalsService {
     }
   }
 
+  async updateFestivalJuries(
+    festival: Festival,
+    updateFestivalDto: UpdateFestivalDto,
+  ) {
+    const { festivalJuries } = updateFestivalDto;
+    if (!festivalJuries.length) {
+      return;
+    }
+
+    festival.festivalJuries = await this.festivalJuriesService.add(
+      festivalJuries,
+      festival.id,
+    );
+    await this.festivalRepository.save(festival);
+  }
+
   remove(id: number) {
     return this.removeFestivalInfo(id);
   }
@@ -421,5 +442,37 @@ export class FestivalsService {
       config: FestivalsGlobalConfig[type],
       scorePattern: CentralizedScoringPattern,
     };
+  }
+
+  async findFestivalJuries(id: number) {
+    try {
+      const festivalJuries =
+        await this.festivalJuriesService.findByFestivalId(id);
+
+      return festivalJuries.reduce((aggregatedJuries, festivalJury) => {
+        const aggregatedIndex = festivalJury.subNomination?.id ? aggregatedJuries.findIndex(
+          (jury) => jury.subNominationId === festivalJury.subNomination.id,
+        ) : aggregatedJuries.findIndex(
+            (jury) => jury.nominationId === festivalJury.nomination?.id,
+        );
+        if (aggregatedIndex !== -1) {
+          aggregatedJuries[aggregatedIndex].juryIds.push(festivalJury.jury.id);
+        } else {
+          aggregatedJuries.push({
+            festivalId: festivalJury.festival.id,
+            ...(festivalJury.nomination && {
+              nominationId: festivalJury.nomination.id,
+            }),
+            ...(festivalJury.subNomination && {
+              subNominationId: festivalJury.subNomination.id,
+            }),
+            juryIds: [festivalJury.jury.id],
+          });
+        }
+        return aggregatedJuries;
+      }, [] as IFestivalJuries[]);
+    } catch (error) {
+      throw error;
+    }
   }
 }
