@@ -36,7 +36,7 @@ import { SchoolsService } from '../schools/schools.service';
 import { Translation } from '../translations/entities/translation.entity';
 import { ApplicationComposition } from '../application-composition/entities/application-composition.entity';
 
-export interface IFestivalApplications {
+export interface IFestivalApplication {
   id: number;
   code: number;
   country: Translation[];
@@ -61,6 +61,9 @@ export interface IFestivalApplications {
   email: string;
   phoneNumber: string;
   totalDuration: string;
+  overallScore?: number;
+  totalScore?: number;
+  place?: string;
 }
 
 @Injectable()
@@ -570,7 +573,7 @@ export class ApplicationsService {
 
   async findAndRearrangeDataForFestival(
     festivalId: number,
-  ): Promise<IFestivalApplications[]> {
+  ): Promise<IFestivalApplication[]> {
     const applications = await this.findByFestivalId(festivalId);
     return applications.map((application) => {
       return {

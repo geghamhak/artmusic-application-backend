@@ -75,7 +75,7 @@ export class Application {
   place?: string;
 
   @Column({ type: 'date', nullable: true })
-  performanceDate: string;
+  performanceDate?: string;
 
   @Column({ type: 'varchar', length: '50', nullable: true })
   performanceTime: string;
