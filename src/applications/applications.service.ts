@@ -18,7 +18,10 @@ import {
 } from '@nestjs/common';
 import { School } from '../schools/entities/school.entity';
 import { Region } from '../regions/entities/region.entity';
-import { ScoringSystemService } from '../scoring-system/scoring-system.service';
+import {
+  CentralizedPlaces,
+  ScoringSystemService,
+} from '../scoring-system/scoring-system.service';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { SubNomination } from '../sub-nominations/entities/sub-nomination.entity';
 import { ApplicationScoreService } from '../application-score/application-score.service';
@@ -548,24 +551,40 @@ export class ApplicationsService {
   ) {
     application.totalScore = overallScore;
     application.averageScore = averageScore;
+    const scorePattern = await this.festivalService.findFestivalScorePattern(
+      application.festival.id,
+    );
     application.place =
-      this.scoringSystemService.determinePlaceByCentralizedSystem(averageScore);
+      this.scoringSystemService.determinePlaceByCentralizedSystem(
+        averageScore,
+        scorePattern,
+      );
     return await this.applicationRepository.save(application);
   }
 
   async addApplicationScore(
     createApplicationScoreDto: CreateApplicationScoreDto,
-    application: Application,
   ): Promise<Application> {
-    await this.applicationScoreService.create(
-      createApplicationScoreDto,
-      application.id,
-    );
-    const { scores } = createApplicationScoreDto;
+    await this.applicationScoreService.create(createApplicationScoreDto);
+    const { scores, applicationId, isGrandPrix } = createApplicationScoreDto;
+    const application = await this.applicationRepository.findOneBy({
+      id: applicationId,
+    });
     const overallScore: number = getOverallScore(scores);
     const averageScore: number = getAverageScore(overallScore, scores);
-    application.place =
-      this.scoringSystemService.determinePlaceByCentralizedSystem(averageScore);
+
+    if (isGrandPrix) {
+      application.place = CentralizedPlaces.GRAND;
+    } else {
+      const scorePattern = await this.festivalService.findFestivalScorePattern(
+        application.festival.id,
+      );
+      application.place =
+        this.scoringSystemService.determinePlaceByCentralizedSystem(
+          averageScore,
+          scorePattern,
+        );
+    }
     application.totalScore = overallScore;
     application.averageScore = averageScore;
     return await this.applicationRepository.save(application);

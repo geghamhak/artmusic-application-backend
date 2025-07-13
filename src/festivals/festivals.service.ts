@@ -450,11 +450,13 @@ export class FestivalsService {
         await this.festivalJuriesService.findByFestivalId(id);
 
       return festivalJuries.reduce((aggregatedJuries, festivalJury) => {
-        const aggregatedIndex = festivalJury.subNomination?.id ? aggregatedJuries.findIndex(
-          (jury) => jury.subNominationId === festivalJury.subNomination.id,
-        ) : aggregatedJuries.findIndex(
-            (jury) => jury.nominationId === festivalJury.nomination?.id,
-        );
+        const aggregatedIndex = festivalJury.subNomination?.id
+          ? aggregatedJuries.findIndex(
+              (jury) => jury.subNominationId === festivalJury.subNomination.id,
+            )
+          : aggregatedJuries.findIndex(
+              (jury) => jury.nominationId === festivalJury.nomination?.id,
+            );
         if (aggregatedIndex !== -1) {
           aggregatedJuries[aggregatedIndex].juryIds.push(festivalJury.jury.id);
         } else {
@@ -474,5 +476,12 @@ export class FestivalsService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async findFestivalScorePattern(festivalId: number) {
+    const festival = await this.festivalRepository.findOneBy({
+      id: festivalId,
+    });
+    return festival.scorePattern;
   }
 }

@@ -24,14 +24,18 @@ export interface CreateScoringItem {
 export class ScoringSystemService {
   constructor() {}
 
-  determinePlaceByCentralizedSystem(score: number): CentralizedPlaces {
+  determinePlaceByCentralizedSystem(
+    score: number,
+    scorePattern: string,
+  ): CentralizedPlaces {
+    const parsedScorePattern = JSON.parse(scorePattern);
     let centralizedPlace: CentralizedPlaces;
-    for (const key in CentralizedScoringPattern) {
+    for (const key in parsedScorePattern) {
       if (
-        score >= CentralizedScoringPattern[key][0] &&
-        score <= CentralizedScoringPattern[key][1]
+        score >= parsedScorePattern[key][0] &&
+        score <= parsedScorePattern[key][1]
       ) {
-        centralizedPlace = CentralizedScoringPattern[key];
+        centralizedPlace = parsedScorePattern[key];
       }
     }
 

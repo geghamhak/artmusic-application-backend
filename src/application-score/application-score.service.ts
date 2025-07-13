@@ -13,9 +13,8 @@ export class ApplicationScoreService {
   ) {}
   async create(
     createApplicationScoreDto: CreateApplicationScoreDto,
-    applicationId: number,
   ): Promise<void> {
-    const { scores } = createApplicationScoreDto;
+    const { scores, applicationId } = createApplicationScoreDto;
     for (const scoreToAdd of scores) {
       const applicationScore = new ApplicationScore();
       applicationScore.score = scoreToAdd;
