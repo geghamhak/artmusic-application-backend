@@ -45,6 +45,8 @@ export interface IFestivalApplication {
   country: Translation[];
   subNomination: Translation[];
   nomination: Translation[];
+  subNominationId: number;
+  nominationId: number;
   region: Translation[] | string;
   school: Translation[] | string;
   isFree: number;
@@ -595,12 +597,15 @@ export class ApplicationsService {
   ): Promise<IFestivalApplication[]> {
     const applications = await this.findByFestivalId(festivalId);
     return applications.map((application) => {
+
       return {
         id: application.id,
         code: application.code,
         country: application.country.name.translations,
         subNomination: application.subNomination.name.translations,
         nomination: application.subNomination.nomination.name.translations,
+        subNominationId: application?.subNomination?.id,
+        nominationId: application?.nomination?.id,
         region: application.school.region
           ? application.school.region.name.translations
           : application.regionName,

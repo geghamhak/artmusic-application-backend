@@ -13,7 +13,7 @@ export class FestivalsJuryController {
     return this.festivalJuryService.findJuriesCount(+festivalId, +nominationId);
   }
 
-  @Get(':festivalId/sub-nomination/:subNominationId')
+  @Get('/:festivalId/sub-nomination/:subNominationId')
   findFestivalJuriesCountBySubNomination(
     @Param('festivalId') festivalId: string,
     @Param('subNominationId') subNominationId: string,
