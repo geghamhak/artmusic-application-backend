@@ -194,7 +194,7 @@ export class FestivalsService {
       if (config) {
         newFestival.config = await this.festivalConfigService.create(config);
       }
-      this.setFestivalScoringPattern(newFestival, scoringPattern);
+      await this.setFestivalScoringPattern(newFestival, scoringPattern);
       const festival = await this.festivalRepository.save(newFestival);
       festivalId = festival.id;
       if (createFestivalDto.existingSchedule) {
@@ -216,7 +216,7 @@ export class FestivalsService {
         entityId: festival.id,
         type: 'termsAndConditions',
       });
-      if (gallery) {
+      if (gallery?.length) {
         await this.festivalImagesService.add(gallery, festival.id);
       }
     } catch (error) {

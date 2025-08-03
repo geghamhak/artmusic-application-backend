@@ -61,20 +61,29 @@ export class FestivalJuryService {
       .getMany();
   }
 
-  async findJuriesCount (festivalId: number, nominationId?: number, subNominationId?: number) {
+  async findJuriesCount(
+    festivalId: number,
+    nominationId?: number,
+    subNominationId?: number,
+  ) {
     try {
       const queryBuilder = this.festivalJuryRepository
-      .createQueryBuilder('festival_jury')
-      .where('festival_jury.festivalId = :festivalId', { festivalId })
-      if(nominationId) {
-        queryBuilder.andWhere('festival_jury.nominationId = :nominationId', { nominationId })
+        .createQueryBuilder('festival_jury')
+        .where('festival_jury.festivalId = :festivalId', { festivalId });
+      if (nominationId) {
+        queryBuilder.andWhere('festival_jury.nominationId = :nominationId', {
+          nominationId,
+        });
       }
 
-      if(subNominationId) {
-        queryBuilder.andWhere('festival_jury.subNominationId = :subNominationId', { subNominationId })
+      if (subNominationId) {
+        queryBuilder.andWhere(
+          'festival_jury.subNominationId = :subNominationId',
+          { subNominationId },
+        );
       }
 
-      return await queryBuilder.select().getCount()
+      return await queryBuilder.select().getCount();
     } catch (error) {
       throw error;
     }
