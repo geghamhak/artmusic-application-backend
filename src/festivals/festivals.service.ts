@@ -227,24 +227,16 @@ export class FestivalsService {
     }
   }
 
-  setFestivalScoringPattern(
+  async setFestivalScoringPattern(
     newFestival: Festival,
     scoringPattern?: CreateScoringItem[],
   ) {
-    let festivalScoringPattern: {};
-    if (!scoringPattern) {
-      festivalScoringPattern = CentralizedScoringPattern;
-    } else {
-      festivalScoringPattern = {};
-      scoringPattern.forEach((scoringItem) => {
-        festivalScoringPattern[scoringItem.place as CentralizedPlaces] = [
-          scoringItem.minRange,
-          scoringItem.maxRange,
-        ];
-      });
-    }
+    const festivalScoringPattern = !scoringPattern
+      ? CentralizedScoringPattern
+      : scoringPattern;
 
     newFestival.scorePattern = JSON.stringify(festivalScoringPattern);
+    await this.festivalRepository.save(newFestival);
   }
 
   async update(id: number, updateFestivalDto: UpdateFestivalDto) {
@@ -258,6 +250,13 @@ export class FestivalsService {
       await this.updateFestivalDates(festival, updateFestivalDto);
       await this.updateFestivalImageData(festival, updateFestivalDto);
       await this.updateFestivalJuries(festival, updateFestivalDto);
+
+      if (updateFestivalDto.scoringPattern) {
+        this.setFestivalScoringPattern(
+          festival,
+          updateFestivalDto.scoringPattern,
+        );
+      }
       if (updateFestivalDto.existingSchedule) {
         await this.addApplicationsFromSchedule(
           updateFestivalDto.existingSchedule,
@@ -389,7 +388,7 @@ export class FestivalsService {
     updateFestivalDto: UpdateFestivalDto,
   ) {
     const { festivalJuries } = updateFestivalDto;
-    if (!festivalJuries.length) {
+    if (!festivalJuries?.length) {
       return;
     }
 
