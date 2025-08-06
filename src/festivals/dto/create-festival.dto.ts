@@ -32,6 +32,6 @@ export class CreateFestivalDto {
   // @HasMimeType(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/octet-stream'], { each: true })
   @IsOptional()
   existingSchedule?: FileSystemStoredFile;
-  scoringPattern?: CreateScoringItem[];
+  scorePattern?: CreateScoringItem[];
   festivalJuries?: IFestivalJuries[];
 }

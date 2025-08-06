@@ -597,7 +597,6 @@ export class ApplicationsService {
   ): Promise<IFestivalApplication[]> {
     const applications = await this.findByFestivalId(festivalId);
     return applications.map((application) => {
-
       return {
         id: application.id,
         code: application.code,

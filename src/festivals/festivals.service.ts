@@ -178,7 +178,7 @@ export class FestivalsService {
         festivalStartDate,
         festivalEndDate,
         config,
-        scoringPattern,
+        scorePattern,
       } = createFestivalDto;
 
       newFestival.type = { id: festivalType.id } as FestivalType;
@@ -194,7 +194,7 @@ export class FestivalsService {
       if (config) {
         newFestival.config = await this.festivalConfigService.create(config);
       }
-      await this.setFestivalScoringPattern(newFestival, scoringPattern);
+      await this.setFestivalScoringPattern(newFestival, scorePattern);
       const festival = await this.festivalRepository.save(newFestival);
       festivalId = festival.id;
       if (createFestivalDto.existingSchedule) {
@@ -251,10 +251,10 @@ export class FestivalsService {
       await this.updateFestivalImageData(festival, updateFestivalDto);
       await this.updateFestivalJuries(festival, updateFestivalDto);
 
-      if (updateFestivalDto.scoringPattern) {
+      if (updateFestivalDto.scorePattern) {
         this.setFestivalScoringPattern(
           festival,
-          updateFestivalDto.scoringPattern,
+          updateFestivalDto.scorePattern,
         );
       }
       if (updateFestivalDto.existingSchedule) {
