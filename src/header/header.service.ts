@@ -75,10 +75,10 @@ export class HeaderService {
       languageCode: i.language.code,
       translation: i.translation,
     }));
-    const logo = await this.dmsService.getPreSignedUrls(
+    const logo = await this.dmsService.getPreSignedUrl(
       `header/${header.id}/logo/`,
     );
-    const banner = await this.dmsService.getPreSignedUrls(
+    const banner = await this.dmsService.getPreSignedUrl(
       `header/${header.id}/banner/`,
     );
 

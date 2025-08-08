@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CreateStaffPageDto } from './dto/create-staff-page.dto';
 import { UpdateStaffPageDto } from './dto/update-staff-page.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -40,25 +40,34 @@ export class StaffPageService {
   }
 
   async find() {
-    const staffPage = await this.staffPageRepository
-      .createQueryBuilder('staff_page')
-      .leftJoinAndSelect('staff_page.title', 'title')
-      .leftJoinAndSelect('title.translations', 'translations')
-      .leftJoinAndSelect('translations.language', 'language')
-      .select([
-        'homepage.id',
-        'title.id',
-        'translation.translation',
-        'language.code',
-      ])
-      .getOne();
+    try {
+      const staffPage = await this.staffPageRepository
+        .createQueryBuilder('staffPage')
+        .leftJoinAndSelect('staffPage.title', 'title')
+        .leftJoinAndSelect('title.translations', 'translations')
+        .leftJoinAndSelect('translations.language', 'language')
+        .select([
+          'staffPage.id',
+          'title.id',
+          'translations.translation',
+          'language.code',
+        ])
+        .getOne();
 
-    const title = staffPage?.title.translations.map((translation) => ({
-      languageCode: translation.language.code,
-      translation: translation.translation,
-    }));
+      if (!staffPage) {
+        return null;
+      }
 
-    return { title };
+      const title = staffPage?.title.translations.map((translation) => ({
+        languageCode: translation.language.code,
+        translation: translation.translation,
+      }));
+
+      return { title };
+    } catch (error) {
+      Logger.error(error);
+      throw error;
+    }
   }
 
   async update(updateStaffPageDto: UpdateStaffPageDto) {

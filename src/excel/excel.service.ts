@@ -166,7 +166,6 @@ export class ExcelService {
           isFree,
         });
       });
-
       for (const application of applications) {
         await this.applicationService.addFromSchedule(application, festivalId);
       }

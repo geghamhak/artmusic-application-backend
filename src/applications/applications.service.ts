@@ -158,7 +158,6 @@ export class ApplicationsService {
       if (participants && participants.length > 0) {
         application.participants = await this.participantsService.saveMany(
           participants,
-          festivalId,
           languageCode,
         );
       }
@@ -260,7 +259,6 @@ export class ApplicationsService {
       if (participants && participants.length > 0) {
         application.participants = await this.participantsService.saveMany(
           participants,
-          festivalId,
           languageCode,
         );
       }
@@ -289,8 +287,11 @@ export class ApplicationsService {
       }
       application.isFree = JSON.parse(isFree) === true ? 1 : 0;
       application.isOnline = 0;
-      await this.addOverallScore(overallScore, averageScore, application);
-      await this.applicationRepository.save(application);
+      await this.addOverallScoreFromSchedule(
+        overallScore,
+        averageScore,
+        application,
+      );
     } catch (error) {
       throw error;
     }
@@ -491,6 +492,10 @@ export class ApplicationsService {
         'countryTextContent.translations',
         'countryTranslations',
       )
+      .leftJoinAndSelect(
+        'countryTranslations.language',
+        'countryTranslationsLanguage',
+      )
       .leftJoinAndSelect('subNomination.nomination', 'nomination')
       .leftJoinAndSelect('nomination.name', 'nominationTextContent')
       .leftJoinAndSelect(
@@ -502,15 +507,21 @@ export class ApplicationsService {
         'firstNameTextContent.translations',
         'firstNameTranslations',
       )
+      .leftJoinAndSelect('firstNameTranslations.language', 'fistNameLanguage')
       .leftJoinAndSelect('participants.lastName', 'lastNameTextContent')
       .leftJoinAndSelect(
         'lastNameTextContent.translations',
         'lastNameTranslations',
       )
+      .leftJoinAndSelect('lastNameTranslations.language', 'lastNameLanguage')
       .leftJoinAndSelect('participants.fatherName', 'fatherNameTextContent')
       .leftJoinAndSelect(
         'fatherNameTextContent.translations',
         'fatherNameTranslations',
+      )
+      .leftJoinAndSelect(
+        'fatherNameTranslations.language',
+        'fatherNameLanguage',
       )
       .where('festival.id= :festivalId', { festivalId })
       .orderBy('nomination.id')
@@ -546,7 +557,7 @@ export class ApplicationsService {
     }
   }
 
-  async addOverallScore(
+  async addOverallScoreFromSchedule(
     overallScore: number,
     averageScore: number,
     application: Application,
@@ -561,7 +572,8 @@ export class ApplicationsService {
         averageScore,
         scorePattern,
       );
-    return await this.applicationRepository.save(application);
+    console.log(application);
+    return this.applicationRepository.save(application);
   }
 
   async addApplicationScore(
@@ -600,12 +612,19 @@ export class ApplicationsService {
       return {
         id: application.id,
         code: application.code,
-        country: application.country.name.translations,
-        subNomination: application.subNomination.name.translations,
-        nomination: application.subNomination.nomination.name.translations,
-        subNominationId: application?.subNomination?.id,
-        nominationId: application?.nomination?.id,
-        region: application.school.region
+        country: application.country
+          ? application.country.name.translations
+          : null,
+        subNomination: application.subNomination
+          ? application.subNomination.name.translations
+          : null,
+        nomination:
+          application.subNomination && application.subNomination.nomination
+            ? application.subNomination.nomination.name.translations
+            : null,
+        subNominationId: application.subNomination?.id,
+        nominationId: application.nomination?.id,
+        region: application.school?.region
           ? application.school.region.name.translations
           : application.regionName,
         school: application.school

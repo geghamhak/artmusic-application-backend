@@ -28,14 +28,18 @@ export class ScoringSystemService {
     score: number,
     scorePattern: string,
   ): CentralizedPlaces {
-    const parsedScorePattern = JSON.parse(scorePattern);
+    const parsedScorePattern =
+      typeof scorePattern === 'string'
+        ? JSON.parse(scorePattern)
+        : scorePattern;
     let centralizedPlace: CentralizedPlaces;
     for (const key in parsedScorePattern) {
       if (
         score >= parsedScorePattern[key][0] &&
         score <= parsedScorePattern[key][1]
       ) {
-        centralizedPlace = parsedScorePattern[key];
+        centralizedPlace = key as CentralizedPlaces;
+        break;
       }
     }
 

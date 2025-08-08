@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { StaffPageService } from './staff-page.service';
 import { CreateStaffPageDto } from './dto/create-staff-page.dto';
 import { UpdateStaffPageDto } from './dto/update-staff-page.dto';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('staff-page')
 export class StaffPageController {
@@ -20,6 +22,7 @@ export class StaffPageController {
     return this.staffPageService.create(createStaffPageDto);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   findOne() {
     return this.staffPageService.find();

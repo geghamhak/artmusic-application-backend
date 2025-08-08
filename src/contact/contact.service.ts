@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -29,28 +29,37 @@ export class ContactService {
   }
 
   async find() {
-    const contactData = await this.contactRepository
-      .createQueryBuilder('contact')
-      .leftJoinAndSelect('contact.information', 'textContent')
-      .leftJoinAndSelect('textContent.translations', 'translations')
-      .leftJoinAndSelect('translations.language', 'translationLanguage')
-      .select([
-        'contact.id',
-        'textContent.id',
-        'translations.translation',
-        'translationLanguage.code',
-      ])
-      .getOne();
+    try {
+      const contactData = await this.contactRepository
+        .createQueryBuilder('contact')
+        .leftJoinAndSelect('contact.information', 'textContent')
+        .leftJoinAndSelect('textContent.translations', 'translations')
+        .leftJoinAndSelect('translations.language', 'translationLanguage')
+        .select([
+          'contact.id',
+          'textContent.id',
+          'translations.translation',
+          'translationLanguage.code',
+        ])
+        .getOne();
 
-    const contacts = {
-      contactId: contactData.id,
-      information: (contactData.information?.translations || []).map((i) => ({
-        languageCode: i.language.code,
-        translation: i.translation,
-      })),
-    };
+      if (!contactData) {
+        return null;
+      }
 
-    return { contacts };
+      const contacts = {
+        contactId: contactData.id,
+        information: (contactData.information?.translations || []).map((i) => ({
+          languageCode: i.language.code,
+          translation: i.translation,
+        })),
+      };
+
+      return { contacts };
+    } catch (error) {
+      Logger.error(error);
+      throw error;
+    }
   }
 
   async update(updateContactDto: UpdateContactDto) {

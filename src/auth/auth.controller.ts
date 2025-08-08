@@ -3,33 +3,39 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Logger,
   Post,
   Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @HttpCode(HttpStatus.OK)
   @Post('signin')
-  signIn(
+  async signIn(
     @Body() signInDto: Record<string, any>,
-    @Res({ passthrough: true }) response,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    const accessToken = this.authService.signIn(
-      signInDto.username,
-      signInDto.password,
-    );
+    try {
+      const { accessToken } = await this.authService.signIn(
+        signInDto.username,
+        signInDto.password,
+      );
 
-    response.cookie('jwt', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      maxAge: 3600000,
-    });
+      res.cookie('jwtToken', accessToken, {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 1000 * 2,
+      });
 
-    return { success: true };
+      return { success: true };
+    } catch (error) {
+      Logger.error(error);
+      throw error;
+    }
   }
 }

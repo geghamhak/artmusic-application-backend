@@ -4,9 +4,14 @@ import { StaffPageController } from './staff-page.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TranslationsModule } from '../translations/translations.module';
 import { StaffPage } from './entities/staff-page.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([StaffPage]), TranslationsModule],
+  imports: [
+    TypeOrmModule.forFeature([StaffPage]),
+    TranslationsModule,
+    JwtModule,
+  ],
   exports: [TypeOrmModule, StaffPageService],
   controllers: [StaffPageController],
   providers: [StaffPageService],

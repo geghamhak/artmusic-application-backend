@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreateParticipantDto } from './dto/create-participant.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Participant } from './entities/participant.entity';
 import { TextContentService } from '../translations/text-content.service';
+import { ParticipantQueryService } from './participant-query-service';
 
 export enum ParticipantTypeEnum {
   SOLO = 'SOLO',
@@ -23,22 +22,18 @@ ParticipantTypeMap.set(4, ParticipantTypeEnum.QUARTET);
 @Injectable()
 export class ParticipantsService {
   constructor(
-    @InjectRepository(Participant)
-    private participantRepository: Repository<Participant>,
+    private participantQueryService: ParticipantQueryService,
     private textContentService: TextContentService,
   ) {}
   async saveMany(
     createParticipantDto: CreateParticipantDto[],
-    festivalId: number,
     languageCode: string,
   ): Promise<Participant[]> {
     try {
       const participants = createParticipantDto.map(
         async (createParticipant) => {
-          const existingParticipant = await this.getByFullData(
-            createParticipant,
-            festivalId,
-          );
+          const existingParticipant =
+            await this.participantQueryService.getByFullData(createParticipant);
           if (existingParticipant) {
             return existingParticipant;
           }
@@ -72,87 +67,27 @@ export class ParticipantsService {
         translation: createParticipant.fatherName,
       });
     }
-    return await this.participantRepository.save(participant);
+    return await this.participantQueryService.save(participant);
   }
 
   async getByFullData(
     participant: CreateParticipantDto,
     festivalId: number,
   ): Promise<Participant> {
-    const { firstName, lastName, birthYear, fatherName } = participant;
-    return await this.participantRepository
-      .createQueryBuilder('participant')
-      .leftJoinAndSelect('participant.applications', 'application')
-      .leftJoinAndSelect('application.festival', 'festival')
-      .leftJoinAndSelect('participant.firstName', 'firstNameTextContent')
-      .leftJoinAndSelect(
-        'firstNameTextContent.translations',
-        'firstNameTranslations',
-      )
-      .leftJoinAndSelect('participant.lastName', 'lastNameTextContent')
-      .leftJoinAndSelect(
-        'lastNameTextContent.translations',
-        'lastNameTranslations',
-      )
-      .leftJoinAndSelect('participant.fatherName', 'fatherNameTextContent')
-      .leftJoinAndSelect(
-        'fatherNameTextContent.translations',
-        'fatherNameTranslations',
-      )
-      .where('festival.id = :festivalId', { festivalId })
-      .andWhere('participant.birthYear = :birthYear', { birthYear })
-      .andWhere('firstNameTranslations.translation = :firstName', { firstName })
-      .andWhere('lastNameTranslations.translation = :lastName', { lastName })
-      .andWhere('fatherNameTranslations.translation = :fatherName', {
-        fatherName,
-      })
-      .select([
-        'participant.id',
-        'firstNameTranslations.translation',
-        'lastNameTranslations.translation',
-        'fatherNameTranslations.translation',
-      ])
-      .getOne();
+    return await this.participantQueryService.getByFullDataAndFestivalId(
+      participant,
+      festivalId,
+    );
   }
+
   async getByApplicationId(
     applicationId: number,
     languageCode: string,
   ): Promise<Participant[]> {
-    return await this.participantRepository
-      .createQueryBuilder('participant')
-      .leftJoinAndSelect('participant.applications', 'application')
-      .leftJoinAndSelect('participant.firstName', 'firstNameTextContent')
-      .leftJoinAndSelect(
-        'firstNameTextContent.translations',
-        'firstNameTranslations',
-      )
-      .leftJoinAndSelect('participant.lastname', 'lastNameTextContent')
-      .leftJoinAndSelect(
-        'lastNameTextContent.translations',
-        'lastNameTranslations',
-      )
-      .leftJoinAndSelect('participant.fatherName', 'fatherNameTextContent')
-      .leftJoinAndSelect(
-        'fatherNameTextContent.translations',
-        'fatherNameTranslations',
-      )
-      .where('application.id = :applicationId', { applicationId })
-      .andWhere('firstNameTranslations.languageCode = :languageCode', {
-        languageCode,
-      })
-      .andWhere('lastNameTranslations.languageCode = :languageCode', {
-        languageCode,
-      })
-      .andWhere('fatherNameTranslations.languageCode = :languageCode', {
-        languageCode,
-      })
-      .select([
-        'participants.id',
-        'firstNameTranslations.translation',
-        'lastNameTranslations.translation',
-        'fatherNameTranslations.translation',
-      ])
-      .getMany();
+    return await this.participantQueryService.getByApplicationId(
+      applicationId,
+      languageCode,
+    );
   }
 
   compareParticipantsArrays(
@@ -175,19 +110,8 @@ export class ParticipantsService {
 
   async remove(id: number): Promise<void> {
     try {
-      const participant = await this.participantRepository
-        .createQueryBuilder('participant')
-        .leftJoinAndSelect('participant.firstName', 'firstNameTextContent')
-        .leftJoinAndSelect('participant.lastName', 'lastNameTextContent')
-        .leftJoinAndSelect('participant.fatherName', 'fatherNameTextContent')
-        .where('participant.id = :id', { id })
-        .select([
-          'firstNameTextContent.id',
-          'lastNameTextContent.id',
-          'fatherNameTextContent.id',
-        ])
-        .getOne();
-
+      const participant =
+        await this.participantQueryService.getParticipantForRemoval(id);
       const { firstName, lastName, fatherName } = participant;
 
       await this.textContentService.deleteByIds([
@@ -195,7 +119,7 @@ export class ParticipantsService {
         lastName.id,
         fatherName.id,
       ]);
-      await this.participantRepository.delete(id);
+      await this.participantQueryService.deleteParticipant(id);
     } catch (error) {
       throw error;
     }

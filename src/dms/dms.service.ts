@@ -121,6 +121,40 @@ export class DmsService {
     }
   }
 
+  // prefix /entity/entityId/type?/
+  // Assumes only one object exists in the given prefix
+  async getPreSignedUrl(prefix: string): Promise<{ url: string; key: string }> {
+    try {
+      const command = new ListObjectsV2Command({
+        Bucket: this.bucketName,
+        Prefix: prefix,
+      });
+
+      const s3Objects = (await this.client.send(
+        command,
+      )) as ListObjectsV2Output;
+
+      if (!s3Objects.Contents || s3Objects.Contents.length === 0) {
+        return null;
+      }
+
+      // Get the first object (assuming only one exists)
+      const key = s3Objects.Contents[0].Key;
+      const urlCommand = new GetObjectCommand({
+        Bucket: this.bucketName,
+        Key: key,
+      });
+
+      const url = await getSignedUrl(this.client, urlCommand, {
+        expiresIn: 60 * 60 * 24,
+      });
+
+      return { url, key };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
   async batchDeleteFilesByPrefix(prefix: string): Promise<{ message: string }> {
     try {
       const listObjectsV2Command = new ListObjectsV2Command({

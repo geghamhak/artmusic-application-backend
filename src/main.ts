@@ -5,7 +5,8 @@ import { ResponseInterceptor } from './interceptors/response-interceptor';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
+  app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -15,7 +16,6 @@ async function bootstrap() {
     origin: ['http://localhost:3000'],
     credentials: true,
   });
-  app.use(cookieParser());
   app.useGlobalInterceptors(new ResponseInterceptor());
   await app.listen(3001);
 }
