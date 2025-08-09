@@ -83,10 +83,10 @@ const options: DataSourceOptions & SeederOptions = {
     NominationSeeder,
     RegionSeeder,
     SchoolSeeder,
-    FestivalTypeSeeder,
     CountrySeeder,
     AdminSeeder,
     JurySeeder,
+    FestivalTypeSeeder,
   ],
 };
 

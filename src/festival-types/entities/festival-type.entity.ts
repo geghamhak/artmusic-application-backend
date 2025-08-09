@@ -23,6 +23,13 @@ export class FestivalType {
   @JoinColumn()
   name: TextContent;
 
+  @OneToOne(() => TextContent)
+  @JoinColumn()
+  description: TextContent;
+
+  @Column({ type: 'simple-array', nullable: true })
+  subNominationIds: number[];
+
   @OneToMany(() => Festival, (festival) => festival.type)
   festivals: Festival[];
 

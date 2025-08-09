@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CreateFestivalTypeDto } from './dto/create-festival-type.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FestivalType } from './entities/festival-type.entity';
 import { Festival } from '../festivals/entities/festival.entity';
 import { TextContentService } from '../translations/text-content.service';
+import { UpdateFestivalTypeDto } from './dto/update-festival-type.dto';
 
 export enum FestivalTypesEnum {
   ARTMUSIC = 'artmusic',
@@ -26,6 +27,21 @@ export class FestivalTypesService {
     private textContentService: TextContentService,
   ) {}
 
+  async findById(id: number): Promise<FestivalType> {
+    const festivalType = await this.festivalTypeRepository
+      .createQueryBuilder('festivalType')
+      .leftJoinAndSelect('festivalType.name', 'nameTextContent')
+      .leftJoinAndSelect('festivalType.description', 'descriptionTextContent')
+      .where('festivalType.id = :id', { id })
+      .select()
+      .getOne();
+
+    if (!festivalType) {
+      throw new BadRequestException('Festival type not found');
+    }
+    return festivalType;
+  }
+
   async getByKey(festivalName: FestivalTypesEnum): Promise<FestivalType> {
     return await this.festivalTypeRepository
       .createQueryBuilder('festivalType')
@@ -36,25 +52,20 @@ export class FestivalTypesService {
 
   async create(createFestivalTypeDto: CreateFestivalTypeDto) {
     try {
-      const { name } = createFestivalTypeDto;
-      await this.checkIfFestivalExists(
-        name[0].translation as FestivalTypesEnum,
-      );
-      const newFestivalType = new Festival();
-      newFestivalType.title =
+      const { name, description, key, subNominationIds } =
+        createFestivalTypeDto;
+      const newFestivalType = new FestivalType();
+      newFestivalType.name =
         await this.textContentService.addTranslations(name);
+      newFestivalType.description =
+        await this.textContentService.addTranslations(description);
+      newFestivalType.key = key;
+      if (subNominationIds.length > 0) {
+        newFestivalType.subNominationIds = subNominationIds;
+      }
       return this.festivalTypeRepository.save(newFestivalType);
     } catch (error) {
       throw new Error('Unable to create festival type');
-    }
-  }
-
-  private async checkIfFestivalExists(name: FestivalTypesEnum) {
-    const existingFestival = await this.getByKey(name as FestivalTypesEnum);
-    if (existingFestival) {
-      return new BadRequestException(
-        `The festival with name '${name}' already exists`,
-      );
     }
   }
 
@@ -66,7 +77,73 @@ export class FestivalTypesService {
     return { festivalTypes: festivalTypes.map((i) => i.key) };
   }
 
+  async findAll() {
+    const festivalTypes = await this.festivalTypeRepository
+      .createQueryBuilder('festival_type')
+      .leftJoinAndSelect('festival_type.name', 'nameTextContent')
+      .leftJoinAndSelect('nameTextContent.translations', 'nameTranslations')
+      .leftJoinAndSelect('nameTranslations.language', 'nameLanguage')
+      .leftJoinAndSelect('festival_type.description', 'descriptionTextContent')
+      .leftJoinAndSelect(
+        'descriptionTextContent.translations',
+        'descriptionTranslations',
+      )
+      .leftJoinAndSelect(
+        'descriptionTranslations.language',
+        'descriptionLanguage',
+      )
+      .select()
+      .getMany();
+
+    return festivalTypes.map((festivalType) => {
+      return {
+        id: festivalType.id,
+        key: festivalType.key,
+        name: festivalType.name.translations.map((t) => ({
+          translation: t.translation,
+          languageCode: t.language.code,
+        })),
+        description: festivalType.description.translations.map((t) => ({
+          translation: t.translation,
+          languageCode: t.language.code,
+        })),
+        subNominationIds: festivalType.subNominationIds || [],
+      };
+    });
+  }
+
   remove(id: number) {
     return this.festivalTypeRepository.delete(id);
+  }
+
+  async update(id: number, updateFestivalTypeDto: UpdateFestivalTypeDto) {
+    try {
+      const festivalType = await this.findById(id);
+      const { name, description, key, subNominationIds } =
+        updateFestivalTypeDto;
+      if (name && name.length > 0) {
+        festivalType.name = await this.textContentService.updateTranslations(
+          festivalType.name,
+          name,
+        );
+      }
+      if (description && description.length > 0) {
+        festivalType.description =
+          await this.textContentService.updateTranslations(
+            festivalType.description,
+            description,
+          );
+      }
+      if (subNominationIds && subNominationIds.length > 0) {
+        festivalType.subNominationIds = subNominationIds;
+      }
+      if (key) {
+        festivalType.key = key;
+      }
+      return this.festivalTypeRepository.save(festivalType);
+    } catch (error) {
+      Logger.error(error);
+      throw new BadRequestException('Unable to update festival type');
+    }
   }
 }
