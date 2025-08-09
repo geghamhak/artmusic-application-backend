@@ -9,10 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Festival } from './entities/festival.entity';
 import { TextContentService } from '../translations/text-content.service';
-import {
-  FestivalTypesEnum,
-  FestivalTypesService,
-} from '../festival-types/festival-types.service';
+import { FestivalTypesService } from '../festival-types/festival-types.service';
 import { FestivalType } from '../festival-types/entities/festival-type.entity';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
 import { FestivalImagesService } from '../festival-images/festival-images.service';
@@ -27,7 +24,6 @@ import {
   CreateScoringItem,
 } from '../scoring-system/scoring-system.service';
 import { FestivalQueriesService } from './festival.queries.service';
-import { FestivalsGlobalConfig } from '../festival-config/types';
 import { FestivalJuryService } from '../festival-jury/festival-jury.service';
 
 export interface IFestivalJuries {
@@ -91,7 +87,7 @@ export class FestivalsService {
       gallery,
       config: this.festivalConfigService.mapFestivalConfigs(
         festival.config,
-        festival.type.key as FestivalTypesEnum,
+        festival.type.key,
       ),
       scorePattern: Object.keys(festival.scorePattern).length
         ? festival.scorePattern
@@ -109,7 +105,7 @@ export class FestivalsService {
     return { banner, termsAndConditions, gallery };
   }
 
-  async findActiveByKey(festivalName: FestivalTypesEnum) {
+  async findActiveByKey(festivalName: string) {
     const activeFestival =
       await this.festivalQueriesService.findActiveByKey(festivalName);
 
@@ -120,14 +116,14 @@ export class FestivalsService {
     if (!Object.keys(activeFestival.scorePattern).length) {
       activeFestival.scorePattern = JSON.stringify(CentralizedScoringPattern);
     }
-    const config = this.festivalConfigService.mapFestivalConfigs(
+    const config = await this.festivalConfigService.mapFestivalConfigs(
       activeFestival.config,
-      activeFestival.type.key as FestivalTypesEnum,
+      activeFestival.type.key,
     );
     return { ...activeFestival, config };
   }
 
-  async findByType(festivalType: FestivalTypesEnum): Promise<Festival[]> {
+  async findByType(festivalType: string): Promise<Festival[]> {
     const festivalsData =
       await this.festivalQueriesService.findByType(festivalType);
 
@@ -436,9 +432,9 @@ export class FestivalsService {
     }
   }
 
-  findConfigByType(type: FestivalTypesEnum) {
+  async findConfigByType(type: string) {
     return {
-      config: FestivalsGlobalConfig[type],
+      config: await this.festivalTypeService.findConfigByType(type),
       scorePattern: CentralizedScoringPattern,
     };
   }

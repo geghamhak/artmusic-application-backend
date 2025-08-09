@@ -6,7 +6,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Festival } from './entities/festival.entity';
-import { FestivalTypesEnum } from '../festival-types/festival-types.service';
 import { FestivalType } from '../festival-types/entities/festival-type.entity';
 
 @Injectable()
@@ -70,7 +69,7 @@ export class FestivalQueriesService {
     return festival;
   }
 
-  async findActiveByKey(festivalName: FestivalTypesEnum) {
+  async findActiveByKey(festivalName: string) {
     const currentDate = new Date();
     currentDate.toISOString();
     const activeFestival = await this.festivalRepository
@@ -90,7 +89,7 @@ export class FestivalQueriesService {
     return activeFestival;
   }
 
-  async findByType(festivalName: FestivalTypesEnum): Promise<Festival[]> {
+  async findByType(festivalName: string): Promise<Festival[]> {
     const festivalsData = await this.festivalRepository
       .createQueryBuilder('festival')
       .leftJoinAndSelect('festival.title', 'textContent')

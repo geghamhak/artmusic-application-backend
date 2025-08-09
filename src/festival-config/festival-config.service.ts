@@ -5,14 +5,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FestivalConfig } from './entities/festival-config.entity';
 import { Festival } from '../festivals/entities/festival.entity';
-import { FestivalsGlobalConfig } from './types';
-import { FestivalTypesEnum } from '../festival-types/festival-types.service';
+import { FestivalTypesService } from '../festival-types/festival-types.service';
 
 @Injectable()
 export class FestivalConfigService {
   constructor(
     @InjectRepository(FestivalConfig)
     private festivalConfigRepository: Repository<FestivalConfig>,
+    private readonly festivalTypeService: FestivalTypesService,
   ) {}
   async create(
     createFestivalConfigDto: CreateFestivalConfigDto,
@@ -66,11 +66,12 @@ export class FestivalConfigService {
     return festivalConfig;
   }
 
-  mapFestivalConfigs(
+  async mapFestivalConfigs(
     festivalConfig: FestivalConfig,
-    festivalType: FestivalTypesEnum,
+    festivalType: string,
   ) {
-    const globalConfigByType = FestivalsGlobalConfig[festivalType];
+    const globalConfigByType =
+      await this.festivalTypeService.findConfigByType(festivalType);
     if (festivalConfig?.secondComposition !== undefined) {
       globalConfigByType.secondComposition =
         festivalConfig?.secondComposition === 1;

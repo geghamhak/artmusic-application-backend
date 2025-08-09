@@ -7,12 +7,8 @@ import {
   Delete,
   Patch,
 } from '@nestjs/common';
-import {
-  FestivalTypesEnum,
-  FestivalTypesService,
-} from './festival-types.service';
+import { FestivalTypesService } from './festival-types.service';
 import { CreateFestivalTypeDto } from './dto/create-festival-type.dto';
-import { UpdateFestivalDto } from '../festivals/dto/update-festival.dto';
 import { UpdateFestivalTypeDto } from './dto/update-festival-type.dto';
 
 @Controller('festival-types')
@@ -36,7 +32,7 @@ export class FestivalTypesController {
 
   @Get(':name')
   getByName(@Param('name') name: string) {
-    return this.festivalTypesService.getByKey(name as FestivalTypesEnum);
+    return this.festivalTypesService.getByKey(name);
   }
 
   @Patch(':id')

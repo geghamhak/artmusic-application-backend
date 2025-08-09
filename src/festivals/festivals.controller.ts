@@ -11,7 +11,6 @@ import { CreateFestivalDto } from './dto/create-festival.dto';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
 import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
 import { FestivalsService } from './festivals.service';
-import { FestivalTypesEnum } from '../festival-types/festival-types.service';
 
 @Controller('festivals')
 export class FestivalsController {
@@ -34,16 +33,16 @@ export class FestivalsController {
   }
 
   @Get('/:key/active')
-  findActiveByName(@Param('key') key: FestivalTypesEnum) {
+  findActiveByName(@Param('key') key: string) {
     return this.festivalsService.findActiveByKey(key);
   }
 
   @Get('/type/:type')
-  findByName(@Param('type') type: FestivalTypesEnum) {
+  findByName(@Param('type') type: string) {
     return this.festivalsService.findByType(type);
   }
   @Get('/:type/config')
-  findConfigByType(@Param('type') type: FestivalTypesEnum) {
+  findConfigByType(@Param('type') type: string) {
     return this.festivalsService.findConfigByType(type);
   }
 

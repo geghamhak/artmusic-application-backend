@@ -5,4 +5,9 @@ export class CreateFestivalTypeDto {
   description: CreateTextContentDto[];
   key: string;
   subNominationIds?: number[];
+  isOnline: boolean;
+  secondComposition: boolean;
+  thirdComposition: boolean;
+  compositionTotalDuration: number;
+  isParticipantTypeActive: boolean;
 }

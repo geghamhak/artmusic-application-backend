@@ -4,12 +4,11 @@ import { HasMimeType, IsFile } from 'nestjs-form-data';
 import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
 import { CreateFestivalImageDto } from '../../festival-images/dto/create-festival-image.dto';
 import { CreateFestivalConfigDto } from '../../festival-config/dto/create-festival-config.dto';
-import { FestivalTypesEnum } from '../../festival-types/festival-types.service';
 import { CreateScoringItem } from '../../scoring-system/scoring-system.service';
 import { IFestivalJuries } from '../festivals.service';
 
 export class CreateFestivalDto {
-  type: FestivalTypesEnum;
+  type: string;
   title: CreateTextContentDto[];
   description: CreateTextContentDto[];
   @IsFile()

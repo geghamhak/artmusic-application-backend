@@ -30,6 +30,21 @@ export class FestivalType {
   @Column({ type: 'simple-array', nullable: true })
   subNominationIds: number[];
 
+  @Column({ type: 'tinyint', default: 0 })
+  isOnline: number;
+
+  @Column({ type: 'tinyint', default: 0 })
+  secondComposition: number;
+
+  @Column({ type: 'tinyint', default: 0 })
+  thirdComposition: number;
+
+  @Column({ type: 'tinyint', default: 15 })
+  compositionTotalDuration: number;
+
+  @Column({ type: 'tinyint', default: 0 })
+  isParticipantTypeActive: number;
+
   @OneToMany(() => Festival, (festival) => festival.type)
   festivals: Festival[];
 

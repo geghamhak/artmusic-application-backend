@@ -4,12 +4,11 @@ import { TextContent } from '../../translations/entities/textContent.entity';
 import { Language } from '../../translations/entities/language.entity';
 import { Translation } from '../../translations/entities/translation.entity';
 import { FestivalType } from '../../festival-types/entities/festival-type.entity';
-import { FestivalTypesEnum } from '../../festival-types/festival-types.service';
 import { SubNomination } from '../../sub-nominations/entities/sub-nomination.entity';
 
 const FestivalTypes = [
   {
-    key: FestivalTypesEnum.ARTMUSIC,
+    key: 'artmusic',
     translations: {
       name: [
         {
@@ -42,7 +41,7 @@ const FestivalTypes = [
     },
   },
   {
-    key: FestivalTypesEnum.NEW_HANDS,
+    key: 'new_hands',
     translations: {
       name: [
         {
@@ -75,7 +74,7 @@ const FestivalTypes = [
     },
   },
   {
-    key: FestivalTypesEnum.MELODY,
+    key: 'melody',
     translations: {
       name: [
         {
@@ -108,7 +107,7 @@ const FestivalTypes = [
     },
   },
   {
-    key: FestivalTypesEnum.LYRICS,
+    key: 'lyrics',
     translations: {
       name: [
         {
@@ -141,7 +140,7 @@ const FestivalTypes = [
     },
   },
   {
-    key: FestivalTypesEnum.KHACHATUR_AVETISYAN,
+    key: 'khachatur_avetisyan',
     translations: {
       name: [
         {
@@ -174,7 +173,7 @@ const FestivalTypes = [
     },
   },
   {
-    key: FestivalTypesEnum.ART_PIANO,
+    key: 'art_piano',
     translations: {
       name: [
         {
@@ -207,7 +206,7 @@ const FestivalTypes = [
     },
   },
   {
-    key: FestivalTypesEnum.FOREIGN,
+    key: 'foreign',
     translations: {
       name: [
         {
@@ -240,7 +239,7 @@ const FestivalTypes = [
     },
   },
   {
-    key: FestivalTypesEnum.ART_DANCE,
+    key: 'art_dance',
     translations: {
       name: [
         {
@@ -273,7 +272,7 @@ const FestivalTypes = [
     },
   },
   {
-    key: FestivalTypesEnum.EGHEGAN_POGH,
+    key: 'eghegan_pogh',
     translations: {
       name: [
         {
