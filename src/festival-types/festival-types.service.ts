@@ -33,7 +33,7 @@ export class FestivalTypesService {
     const festivalType = await this.festivalTypeRepository
       .createQueryBuilder('festivalType')
       .where('festivalType.key= :festivalName', { festivalName })
-      .select(['festivalType.id'])
+      .select()
       .getOne();
     if (!festivalType) {
       throw new BadRequestException('Festival type not found');
@@ -200,6 +200,7 @@ export class FestivalTypesService {
       thirdComposition: festivalType.thirdComposition === 1,
       compositionTotalDuration: festivalType.compositionTotalDuration,
       isOnline: festivalType.isOnline === 1,
+      subNominationIds: festivalType.subNominationIds || [],
     };
   }
 }

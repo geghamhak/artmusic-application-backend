@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { FestivalConfig } from './entities/festival-config.entity';
 import { Festival } from '../festivals/entities/festival.entity';
 import { FestivalTypesService } from '../festival-types/festival-types.service';
+import { FestivalType } from '../festival-types/entities/festival-type.entity';
 
 @Injectable()
 export class FestivalConfigService {
@@ -68,10 +69,11 @@ export class FestivalConfigService {
 
   async mapFestivalConfigs(
     festivalConfig: FestivalConfig,
-    festivalType: string,
+    festivalType: FestivalType,
   ) {
-    const globalConfigByType =
-      await this.festivalTypeService.findConfigByType(festivalType);
+    const globalConfigByType = await this.festivalTypeService.findConfigByType(
+      festivalType.key,
+    );
     if (festivalConfig?.secondComposition !== undefined) {
       globalConfigByType.secondComposition =
         festivalConfig?.secondComposition === 1;

@@ -16,8 +16,8 @@ export class ApplicationComposition {
   @Column({ type: 'varchar', length: '255' })
   title: string;
 
-  @Column({ type: 'varchar', length: '255', nullable: true })
-  craftSubNomination: string;
+  @Column({ type: 'varchar', length: '255' })
+  duration: string;
 
   @ManyToOne(() => Application, (application) => application.compositions, {
     onDelete: 'CASCADE',

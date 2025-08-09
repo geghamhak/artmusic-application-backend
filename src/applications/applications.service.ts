@@ -572,7 +572,7 @@ export class ApplicationsService {
         averageScore,
         scorePattern,
       );
-    console.log(application);
+
     return this.applicationRepository.save(application);
   }
 

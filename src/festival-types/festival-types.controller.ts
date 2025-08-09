@@ -40,7 +40,6 @@ export class FestivalTypesController {
     @Param('id') id: string,
     @Body() updateFestivalTypeDto: UpdateFestivalTypeDto,
   ) {
-    console.log(updateFestivalTypeDto);
     return this.festivalTypesService.update(+id, updateFestivalTypeDto);
   }
 

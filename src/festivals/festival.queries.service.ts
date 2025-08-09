@@ -41,6 +41,7 @@ export class FestivalQueriesService {
         'festival.applicationEndDate',
         'festival.festivalStartDate',
         'festival.festivalEndDate',
+        'festivalType.id',
         'festivalType.key',
         'festival.scorePattern',
         'title.id',

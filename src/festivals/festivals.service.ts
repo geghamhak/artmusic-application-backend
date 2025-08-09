@@ -2,6 +2,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateFestivalDto } from './dto/create-festival.dto';
@@ -85,9 +86,9 @@ export class FestivalsService {
       banner,
       termsAndConditions,
       gallery,
-      config: this.festivalConfigService.mapFestivalConfigs(
+      config: await this.festivalConfigService.mapFestivalConfigs(
         festival.config,
-        festival.type.key,
+        festival.type,
       ),
       scorePattern: Object.keys(festival.scorePattern).length
         ? festival.scorePattern
@@ -118,7 +119,7 @@ export class FestivalsService {
     }
     const config = await this.festivalConfigService.mapFestivalConfigs(
       activeFestival.config,
-      activeFestival.type.key,
+      activeFestival.type,
     );
     return { ...activeFestival, config };
   }
@@ -401,7 +402,7 @@ export class FestivalsService {
 
   async removeFestivalInfo(id: number) {
     try {
-      console.log(`Removing festival info for ${id}`);
+      Logger.log(`Removing festival info for ${id}`);
       const festival =
         await this.festivalQueriesService.findFestivalToRemove(id);
 
