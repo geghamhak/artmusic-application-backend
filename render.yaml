@@ -5,8 +5,18 @@ services:
     rootDir: apps/artmusic-admin
     buildCommand: npm ci && npm run build
     runtime: static
-    repo: https://github.com/Arkadi-H/artmusic-adminka
-    branch: master
+    repo: https://github.com/HakobyanGegham/artmusic-admin
+    branch: main
+    staticPublishPath: build
+
+    # Frontend: Artmusic SPA
+  - type: web
+    name: artmusic-frontend
+    rootDir: apps/artmusic-frontend
+    buildCommand: npm ci && npm run build
+    runtime: static
+    repo: https://github.com/HakobyanGegham/artmusic-frontend
+    branch: main
     staticPublishPath: build
 
   # Backend: NestJS API
