@@ -8,10 +8,6 @@ services:
     repo: https://github.com/Arkadi-H/artmusic-adminka
     branch: main
     staticPublishPath: build
-    redirects:
-      - source: "/*"
-        destination: "/index.html"
-        statusCode: 200
 
   # Backend: NestJS API
   - type: web
