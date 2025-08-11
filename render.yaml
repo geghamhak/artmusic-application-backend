@@ -6,7 +6,7 @@ services:
     buildCommand: npm ci && npm run build
     runtime: static
     repo: https://github.com/Arkadi-H/artmusic-adminka
-    branch: main
+    branch: master
     staticPublishPath: build
 
   # Backend: NestJS API
