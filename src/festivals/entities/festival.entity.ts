@@ -12,7 +12,6 @@ import {
 import { TextContent } from '../../translations/entities/textContent.entity';
 import { FestivalType } from '../../festival-types/entities/festival-type.entity';
 import { Application } from '../../applications/entities/application.entity';
-import { FestivalImage } from '../../festival-images/entities/festival-image.entity';
 import { FestivalJury } from '../../festival-jury/entities/festival-jury.entity';
 import { FestivalConfig } from '../../festival-config/entities/festival-config.entity';
 
@@ -47,11 +46,6 @@ export class Festival {
     cascade: ['remove'],
   })
   applications: Application[];
-
-  @OneToMany(() => FestivalImage, (festivalImage) => festivalImage.festival, {
-    cascade: ['remove'],
-  })
-  festivalImages: FestivalImage[];
 
   @OneToMany(() => FestivalJury, (festivalJury) => festivalJury.festival)
   festivalJuries: FestivalJury[];

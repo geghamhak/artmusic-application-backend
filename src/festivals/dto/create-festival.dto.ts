@@ -1,11 +1,11 @@
-import { IsOptional } from 'class-validator';
+import { IsOptional, ValidateNested } from 'class-validator';
 import { CreateTextContentDto } from '../../translations/dto/create-text-content.dto';
 import { HasMimeType, IsFile } from 'nestjs-form-data';
 import { FileSystemStoredFile } from 'nestjs-form-data/dist/classes/storage/FileSystemStoredFile';
-import { CreateFestivalImageDto } from '../../festival-images/dto/create-festival-image.dto';
 import { CreateFestivalConfigDto } from '../../festival-config/dto/create-festival-config.dto';
 import { CreateScoringItem } from '../../scoring-system/scoring-system.service';
 import { IFestivalJuries } from '../festivals.service';
+import { ValidateFestivalImageFilename } from '../validator/validateFestivalImageFilename';
 
 export class CreateFestivalDto {
   type: string;
@@ -26,7 +26,9 @@ export class CreateFestivalDto {
   @IsFile({ each: true })
   @HasMimeType(['image/jpeg', 'image/png'], { each: true })
   @IsOptional()
-  gallery?: CreateFestivalImageDto[];
+  @ValidateFestivalImageFilename()
+  @ValidateNested({ each: true })
+  gallery?: FileSystemStoredFile[];
   @IsFile()
   // @HasMimeType(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/octet-stream'], { each: true })
   @IsOptional()

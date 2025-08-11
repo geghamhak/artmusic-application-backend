@@ -44,7 +44,9 @@ export class ContactService {
         .getOne();
 
       if (!contactData) {
-        return null;
+        return {
+          contacts: {},
+        };
       }
 
       const contacts = {

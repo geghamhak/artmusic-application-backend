@@ -7,11 +7,11 @@ import { TranslationsModule } from '../translations/translations.module';
 import { FestivalTypesModule } from '../festival-types/festival-types.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { DmsModule } from 'src/dms/dms.module';
-import { FestivalImagesModule } from '../festival-images/festival-images.module';
 import { ExcelModule } from '../excel/excel.module';
 import { FestivalConfigModule } from '../festival-config/festival-config.module';
 import { FestivalQueriesService } from './festival.queries.service';
 import { FestivalJuryModule } from '../festival-jury/festival-jury.module';
+import {FestivalImagesService} from "./festival-images.service";
 
 @Module({
   imports: [
@@ -20,13 +20,12 @@ import { FestivalJuryModule } from '../festival-jury/festival-jury.module';
     FestivalTypesModule,
     NestjsFormDataModule,
     DmsModule,
-    forwardRef(() => FestivalImagesModule),
     ExcelModule,
     FestivalConfigModule,
     FestivalJuryModule,
   ],
-  exports: [TypeOrmModule, FestivalsService, FestivalQueriesService],
+  exports: [TypeOrmModule, FestivalsService, FestivalQueriesService,FestivalImagesService],
   controllers: [FestivalsController],
-  providers: [FestivalsService, FestivalQueriesService],
+  providers: [FestivalsService, FestivalQueriesService, FestivalImagesService],
 })
 export class FestivalsModule {}

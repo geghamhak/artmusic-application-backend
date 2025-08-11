@@ -29,10 +29,8 @@ import { Header } from '../header/entities/header.entity';
 import { HomePage } from '../home-page/entities/home-page.entity';
 import { Contact } from '../contact/entities/contact.entity';
 import { StaffPage } from '../staff-page/entities/staff-page.entity';
-import { FestivalImage } from '../festival-images/entities/festival-image.entity';
 import { Staff } from '../staff/entities/staff.entity';
 import { Jury } from '../juries/entities/jury.entity';
-import { EmailQueue } from '../email-queue/entities/email-queue.entity';
 import { FestivalJury } from '../festival-jury/entities/festival-jury.entity';
 import { FestivalConfig } from '../festival-config/entities/festival-config.entity';
 import * as process from 'node:process';
@@ -68,11 +66,9 @@ const options: DataSourceOptions & SeederOptions = {
     Header,
     HomePage,
     Contact,
-    FestivalImage,
     Staff,
     StaffPage,
     Jury,
-    EmailQueue,
     FestivalJury,
     FestivalConfig,
     Admin,

@@ -1,0 +1,44 @@
+services:
+  # Frontend: Admin SPA
+  - type: web
+    name: artmusic-admin
+    rootDir: apps/artmusic-admin
+    buildCommand: npm ci && npm run build
+    runtime: static
+    repo: https://github.com/Arkadi-H/artmusic-adminka
+    branch: main
+    staticPublishPath: build
+    redirects:
+      - source: "/*"
+        destination: "/index.html"
+        statusCode: 200
+
+  # Backend: NestJS API
+  - type: web
+    name: artmusic-api
+    rootDir: apps/artmusic-api
+    buildCommand: npm ci && npm run build
+    startCommand: node dist/main.js
+    repo: https://github.com/geghamhak/artmusic-application-backend
+    branch: main
+    plan: starter
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_S3_BUCKET
+        sync: false
+      - key: AWS_S3_REGION
+        sync: false
+    runtime: node

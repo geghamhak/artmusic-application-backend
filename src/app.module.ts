@@ -51,22 +51,15 @@ import { Header } from './header/entities/header.entity';
 import { HomePage } from './home-page/entities/home-page.entity';
 import { ContactModule } from './contact/contact.module';
 import { Contact } from './contact/entities/contact.entity';
-import { FestivalImagesModule } from './festival-images/festival-images.module';
 import { StaffPageModule } from './staff-page/staff-page.module';
-import { FestivalImage } from './festival-images/entities/festival-image.entity';
 import { StaffPage } from './staff-page/entities/staff-page.entity';
 import { Staff } from './staff/entities/staff.entity';
 import { JuriesModule } from './juries/juries.module';
 import { Jury } from './juries/entities/jury.entity';
-import { EmailQueueModule } from './email-queue/email-queue.module';
-import { SqsModule } from '@ssut/nestjs-sqs';
-import * as AWS from '@aws-sdk/client-sqs';
-import { EmailQueue } from './email-queue/entities/email-queue.entity';
 import { FestivalJuryModule } from './festival-jury/festival-jury.module';
 import { FestivalJury } from './festival-jury/entities/festival-jury.entity';
 import { FestivalConfigModule } from './festival-config/festival-config.module';
 import { FestivalConfig } from './festival-config/entities/festival-config.entity';
-import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { Admin } from './admin/entities/admin.entity';
@@ -108,37 +101,15 @@ import { JwtModule } from '@nestjs/jwt';
             Header,
             HomePage,
             Contact,
-            FestivalImage,
             StaffPage,
             Staff,
             Jury,
-            EmailQueue,
             FestivalJury,
             FestivalConfig,
             Admin,
           ],
           synchronize: configService.get('DATABASE_SYNCHRONIZE'),
         }) as TypeOrmModuleOptions,
-    }),
-    SqsModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        producers: [
-          {
-            name: configService.get('EMAIL_QUEUE_NAME'),
-            queueUrl: configService.get('EMAIL_QUEUE_URL'),
-            region: configService.get('AWS_REGION'),
-            terminateGracefully: true, // gracefully shutdown when SIGINT/SIGTERM is received
-            sqs: new AWS.SQS({
-              region: configService.get('AWS_REGION'),
-              credentials: {
-                accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
-                secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
-              },
-            }),
-          },
-        ],
-      }),
     }),
     TranslationsModule,
     CountriesModule,
@@ -164,9 +135,7 @@ import { JwtModule } from '@nestjs/jwt';
     ExcelModule,
     ContactModule,
     StaffPageModule,
-    FestivalImagesModule,
     JuriesModule,
-    EmailQueueModule,
     FestivalJuryModule,
     FestivalConfigModule,
     AuthModule,

@@ -64,7 +64,7 @@ export class StaffService {
       .getMany();
 
     if (staff && !staff.length) {
-      return [];
+      return {};
     }
 
     const images = await this.dmsService.getPreSignedUrls('staff/');

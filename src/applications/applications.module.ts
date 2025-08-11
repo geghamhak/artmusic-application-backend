@@ -12,7 +12,6 @@ import { ApplicationScoreModule } from '../application-score/application-score.m
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { FestivalsModule } from '../festivals/festivals.module';
 import { ApplicationCompositionModule } from '../application-composition/application-composition.module';
-import { EmailQueueModule } from '../email-queue/email-queue.module';
 import { SubNominationsModule } from '../sub-nominations/sub-nominations.module';
 import { NominationsModule } from '../nominations/nominations.module';
 import { CountriesModule } from '../countries/countries.module';
@@ -30,7 +29,6 @@ import { SchoolsModule } from '../schools/schools.module';
     NestjsFormDataModule,
     forwardRef(() => FestivalsModule),
     ApplicationCompositionModule,
-    EmailQueueModule,
     SubNominationsModule,
     NominationsModule,
     CountriesModule,

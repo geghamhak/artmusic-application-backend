@@ -13,7 +13,7 @@ import { TextContentService } from '../translations/text-content.service';
 import { FestivalTypesService } from '../festival-types/festival-types.service';
 import { FestivalType } from '../festival-types/entities/festival-type.entity';
 import { UpdateFestivalDto } from './dto/update-festival.dto';
-import { FestivalImagesService } from '../festival-images/festival-images.service';
+import { FestivalImagesService } from './festival-images.service';
 import { DmsService } from '../dms/dms.service';
 import { FileSystemStoredFile } from 'nestjs-form-data';
 import { ExcelService } from '../excel/excel.service';
@@ -249,7 +249,7 @@ export class FestivalsService {
       await this.updateFestivalJuries(festival, updateFestivalDto);
 
       if (updateFestivalDto.scorePattern) {
-        this.setFestivalScoringPattern(
+       await this.setFestivalScoringPattern(
           festival,
           updateFestivalDto.scorePattern,
         );
@@ -376,7 +376,7 @@ export class FestivalsService {
     }
 
     if (gallery) {
-      await this.festivalImagesService.add(gallery);
+      await this.festivalImagesService.add(gallery, festival.id);
     }
   }
 

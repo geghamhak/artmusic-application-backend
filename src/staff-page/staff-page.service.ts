@@ -55,7 +55,9 @@ export class StaffPageService {
         .getOne();
 
       if (!staffPage) {
-        return null;
+        return {
+          title: [],
+        };
       }
 
       const title = staffPage?.title.translations.map((translation) => ({
